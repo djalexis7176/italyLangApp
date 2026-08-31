@@ -87,8 +87,8 @@ nav.tabs{
   display:flex;justify-content:center;gap:2px;
 }
 nav.tabs button{
-  flex:1 1 0;max-width:140px;background:none;border:0;padding:7px 2px 5px;
-  color:var(--muted);font-size:11px;font-weight:600;letter-spacing:.03em;
+  flex:1 1 0;max-width:110px;background:none;border:0;padding:7px 2px 5px;
+  color:var(--muted);font-size:10.5px;font-weight:600;letter-spacing:.01em;
   display:flex;flex-direction:column;align-items:center;gap:3px;border-radius:10px;
 }
 nav.tabs button .g{font-family:var(--serif);font-size:19px;line-height:1;font-weight:700}
@@ -232,6 +232,18 @@ ol.plan li::before{
   background:var(--blu);
 }
 ol.plan li b{display:block;font-size:15px}
+/* tappable words + word sheet */
+.w{cursor:pointer;border-bottom:1px dotted rgba(29,92,130,.45);padding-bottom:1px}
+.w:active{background:#F7ECD2}
+.sheetbg{position:fixed;inset:0;z-index:80;background:rgba(14,34,48,.45);display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--carta);width:100%;max-width:600px;max-height:86vh;overflow:auto;
+  border-radius:18px 18px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -8px 40px rgba(14,34,48,.35)}
+@media (min-width:640px){.sheetbg{align-items:center}.sheet{border-radius:18px;max-height:80vh}}
+.notebox{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px;font:inherit;font-size:16px;background:#fff;resize:vertical}
+.notebox:focus{outline:2px solid var(--blu);outline-offset:1px}
+.notetext{white-space:pre-wrap;margin-top:6px;font-size:15px}
+.hint{font-size:12.5px;color:var(--muted);margin:2px 0 10px}
 @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
 @media (max-width:400px){
   header.top .mark{font-size:19px}
@@ -264,6 +276,7 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2.5px sol
   <button data-tab="verbs"><span class="g">V</span>Verbs</button>
   <button data-tab="drills"><span class="g">E</span>Practice</button>
   <button data-tab="plan"><span class="g">P</span>Plan</button>
+  <button data-tab="saved"><span class="g">S</span>Saved</button>
 </nav>
 <div class="toast" id="toast"></div>
 
@@ -1093,6 +1106,278 @@ const GRAMMAR = [
 ];
 
 /* ============================================================
+   DATA: dictionary for tap-a-word
+   Verbs get conjugated automatically, so every form is tappable.
+   ============================================================ */
+/* [infinitive, english, family]  — regular verbs, conjugated by rule below */
+const EXTRA_VERBS = [
+["aiutare","to help","are"],["provare","to try","are"],["guardare","to watch / to look at","are"],
+["ascoltare","to listen to","are"],["imparare","to learn","are"],["studiare","to study","are"],
+["cucinare","to cook","are"],["camminare","to walk","are"],["tornare","to come back","are"],
+["restare","to stay","are"],["fermare","to stop","are"],["affittare","to rent","are"],
+["accettare","to accept","are"],["funzionare","to work / to function","are"],["chiamare","to call","are"],
+["invecchiare","to age","are"],["interessare","to interest","are"],["rappresentare","to represent","are"],
+["cominciare","to begin","are"],["spiegare","to explain","are"],["cenare","to have dinner","are"],
+["evitare","to avoid","are"],["lasciare","to leave (behind)","are"],["desiderare","to wish / to want","are"],
+["durare","to last","are"],["cambiare","to change","are"],["mostrare","to show","are"],
+["convalidare","to validate","are"],["costare","to cost","are"],["amare","to love","are"],
+["trasmettere","to transmit / to give off","ere"],["mettere","to put","ere"],["scrivere","to write","ere"],
+["perdere","to lose / to miss","ere"],["dividere","to divide / to split","ere"],["condividere","to share","ere"],
+["chiedere","to ask","ere"],["aggiungere","to add","ere"],["scendere","to get off / to go down","ere"],
+["ripetere","to repeat","ere"],["vivere","to live","ere"],["vendere","to sell","ere"],
+["offrire","to offer","ire"],["seguire","to follow","ire"],["servire","to need / to serve","ire"],
+["spedire","to ship / to send","isc"],["colpire","to strike","isc"],["pulire","to clean","isc"],
+["suggerire","to suggest","isc"]
+];
+
+/* single words: [word, meaning, note?] */
+const FUNC = [
+/* articles and prepositions */
+["il","the (m sing)"],["lo","the (m sing, before s+consonant or z)"],["la","the (f sing) / it (her)"],
+["l'","the (before a vowel)"],["i","the (m plural)"],["gli","the (m plural) / to him"],["le","the (f plural) / to her"],
+["un","a / one (m)"],["uno","a / one (m)"],["una","a / one (f)"],["un'","a / one (f, before a vowel)"],
+["di","of / from","Also 'than' in comparisons."],["del","of the / some (m)"],["dello","of the (m)"],["della","of the (f)"],
+["dell'","of the (before a vowel)"],["dei","of the / some (m pl)"],["degli","of the (m pl)"],["delle","of the / some (f pl)"],
+["a","to / at"],["ad","to / at (before a vowel)"],["al","to the / at the (m)"],["allo","to the (m)"],["alla","to the / at the (f)"],
+["all'","to the (before a vowel)"],["ai","to the (m pl)"],["agli","to the (m pl)"],["alle","at the (f pl)","Clock times: alle otto = at eight."],
+["da","from / by / since","Also 'at someone's place': da Marco."],["dal","from the (m)"],["dalla","from the (f)"],
+["in","in / to (countries and regions)"],["nel","in the (m)"],["nello","in the (m)"],["nella","in the (f)"],
+["nei","in the (m pl)"],["negli","in the (m pl)"],["nelle","in the (f pl)"],
+["con","with"],["su","on"],["sul","on the (m)"],["sulla","on the (f)"],["sui","on the (m pl)"],
+["per","for / in order to / through"],["tra","between / in (time from now)"],["fra","between / among"],
+["senza","without"],["sotto","under"],["sopra","above"],["dentro","inside"],["fuori","outside"],
+["dietro","behind"],["davanti","in front of"],["accanto","next to"],["fronte","front","Di fronte a = opposite."],
+["verso","towards / around (a time)"],["fino","until / as far as"],["circa","about / roughly"],["dopo","after"],
+["prima","before / first"],["oltre","beyond"],
+/* joining words and adverbs */
+["e","and"],["ed","and (before a vowel)"],["o","or"],["ma","but"],["però","but / however"],
+["perché","why / because"],["se","if"],["che","that / which / what","Also 'than' after a comparison."],
+["come","how / like"],["quando","when"],["dove","where"],["dov'è","where is"],
+["quanto","how much"],["quanti","how many (m)"],["quanta","how much (f)"],["quante","how many (f)"],["quant'è","how much is it"],
+["quale","which"],["quali","which (plural)"],["qual","which (before è)"],["chi","who"],
+["cosa","thing / what","Che cosa? = what?"],["non","not"],["no","no"],["sì","yes"],
+["anche","also / too"],["ancora","still / yet / more"],["già","already"],["sempre","always","Sempre dritto = straight ahead."],
+["mai","never / ever"],["più","more / most","Non… più = not any more."],["meno","less"],
+["molto","very / a lot"],["molti","many (m)"],["molta","much (f)"],["molte","many (f)"],
+["troppo","too much"],["poco","little / not much"],["po'","bit","Un po' di = a little of."],
+["tutto","everything / all"],["tutti","everyone (m pl)"],["tutta","all (f)"],["altro","other / anything else"],["altra","other (f)"],
+["ogni","every"],["qualche","some / a few"],["qualcosa","something"],["qualcuno","someone"],
+["niente","nothing"],["nulla","nothing"],["solo","only / alone"],["proprio","really / exactly / one's own"],
+["davvero","really"],["magari","maybe / if only"],["forse","perhaps"],["così","like this / so"],
+["poi","then / afterwards"],["allora","so / then / well"],["adesso","now"],["ora","now / hour"],
+["oggi","today"],["domani","tomorrow"],["ieri","yesterday"],["dopodomani","the day after tomorrow"],
+["stasera","this evening"],["stamattina","this morning"],["presto","early / soon"],["tardi","late"],["tardo","late (adj)"],
+["subito","right away"],["qui","here"],["qua","here"],["lì","there"],["là","there"],["fondo","bottom / far end","Là in fondo = over there at the back."],
+["ecco","here it is / there you go"],["insieme","together"],["invece","instead / actually"],
+["almeno","at least"],["quasi","almost"],["appena","just / as soon as"],["volentieri","gladly"],
+["bene","well"],["male","badly"],["meglio","better"],["peggio","worse"],["migliore","best / better (adj)"],
+["dritto","straight"],["destra","right (direction)"],["sinistra","left (direction)"],["via","street / away"],
+["ben","nice and… / well","Ben luppolata = nice and hoppy."],
+/* pronouns and possessives */
+["io","I"],["tu","you (informal)"],["lui","he"],["lei","she / you (formal)"],["noi","we"],["voi","you (plural)"],
+["loro","they / them"],["mi","me / to me / myself"],["ti","you / to you"],
+["ci","us / to us / there","C'è, ci sono = there is, there are."],["vi","you (pl) / to you"],
+["si","oneself / one / people in general","Si mangia bene = one eats well here."],
+["me","me (after a preposition)"],["te","you (after a preposition)"],
+["ne","of it / of them","Ne prendo due = I'll take two of them."],["li","them (m)"],["glielo","it, to him / her / you"],
+["mio","my (m)"],["mia","my (f)"],["miei","my (m pl)"],["mie","my (f pl)"],["tuo","your"],
+["suo","his / her / your (formal)"],["sua","his / her"],["nostro","our (m)"],["nostra","our (f)"],["vostro","your (pl)"],
+["questo","this (m)"],["questa","this (f)"],["questi","these (m)"],["queste","these (f)"],
+["quello","that one (m)"],["quel","that (m, before a consonant)"],["quella","that (f)"],["stesso","same"],
+/* numbers, time, money */
+["zero","zero"],["due","two"],["tre","three"],["quattro","four"],["cinque","five"],["sei","six"],
+["sette","seven"],["otto","eight"],["nove","nine"],["dieci","ten"],["undici","eleven"],["dodici","twelve"],
+["quindici","fifteen"],["venti","twenty"],["trenta","thirty"],["quaranta","forty"],
+["quarantacinque","forty-five"],["quarantasei","forty-six"],["cinquanta","fifty"],["cinquant'anni","fifty years old"],
+["cento","a hundred"],["mille","a thousand","Grazie mille = thanks a lot."],
+["mezzo","half (m)"],["mezza","half (f)","Le otto e mezza = half past eight."],
+["primo","first"],["seconda","second (f)"],["ultimo","last"],["euro","euro"],
+["etto","100 grams","Un etto e mezzo = 150g."],["chilo","kilo"],["litro","litre"],
+["anno","year"],["anni","years","Ho cinquant'anni = I'm fifty."],["mese","month"],["mesi","months"],
+["settimana","week"],["settimane","weeks"],["notte","night"],["notti","nights"],
+["volta","time / occasion"],["volte","times"],["minuto","minute"],["minuti","minutes"],["giorni","days"],
+["lunedì","Monday"],["domenica","Sunday"],["settembre","September"],["primavera","spring"],
+/* set expressions and courtesy */
+["buongiorno","good morning / good day"],["buonasera","good evening"],["buonanotte","good night"],
+["ciao","hi / bye (informal)"],["salve","hello (polite and neutral)"],["arrivederci","goodbye (polite)"],
+["grazie","thank you"],["prego","you're welcome / go ahead / please"],
+["favore","favour","Per favore = please."],["cortesia","courtesy","Per cortesia = please."],
+["scusi","excuse me (formal)"],["scusa","sorry (informal)"],["permesso","may I come through"],
+["salute","health","Salute! = cheers!"],["cin","cheers","Cin cin!"],["auguri","best wishes"],
+["giornata","day (the whole of it)"],["aiuto","help"],
+["fame","hunger","Ho fame = I'm hungry."],["sete","thirst","Ho sete = I'm thirsty."],
+["bisogno","need","Ho bisogno di = I need."],["attimo","moment"],["momento","moment"],["nome","name"],
+["pena","trouble","Vale la pena = it's worth it."],["mal","ache","Mal di testa = headache."],
+/* places, travel, everyday nouns */
+["banco","counter"],["cassa","till / checkout"],["posto","place / seat"],["posti","seats"],["gente","people"],
+["cibo","food"],["cucina","kitchen / cuisine"],["tempo","time / weather"],["libero","free"],
+["fila","queue"],["ingresso","entrance"],["ridotto","reduced price"],["interi","full price (tickets)"],
+["biglietti","tickets"],["andata","outward trip","Andata e ritorno = return ticket."],["ritorno","return"],
+["coincidenza","connection"],["ritardo","delay"],["corsa","ride / fare"],["bagagli","luggage"],
+["molo","pier"],["aeroporto","airport"],["centro","centre / downtown"],["piedi","feet","A piedi = on foot."],
+["dintorni","the area nearby"],["gite","day trips"],["zona","area"],["specialità","speciality"],
+["paese","village / country"],["collina","hill"],["enoteca","wine bar"],["trattoria","trattoria (simple restaurant)"],
+["ristorante","restaurant"],["duomo","cathedral"],["traversa","turning / side street"],["mappa","map"],
+["taxi","taxi"],["wifi","wifi"],["password","password"],["online","online"],["farmacia","pharmacy"],
+["testa","head"],["stomaco","stomach"],["portafoglio","wallet"],["civico","civic"],["guidata","guided"],
+["restauro","restoration"],["principale","main"],["turisti","tourists"],["turistico","touristy"],
+["vacanza","holiday"],["lavoro","work / job"],["settore","sector"],["informatico","IT / computing"],
+["pensione","retirement / guesthouse"],["insegnante","teacher"],["medico","doctor"],
+["moglie","wife"],["marito","husband"],["figli","children"],["cane","dog"],["nonna","grandmother"],
+["nonno","grandfather"],["amico","friend"],["gusti","tastes","Per i miei gusti = for my taste."],
+/* food, wine, beer */
+["rosso","red"],["bianco","white"],["frizzante","sparkling"],["naturale","still (water) / natural"],
+["crudo","raw"],["cotto","cooked"],["misto","mixed"],["tagliere","board"],["salumi","cured meats"],
+["formaggi","cheeses"],["pezzo","piece"],["porzione","portion"],["vuoto","empty","Sotto vuoto = vacuum-packed."],
+["glutine","gluten"],["noci","nuts"],["funghi","mushrooms"],["fegato","liver"],["vongole","clams"],
+["spaghetti","spaghetti"],["gnocchi","gnocchi"],["pasta","pasta"],["zuppa","soup"],["crema","custard"],
+["cornetti","croissants"],["limone","lemon"],["orzo","barley"],["tè","tea"],["uve","grapes (varieties)"],
+["frutti","fruits"],["agrumi","citrus"],["mandorla","almond"],["vaniglia","vanilla"],["lampone","raspberry"],
+["cioccolato","chocolate"],["note","notes"],["profumo","aroma"],["finale","finish / ending"],
+["tannico","tannic"],["luppolata","hoppy (f)"],["acida","sour (f)"],["acide","sour (f pl)"],
+["fruttata","fruity (f)"],["gradi","degrees / alcohol %"],["media","medium / half litre"],
+["botte","barrel"],["rovere","oak"],["vendemmia","grape harvest"],["biologico","organic"],
+["malti","malts"],["fermentazione","fermentation"],["pils","pilsner"],["lager","lager"],["stout","stout"],
+["porter","porter"],["ipa","IPA"],["sour","sour beer"],["pale","pale"],["ale","ale"],
+["brut","brut (dry sparkling)"],["dessert","dessert"],["zuccherino","sugary"],["saporito","tasty, well seasoned"],
+["coperto","cover charge"],["resto","change (money)"],["sconto","discount"],["ricevuta","receipt"],
+["contanti","cash"],["bancomat","ATM / debit card"],["carte","cards"],["credito","credit"],
+["pecora","sheep"],["capra","goat"],["mucca","cow"],["prodotto","product"],["differenza","difference"],
+["nduja","'nduja, a spicy spreadable salami"],["salami","salamis"],["amatriciana","amatriciana (tomato, guanciale, pecorino)"],
+["verdicchio","Verdicchio (white grape)"],["sangiovese","Sangiovese (red grape)"],["purezza","purity","In purezza = 100% one grape."],
+["prosecco","prosecco"],["parma","Parma"],
+/* art, books, film */
+["arte","art"],["astratta","abstract (f)"],["moderna","modern (f)"],["pittori","painters"],
+["contemporanei","contemporary (m pl)"],["pennellate","brushstrokes"],["quattrocento","the 1400s"],
+["temporanea","temporary (f)"],["audioguida","audio guide"],["foto","photo"],["flash","flash"],
+["tecnica","technique / medium"],["acrilico","acrylic"],["colori","colours"],["calma","calm"],
+["musica","music"],["canzone","song"],["libri","books"],["romanzo","novel"],["gialli","crime stories"],
+["polizieschi","crime dramas"],["fantascienza","science fiction"],["thriller","thriller"],
+["avvincente","gripping"],["serie","series"],["storie","stories"],["vere","true (f pl)"],
+["preferito","favourite"],["orrore","horror"],["tratto","taken / based","È tratto da = it's based on."],
+/* adjectives and descriptions */
+["americano","American (m)"],["americana","American (f)"],["americani","Americans"],
+["italiano","Italian"],["italiana","Italian (f)"],["inglese","English"],["vero","real / true"],
+["locale","local / venue"],["gentile","kind"],["morto","dead","Stanco morto = dead tired."],
+["bello","beautiful"],["bella","beautiful (f)"],["bel","beautiful (m, short form)"],
+["bellissima","gorgeous (f)"],["bellissime","gorgeous (f pl)"],["benissimo","great / very well"],
+["buonissimo","delicious"],["buon","good (short form)"],["ottimo","excellent"],
+["perfetto","perfect"],["perfetta","perfect (f)"],["certo","certainly / of course"],
+["giusto","right / correct"],["giusta","right (f)"],["sicuramente","definitely"],
+["soprattutto","especially"],["sinceramente","honestly"],["curioso","curious"],["delizioso","delicious"],
+["allergico","allergic (m)"],["possibile","possible"],["prossimo","next"],["prossima","next (f)"],
+["diretto","direct"],["industriale","industrial, mass-market"],["chiara","pale (f)"],["scura","dark (f)"],
+["scure","dark (f pl)"],["chiare","pale (f pl)"],["leggera","light (f)"],["freschi","fresh (m pl)"],
+["fan","fan"],["tranne","except"],["dica","tell me","Polite command from dire. Mi dica = what can I get you?"],
+["dia","give me","Polite command from dare. Mi dia = give me."],["dite","you say / say (pl)"],
+["chiedete","ask (plural command)"],["andateci","go there (plural command)"],
+/* forms outside the present tense that appear in the app */
+["vorrei","I would like","Conditional of volere — the polite way to ask for anything."],
+["vorremmo","we would like","Conditional of volere."],
+["vorrebbe","he / she / you would like","Conditional of volere."],
+["avrei","I would have","Conditional of avere. Avrei bisogno di = I need."],
+["potrebbe","could you","Conditional of potere."],
+["torneremo","we will come back","Future of tornare."],
+["tornerete","you will come back","Future of tornare."],
+["evitereste","you would avoid","Conditional of evitare."],
+["eviterebbe","he / she / you would avoid","Conditional of evitare."],
+["era","was","Imperfect of essere."],
+["stato","been / stayed","Past participle of essere and stare."],
+["stata","been (f)","Past participle of essere."],
+["stati","been (m pl)","Siamo stati a Roma = we've been to Rome."],
+["state","been (f pl)"],
+["fatto","done / made","Past participle of fare."],
+["detto","said","Past participle of dire."],
+["preso","taken","Past participle of prendere."],
+["letto","read / bed","Past participle of leggere."],
+["perso","lost / missed","Past participle of perdere."],
+["persa","lost (f)","Past participle of perdere."],
+["visto","seen","Past participle of vedere."],
+["aperto","open / opened","Also the past participle of aprire."],
+["chiuso","closed","Past participle of chiudere."],
+["scelto","chosen","Past participle of scegliere."],
+["bevuto","drunk","Past participle of bere."],
+["piaciuto","liked / enjoyed","Past participle of piacere. Ci è piaciuto = we enjoyed it."],
+["piaciuta","liked (f)","Past participle of piacere."],
+["conosciuto","known / met","Past participle of conoscere."],
+["capito","understood","Past participle of capire."],
+["deciso","decided","Past participle of decidere."],
+["venuto","come","Past participle of venire."],
+["imparando","learning","Sto imparando = I'm learning."],
+["pensando","thinking","Sto pensando = I'm thinking."],
+["leggendo","reading","Sto leggendo = I'm reading."],
+["vive","he / she lives","From vivere."],
+["vale","it is worth","From valere. Vale la pena = it's worth it."],
+["bisogna","one has to / it's necessary","Bisogna prenotare? = do you have to book?"],
+["desidera","would you like","Polite question from desiderare."],
+["riesco","I manage","From riuscire. Non riesco a = I can't manage to."],
+["conoscerla","to meet you","conoscere + la (you, formal). Piacere di conoscerla."],
+["sederci","to sit (ourselves)","sedersi + ci."],
+["fermiamo","we stop / we're staying","From fermarsi. Ci fermiamo tre notti."],
+["fermate","stop / you stop"],["restiamo","we're staying","From restare."],
+["chiamo","I call / my name is","Mi chiamo = my name is (literally 'I call myself')."],
+["trovo","I find","Lo trovo delizioso = I find it delicious."],
+["troviamo","we find","Ci troviamo bene = we're enjoying it here."],
+["colpiscono","they strike me","From colpire (-isc-). Mi colpiscono i colori."],
+["interessa","it interests","Mi interessa = I'm interested in it."],
+["rappresenta","it represents"],["trasmette","it gives off / conveys"],
+["invecchia","it ages"],["dura","it lasts"],["funziona","it works"],
+["costa","it costs"],["costano","they cost"],["accettate","do you accept"],
+["spiega","he / she explains"],["scende","he / she gets off"],["comincia","it begins"],
+["cominciamo","let's begin"],["ferma","it stops"],["metto","I put"],["mette","he / she puts"],
+["glassato","glazed"],
+
+["lasciamo","let's leave","Lasciamo perdere = let's forget it."],
+["guardiamo","we watch"],["ascolta","listen (command)"],["ascoltare","to listen to"],
+["chiederle","to ask you","chiedere + le (to you, formal)."],
+["chiederle","to ask you"],["mostrarmelo","to show it to me","mostrare + me + lo."],
+["scriverlo","to write it down"],["spedirlo","to ship it"],["spedirle","to ship them (f)"],
+["andarci","to go there"],["perdermi","to miss out","Che cosa non devo perdermi?"],
+["perderci","to miss out (for us)"],["condividere","to share"],["aggiungere","to add"],
+["cambiare","to change"],["convalidare","to validate"],["chiamare","to call"],["aiutare","to help"],
+["lasciare","to leave (behind)"],["cenare","to have dinner"],["ripetere","to repeat"],
+["guardare","to look at / to watch"],["imparare","to learn"],["provare","to try"],
+["assaggio","taste / I taste","Un assaggio = a taste."],["studio","I study / studio"],
+["cucino","I cook"],["cammino","I walk / path"],["eccolo","here it is"],
+["glielo","it, to him / her / you"],["l'ho","I have it","lo + ho."],
+["do","I give","From dare."],["dà","he / she gives"],["sa","he / she knows / you know (formal)"],
+["san","Saint","San Diego."],["moltissimo","very much indeed"],["tantissimo","very much indeed"],
+["adoro","I adore","From adorare."],["dispiace","it's a pity","Mi dispiace = I'm sorry."],
+["ringrazio","I thank","La ringrazio = thank you (formal)."],["porzione","portion"],
+["incluso","included"],["condividere","to share"],["dividere","to split"],
+["quarantacinque","forty-five"],["cinquant'anni","fifty years old"],["nostro","our"],["viaggio","trip / I travel"],
+["degustazioni","tastings"],["aperitivo","aperitivo (pre-dinner drink)"],["vin","wine (in vin santo)"],
+["santo","holy","Vin santo = a sweet dessert wine."],["stili","styles"],["birre","beers"],
+["vini","wines"],["bottiglie","bottles"],["musei","musei = museums"],["over","over (English)"],
+["riduzione","reduction / discount"],["circa","about"],["rumore","noise"],["canzone","song"],
+["mmm","mmm"],["smith","Smith (a name)"],["marco","Marco (a name)"],["anna","Anna (a name)"],
+["paolo","Paolo (a name)"],["elena","Elena (a name)"],["ferrante","Ferrante (a surname)"],
+["diego","Diego","San Diego."],["california","California"],["italia","Italy"],["roma","Rome"],
+["firenze","Florence"],["venezia","Venice"],["sicilia","Sicily"],["siena","Siena"],["bologna","Bologna"],
+["napoli","Naples"],["orvieto","Orvieto"],["uffizi","the Uffizi gallery"],["stranger","(English word in the prompt)"],
+["friend","(English word in the prompt)"],["waiter","(English word in the prompt)"],["to","(English word in the prompt)"],
+["tv","TV"],["uniti","united","Stati Uniti = United States."],["negli","in the (m pl)"],
+["d'oliva","of olive","Olio d'oliva = olive oil."],["d'acqua","of water"],["d'orzo","of barley"],
+["d'italiano","of Italian"],["dell'italia","of Italy"],["all'amatriciana","amatriciana style"],
+["un'ora","an hour"],["un'acqua","a water"],["l'italiano","Italian (the language)"],
+["particolare","particular"],["visite","visits / tours"],["cornetto","croissant"],
+["c'","there / it","C'è = there is. Ci sono = there are."],["dov'","where","Dov'è = where is."],
+["d'","of","d'acqua = of water."],["quant'","how much","Quant'è? = how much is it?"],
+["cinquant'","fifty"],["nell'","in the"],["sull'","on the"],["dall'","from the"],["l'ho","I have it"],
+["lungo","long / along","Caffè lungo = a longer espresso."],["macchiato","stained / with a drop of milk"],
+["ristretto","short / concentrated","Caffè ristretto = a short espresso."],["decaffeinato","decaf"],
+["tipico","typical / traditional"],["giro","tour / round","Un giro in cantina = a cellar tour."],
+["giri","turn (polite command)","From girare. Giri a destra = turn right."],
+["gira","turn (informal command) / it turns"],["girare","to turn"],
+["lentamente","slowly"],["artista","artist"],["oliva","olive"],["costiera","coast / coastline"],
+["pensa","he / she thinks","Che cosa ne pensa? = what do you think of it?"],
+["pensare","to think"],["iniziare","to start","Per iniziare = to start with."],
+["riuscire","to manage / to succeed"],["valere","to be worth"],["bisognare","to be necessary"],
+["fermarsi","to stop / to stay"],["sedersi","to sit down"],["chiamarsi","to be called"],
+["trovarsi","to find oneself / to get on"],["adorare","to adore"],["girarsi","to turn round"]
+];
+
+/* ============================================================
    ENGINE
    ============================================================ */
 const $ = s => document.querySelector(s);
@@ -1103,7 +1388,7 @@ const store = (()=>{
   try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); return localStorage; }
   catch(e){ const m={}; return {getItem:k=>(k in m?m[k]:null), setItem:(k,v)=>{m[k]=String(v)}, removeItem:k=>{delete m[k]}}; }
 })();
-const DEF = {xp:0, streak:0, last:"", start:"", box:{}, star:{}, seen:{}, day:1, rate:0.9, voice:""};
+const DEF = {xp:0, streak:0, last:"", start:"", box:{}, star:{}, seen:{}, day:1, rate:0.9, voice:"", list:{}, notes:[], draft:""};
 let S = Object.assign({}, DEF, JSON.parse(store.getItem("andiamo")||"{}"));
 const save = () => store.setItem("andiamo", JSON.stringify(S));
 function today(){ return new Date().toISOString().slice(0,10); }
@@ -1170,6 +1455,7 @@ const ADJITEMS  = ADJ.map((a,i)=>({it:a[0], en:a[1], ph:"", cat:"agg", key:"a:"+
 const catName = id => (CATS.find(c=>c.id===id)||{name:id}).name;
 
 function deckItems(deck){
+  if(deck === "study") return Object.entries(S.list||{}).map(([k,v])=>({it:v.w, en:v.g||"(no meaning saved)", ph:"", cat:"study", key:"s:"+k}));
   if(deck === "all") return ALLPHRASES.concat(NOUNITEMS, ADJITEMS);
   if(deck === "starred") return ALLPHRASES.concat(NOUNITEMS, ADJITEMS).filter(x=>S.star[x.key]);
   if(deck === "vocab") return NOUNITEMS.concat(ADJITEMS);
@@ -1190,7 +1476,7 @@ function studyOrder(items, n){
 
 /* --- router --- */
 let TAB = "home";
-const TABS = {home:renderHome, phrases:renderPhrases, verbs:renderVerbs, drills:renderDrills, plan:renderPlan};
+const TABS = {home:renderHome, phrases:renderPhrases, verbs:renderVerbs, drills:renderDrills, plan:renderPlan, saved:renderSaved};
 function go(tab){
   TAB = tab;
   document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-current", String(b.dataset.tab===tab)));
@@ -1245,7 +1531,7 @@ function renderHome(){
     <div class="row">
       <button class="speak" data-say="${esc(pod.it)}">▶</button>
       <div class="grow">
-        <div class="it">${esc(pod.it)}</div>
+        <div class="it">${gloss(pod.it)}</div>
         <div class="ph">${esc(pod.ph)}</div>
         <div class="en">${esc(pod.en)}</div>
       </div>
@@ -1270,6 +1556,7 @@ function renderPhrases(){
   view.innerHTML = `
     <h1>Phrases</h1>
     <p class="lede">Eighteen situations, in the order a day actually happens. Tap ▶ to hear it, ☆ to save it.</p>
+    <p class="hint">Tap any Italian word — underlined — to see what it means, and which form of the verb it is.</p>
     <div class="searchwrap"><input id="q" type="search" placeholder="Search English or Italian…" value="${esc(phraseQuery)}"></div>
     <div id="results"></div>
     ${starred.length ? `<h2>Saved (${starred.length})</h2><div class="card" id="starbox">${starred.map(rowHTML).join("")}</div>
@@ -1296,7 +1583,7 @@ function rowHTML(p){
     <div class="row">
       <button class="speak" data-say="${esc(p.it)}">▶</button>
       <div class="grow">
-        <div class="it">${esc(p.it)}</div>
+        <div class="it">${gloss(p.it)}</div>
         ${p.ph?`<div class="ph">${esc(p.ph)}</div>`:""}
         <div class="en">${esc(p.en)}</div>
       </div>
@@ -1427,10 +1714,11 @@ let sess = null, deckSel = "all";
 
 function renderDrills(){
   if(sess) return paintStep();
-  const decks = [["all","Everything"],["starred","Saved ★"],["vocab","Single words"]].concat(CATS.map(c=>[c.id,c.name]));
+  const decks = [["all","Everything"],["starred","Saved phrases ★"],["study","My word list"],["vocab","Single words"]].concat(CATS.map(c=>[c.id,c.name]));
   view.innerHTML = `
     <h1>Practice</h1>
     <p class="lede">Pick a set, then pick a way to drill it.</p>
+    <p class="hint">Stuck on a word mid-drill? Tap it. The meaning pops up without ending the question.</p>
     <div class="chips">${decks.map(([k,n])=>`<button class="chip" data-deck="${k}" aria-pressed="${deckSel===k}">${esc(n)}</button>`).join("")}</div>
     <div id="drillList">${DRILLS.map(([k,n,b])=>`
       <div class="card tight"><div class="row" style="align-items:center">
@@ -1447,7 +1735,8 @@ function renderDrills(){
 /* --- step builders --- */
 function pool(deck){
   let items = deckItems(deck);
-  if(items.length < 8) items = deckItems("all");
+  if(deck !== "study" && items.length < 8) items = deckItems("all");
+  if(!items.length) items = deckItems("all");
   return items;
 }
 function buildFlash(deck,n){ return studyOrder(pool(deck), n).map(it=>({kind:"flash", it})); }
@@ -1576,8 +1865,8 @@ function stepFlash(s, host){
   host.innerHTML = `
     <div class="card flash" id="cardFace">
       <span class="pill">${front?"Italian":"English"}</span>
-      <div class="big">${esc(front? s.it.it : s.it.en)}</div>
-      <div class="small">Tap the card to flip</div>
+      <div class="big">${front ? gloss(s.it.it) : esc(s.it.en)}</div>
+      <div class="small">Tap the card to flip · tap a word for its meaning</div>
     </div>
     <div class="row" style="gap:8px">
       <button class="btn ghost grow" id="again">Not yet</button>
@@ -1586,10 +1875,10 @@ function stepFlash(s, host){
   const face = $("#cardFace");
   let flipped = false;
   face.onclick = (e)=>{
-    if(e.target.closest("[data-say]")) return;
+    if(e.target.closest("[data-say]") || e.target.closest(".w")) return;
     flipped = !flipped;
     face.innerHTML = `<span class="pill">${(front!==flipped)?"Italian":"English"}</span>
-      <div class="big">${esc((front!==flipped)? s.it.it : s.it.en)}</div>
+      <div class="big">${(front!==flipped) ? gloss(s.it.it) : esc(s.it.en)}</div>
       ${(front!==flipped)&&s.it.ph?`<div class="ph">${esc(s.it.ph)}</div>`:""}
       <button class="speak" data-say="${esc(s.it.it)}">▶</button>`;
   };
@@ -1606,7 +1895,7 @@ function stepQuiz(s, host){
     <div class="card">
       <div class="small">${label}</div>
       ${listen ? `<button class="btn quiet wide" id="playIt" style="margin-top:10px">▶ Play again</button>`
-               : `<div class="big" style="font-family:var(--serif);font-size:24px;font-weight:700;margin-top:4px">${esc(prompt)}</div>`}
+               : `<div class="big" style="font-family:var(--serif);font-size:24px;font-weight:700;margin-top:4px">${s.dir==="it2en" ? gloss(prompt) : esc(prompt)}</div>`}
     </div>
     <div id="opts">${s.opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc((listen||s.dir==="en2it") ? o.it : o.en)}</button>`).join("")}</div>`;
   if(listen){ speak(s.it.it); $("#playIt").onclick = ()=>speak(s.it.it); }
@@ -1619,7 +1908,7 @@ function stepQuiz(s, host){
       else if(x===b) x.classList.add("wrong"); else x.classList.add("dim");
     });
     score(ok, s.it.key);
-    feedback(host, ok, `<b>${esc(s.it.it)}</b> — ${esc(s.it.en)}${s.it.ph?`<br><span class="ph">${esc(s.it.ph)}</span>`:""}
+    feedback(host, ok, `<b>${gloss(s.it.it)}</b> — ${esc(s.it.en)}${s.it.ph?`<br><span class="ph">${esc(s.it.ph)}</span>`:""}
       <button class="speak" style="margin-top:6px" data-say="${esc(s.it.it)}">▶</button>`);
   });
 }
@@ -1651,7 +1940,7 @@ function stepConj(s, host){
     inp.disabled = true; $("#check").disabled = true; $("#hint").disabled = true;
     score(ok, "v:"+v.i);
     feedback(host, ok,
-      (ok ? `<b>${esc(want)}</b> — right.` : `It's <b>${esc(want)}</b>. You wrote “${esc(inp.value||"—")}”.`) +
+      (ok ? `<b>${gloss(want)}</b> — right.` : `It's <b>${gloss(want)}</b>. You wrote “${esc(inp.value||"—")}”.`) +
       `<br><span class="small">${esc(v.n)}</span>
        <button class="speak" style="margin-top:6px" data-say="${esc(want)}">▶</button>`);
   };
@@ -1666,7 +1955,7 @@ function stepWhich(s, host){
   host.innerHTML = `
     <div class="card">
       <span class="pill gold">${esc(s.pr.t)}</span>
-      <div style="font-family:var(--serif);font-size:22px;font-weight:700;margin-top:8px">${esc(sentence)}</div>
+      <div style="font-family:var(--serif);font-size:22px;font-weight:700;margin-top:8px">${gloss(sentence)}</div>
     </div>
     ${opts.map(o=>`<button class="opt" data-o="${esc(o)}">${esc(o)}</button>`).join("")}`;
   host.querySelectorAll(".opt").forEach(b=> b.onclick = ()=>{
@@ -1676,7 +1965,7 @@ function stepWhich(s, host){
       x.classList.add(x.getAttribute("data-o")===right ? "correct" : "wrong");
     });
     score(ok, "w:"+s.pr.t);
-    feedback(host, ok, `<b>${esc(sentence.replace("___", right))}</b><br>${esc(why)}<br><span class="small">${esc(s.pr.rule)}</span>
+    feedback(host, ok, `<b>${gloss(sentence.replace("___", right))}</b><br>${esc(why)}<br><span class="small">${esc(s.pr.rule)}</span>
       <button class="speak" style="margin-top:6px" data-say="${esc(sentence.replace("___", right))}">▶</button>`);
   });
 }
@@ -1686,7 +1975,7 @@ function stepCloze(s, host){
   host.innerHTML = `
     <div class="card">
       <div class="small">${esc(s.it.en)}</div>
-      <div style="font-family:var(--serif);font-size:23px;font-weight:700;margin-top:6px">${esc(s.shown)}</div>
+      <div style="font-family:var(--serif);font-size:23px;font-weight:700;margin-top:6px">${gloss(s.shown)}</div>
     </div>
     ${s.opts.map(o=>`<button class="opt" data-o="${esc(o)}">${esc(o)}</button>`).join("")}`;
   host.querySelectorAll(".opt").forEach(b=> b.onclick = ()=>{
@@ -1695,7 +1984,7 @@ function stepCloze(s, host){
       if(x.getAttribute("data-o")===s.ans) x.classList.add("correct");
       else if(x===b) x.classList.add("wrong"); else x.classList.add("dim"); });
     score(ok, s.it.key);
-    feedback(host, ok, `<b>${esc(s.it.it)}</b><br>${esc(s.it.en)}
+    feedback(host, ok, `<b>${gloss(s.it.it)}</b><br>${esc(s.it.en)}
       <button class="speak" style="margin-top:6px" data-say="${esc(s.it.it)}">▶</button>`);
   });
 }
@@ -1708,7 +1997,7 @@ function stepQA(s, host){
       <div class="small">They say</div>
       <div class="row" style="margin-top:4px">
         <button class="speak" data-say="${esc(q)}">▶</button>
-        <div class="grow" style="font-family:var(--serif);font-size:22px;font-weight:700">${esc(q)}</div>
+        <div class="grow" style="font-family:var(--serif);font-size:22px;font-weight:700">${gloss(q)}</div>
       </div>
       <button class="btn quiet" id="tr" style="margin-top:10px">What does that mean?</button>
       <div class="small" id="trbox" style="margin-top:6px"></div>
@@ -1723,7 +2012,7 @@ function stepQA(s, host){
       if(s.opts[i][2]===a) x.classList.add("correct");
       else if(x===b) x.classList.add("wrong"); else x.classList.add("dim"); });
     score(ok, "qa:"+a.slice(0,12));
-    feedback(host, ok, `<b>${esc(q)}</b> — ${esc(qEn)}<br><b>${esc(a)}</b> — ${esc(aEn)}
+    feedback(host, ok, `<b>${gloss(q)}</b> — ${esc(qEn)}<br><b>${gloss(a)}</b> — ${esc(aEn)}
       <button class="speak" style="margin-top:6px" data-say="${esc(a)}">▶</button>`);
   });
 }
@@ -1754,7 +2043,7 @@ function stepBuild(s, host){
     const ok = norm(placed.join(" ")) === norm(s.it.it);
     $("#check").disabled = true; $("#clear").disabled = true;
     score(ok, s.it.key);
-    feedback(host, ok, `<b>${esc(s.it.it)}</b><br>${esc(s.it.en)}
+    feedback(host, ok, `<b>${gloss(s.it.it)}</b><br>${esc(s.it.en)}
       <button class="speak" style="margin-top:6px" data-say="${esc(s.it.it)}">▶</button>`);
   };
 }
@@ -1781,10 +2070,10 @@ function paintMatch(){
   view.innerHTML = `
     <div class="row" style="align-items:center;margin:14px 0 6px">
       <div class="grow"><div style="font-weight:700">Matching</div>
-        <div class="small">${special.done.length} of 6 pairs · ${special.moves} taps</div></div>
+        <div class="small">${special.done.length} of ${special.pairs.length} pairs · ${special.moves} taps</div></div>
       <button class="btn quiet" id="exit">Stop</button>
     </div>
-    <div class="bar"><i style="width:${special.done.length/6*100}%"></i></div>
+    <div class="bar"><i style="width:${special.done.length/Math.max(1,special.pairs.length)*100}%"></i></div>
     <div class="grid2" id="board">
       ${special.tiles.map((t,i)=>`<button class="match ${special.done.includes(t.k)?"done":""} ${special.sel===i?"sel":""}"
         data-i="${i}" ${special.done.includes(t.k)?"disabled":""}>${esc(t.t)}</button>`).join("")}
@@ -1804,7 +2093,7 @@ function paintMatch(){
       special.done.push(t.k); special.sel = null; grade(t.key, true);
       const it = special.pairs[t.k].it; speak(it);
       paintMatch();
-      if(special.done.length===6){ addXp(3); toast("Tutto fatto!"); }
+      if(special.done.length===special.pairs.length){ addXp(3); toast("Tutto fatto!"); }
     } else {
       grade(t.key, false);
       b.classList.add("err");
@@ -1841,7 +2130,7 @@ function paintDialog(){
         <button class="bubble" data-rev="${i}" style="text-align:left"><span class="small">${esc(l[2])}</span><br><b style="color:var(--blu)">Tap to check your line</b></button></div>`;
       return `<div class="line ${you?"you":""}"><div class="who">${you?"YOU":"THEM"}</div>
         <div class="bubble"><div class="row"><button class="speak" data-say="${esc(l[1])}">▶</button>
-        <div class="grow"><div class="it">${esc(l[1])}</div><div class="en">${esc(l[2])}</div></div></div></div></div>`;
+        <div class="grow"><div class="it">${gloss(l[1])}</div><div class="en">${esc(l[2])}</div></div></div></div></div>`;
     }).join("")}</div>
     <button class="btn wide" id="playAll" style="margin-top:12px">Play the whole conversation</button>
     <button class="btn ghost wide" id="revAll" style="margin-top:8px">Reveal every line</button>`;
@@ -1858,6 +2147,318 @@ function paintDialog(){
       const v = voices.find(v=>v.name===S.voice) || voices[0]; if(v) u.voice=v;
       speechSynthesis.speak(u);
     });
+  };
+}
+
+
+/* ============================================================
+   TAP A WORD: dictionary lookup, word sheet, study list
+   ============================================================ */
+function conjugate(inf, fam){
+  const stem = inf.slice(0,-3);
+  const ends = {are:["o","i","a","iamo","ate","ano"],
+                ere:["o","i","e","iamo","ete","ono"],
+                ire:["o","i","e","iamo","ite","ono"],
+                isc:["isco","isci","isce","iamo","ite","iscono"]}[fam];
+  return ends.map(e=>{
+    let st = stem;
+    if(/(care|gare)$/.test(inf) && /^[ie]/.test(e)) st = st + "h";
+    if(st.endsWith("i") && e.startsWith("i")) st = st.slice(0,-1);
+    return st + e;
+  });
+}
+const EXTRA = EXTRA_VERBS.map(([i,e,fam])=>({i, e, fam, irr:0, f:conjugate(i,fam), n:"", extra:1}));
+const ALLVERBS = VERBS.concat(EXTRA);
+
+const LEX = new Map();
+function addLex(word, entry){
+  const k = norm(word).replace(/[^a-z']/g,"");
+  if(!k) return;
+  if(!LEX.has(k)) LEX.set(k, []);
+  const list = LEX.get(k);
+  if(!list.some(x=>x.kind===entry.kind && x.gloss===entry.gloss && x.v===entry.v && x.p===entry.p)) list.push(entry);
+}
+(function buildLex(){
+  ALLVERBS.forEach(v=>{
+    addLex(v.i, {kind:"inf", v, gloss:v.e});
+    v.f.forEach((f,p)=> addLex(f, {kind:"form", v, p, gloss:v.e}));
+  });
+  NOUNS.forEach(n=>{
+    const [full, en, g] = n;
+    const parts = full.split(" ");
+    const word = parts.length>1 ? parts.slice(1).join(" ") : full.replace(/^l'/,"");
+    const gg = g==="m" ? "masculine" : "feminine";
+    addLex(word, {kind:"noun", gloss:en, note:"a "+gg+" noun — "+full});
+    let pl = null;
+    if(/o$/.test(word)) pl = word.slice(0,-1)+"i";
+    else if(/a$/.test(word)) pl = word.slice(0,-1)+"e";
+    else if(/e$/.test(word)) pl = word.slice(0,-1)+"i";
+    if(/co$/.test(word)) pl = word.slice(0,-2)+"chi";
+    if(/go$/.test(word)) pl = word.slice(0,-2)+"ghi";
+    if(/ca$/.test(word)) pl = word.slice(0,-2)+"che";
+    if(pl) addLex(pl, {kind:"noun", gloss:en+" (plural)", note:"plural of "+full});
+  });
+  ADJ.forEach(([a,en])=>{
+    addLex(a, {kind:"adj", gloss:en, note:"an adjective — it changes ending to match the noun"});
+    if(/o$/.test(a)) ["a","i","e"].forEach(x=> addLex(a.slice(0,-1)+x, {kind:"adj", gloss:en, note:"a form of "+a}));
+    else if(/e$/.test(a)) addLex(a.slice(0,-1)+"i", {kind:"adj", gloss:en, note:"plural of "+a});
+  });
+  FUNC.forEach(([w,en,note])=>{
+    const k = norm(w).replace(/[^a-z']/g,"");
+    const ex = LEX.get(k);
+    /* skip anything the verb, noun and adjective data already covers better */
+    if(ex && ex.some(e => e.kind === "inf" ||
+        String(e.gloss).split(" ")[0].toLowerCase() === String(en).split(" ")[0].toLowerCase())) return;
+    addLex(w, {kind:"word", gloss:en, note:note||""});
+  });
+})();
+
+const CLITICS = ["glielo","gliela","melo","mela","telo","tela","celo","cela","sene","mi","ti","ci","vi","si","lo","la","li","le","ne"];
+const CLIT_EN = {glielo:"it, to him/her/you", gliela:"it, to him/her/you", melo:"it, to me", mela:"it, to me",
+  telo:"it, to you", tela:"it, to you", celo:"it, to us", cela:"it, to us", sene:"of it",
+  mi:"me", ti:"you", ci:"us / there", vi:"you", si:"oneself", lo:"it / him", la:"it / her",
+  li:"them", le:"them / to you", ne:"of it / of them"};
+const PART_IRR = {stato:"essere",stati:"essere",stata:"essere",state:"essere",fatto:"fare",detto:"dire",
+  preso:"prendere",letto:"leggere",perso:"perdere",persa:"perdere",visto:"vedere",aperto:"aprire",
+  chiuso:"chiudere",scelto:"scegliere",bevuto:"bere",piaciuto:"piacere",piaciuta:"piacere",
+  conosciuto:"conoscere",venuto:"venire",rimasto:"rimanere",messo:"mettere",scritto:"scrivere",chiesto:"chiedere"};
+
+function lookup(raw){
+  const w = norm(raw).replace(/[^a-z']/g,"");
+  if(!w) return null;
+  if(LEX.has(w)) return {word:raw, entries:LEX.get(w)};
+  /* attached pronouns: mostrarmelo, spedirlo, andarci */
+  for(const c of CLITICS.slice().sort((a,b)=>b.length-a.length)){
+    if(w.length > c.length+2 && w.endsWith(c)){
+      const base = w.slice(0, -c.length);
+      for(const cand of [base, base+"e"]){
+        if(LEX.has(cand)) return {word:raw, entries:LEX.get(cand),
+          extra:"With <b>"+esc(c)+"</b> stuck on the end — "+esc(CLIT_EN[c]||c)+"."};
+      }
+    }
+  }
+  /* past participles */
+  if(PART_IRR[w] && LEX.has(PART_IRR[w]))
+    return {word:raw, entries:LEX.get(PART_IRR[w]), extra:"This is the past participle — used for the past tense."};
+  const pm = w.match(/^(.*)(at[oaie]|it[oaie]|ut[oaie])$/);
+  if(pm){
+    for(const inf of [pm[1]+"are", pm[1]+"ire", pm[1]+"ere"]){
+      if(LEX.has(inf)) return {word:raw, entries:LEX.get(inf), extra:"Past participle of <b>"+esc(inf)+"</b> — used for the past tense."};
+    }
+  }
+  const gm = w.match(/^(.*)(ando|endo)$/);
+  if(gm){
+    for(const inf of [gm[1]+"are", gm[1]+"ere", gm[1]+"ire"]){
+      if(LEX.has(inf)) return {word:raw, entries:LEX.get(inf), extra:"The <b>-ing</b> form of <b>"+esc(inf)+"</b>. Sto… = I'm doing it right now."};
+    }
+  }
+  /* plural / gender guesses */
+  const guesses = [];
+  if(/i$/.test(w)) guesses.push(w.slice(0,-1)+"o", w.slice(0,-1)+"e");
+  if(/e$/.test(w)) guesses.push(w.slice(0,-1)+"a", w.slice(0,-1)+"o");
+  if(/a$/.test(w)) guesses.push(w.slice(0,-1)+"o");
+  if(/chi$/.test(w)) guesses.push(w.slice(0,-3)+"co");
+  if(/ghi$/.test(w)) guesses.push(w.slice(0,-3)+"go");
+  if(/che$/.test(w)) guesses.push(w.slice(0,-3)+"ca");
+  for(const g of guesses) if(LEX.has(g))
+    return {word:raw, entries:LEX.get(g), extra:"A different ending of <b>"+esc(g)+"</b> — Italian words change ending to match number and gender."};
+  return null;
+}
+
+/* wrap Italian text so each word can be tapped */
+function gloss(text){
+  return String(text).replace(/([A-Za-zÀ-ÿ]+['’])|([A-Za-zÀ-ÿ]+)|([^A-Za-zÀ-ÿ]+)/g, (m,a,b,c)=>{
+    if(c) return esc(c);
+    const w = a||b;
+    return '<span class="w" data-w="'+esc(w)+'">'+esc(w)+'</span>';
+  });
+}
+
+/* ---------- the word sheet ---------- */
+function studyKey(w){ return norm(w).replace(/[^a-z']/g,""); }
+function inStudy(w){ return !!(S.list && S.list[studyKey(w)]); }
+function openWord(raw){
+  const res = lookup(raw);
+  const k = studyKey(raw);
+  let body = "";
+  if(!res){
+    body = `<p style="margin:0 0 10px">No entry for this one yet. Add it to your word list and look it up when you have a minute.</p>`;
+  } else {
+    const seen = new Set();
+    const ents = res.entries.filter(e=>{
+      if(e.kind!=="form" && e.kind!=="inf") return true;
+      const k = e.v.i + ":" + e.kind;
+      if(seen.has(k)) return false;
+      seen.add(k); return true;
+    });
+    body = ents.map(e=>entryHTML(e, raw)).join("<hr style='border:0;border-top:1px solid var(--line);margin:14px 0'>");
+    if(res.extra) body += `<div class="note" style="margin-top:12px">${res.extra}</div>`;
+  }
+  const sheet = document.createElement("div");
+  sheet.className = "sheetbg";
+  sheet.innerHTML = `
+    <div class="sheet" role="dialog" aria-label="Word meaning">
+      <div class="row" style="align-items:center;margin-bottom:8px">
+        <button class="speak" data-say="${esc(raw)}">▶</button>
+        <div class="grow" style="font-family:var(--serif);font-size:27px;font-weight:700">${esc(raw)}</div>
+        <button class="star" id="addWord" aria-pressed="${inStudy(raw)}" title="Add to word list"
+          style="font-size:22px">${inStudy(raw) ? "★" : "☆"}</button>
+      </div>
+      ${body}
+      <button class="btn wide" id="closeSheet" style="margin-top:14px">Close</button>
+    </div>`;
+  document.body.appendChild(sheet);
+  const close = ()=> sheet.remove();
+  sheet.onclick = e => { if(e.target === sheet) close(); };
+  sheet.querySelector("#closeSheet").onclick = close;
+  sheet.querySelector("#addWord").onclick = (e)=>{
+    S.list = S.list || {};
+    if(S.list[k]){ delete S.list[k]; toast("Removed from your word list"); }
+    else {
+      const g = res ? res.entries.map(x=>x.gloss).join(" / ") : "";
+      S.list[k] = {w:raw, g, d:today()};
+      toast("Added to your word list");
+    }
+    save();
+    const on = inStudy(raw);
+    e.currentTarget.setAttribute("aria-pressed", String(on));
+    e.currentTarget.textContent = on ? "★" : "☆";
+  };
+}
+function entryHTML(e, raw){
+  if(e.kind === "form" || e.kind === "inf"){
+    const v = e.v;
+    const hit = v.f.map((f,i)=> norm(f)===norm(raw) ? i : -1).filter(i=>i>=0);
+    const head = e.kind==="inf"
+      ? `<b>${esc(v.i)}</b> = ${esc(v.e)} — this is the infinitive, the dictionary form.`
+      : `<b>${esc(v.f[e.p])}</b> = ${esc(PRON[e.p])} form of <b>${esc(v.i)}</b> (${esc(v.e)})`;
+    return `
+      <div style="font-size:15.5px">${head}</div>
+      <div style="margin:6px 0"><span class="pill ${v.irr?"red":"green"}">${famLabel(v)}</span></div>
+      <table class="conj">${PRON.map((p,i)=>`
+        <tr${hit.includes(i)?' style="background:#F7ECD2"':''}>
+          <td>${p}</td><td>${hilite(v,i)}</td>
+          <td style="color:var(--muted);font-weight:400">${esc(engPerson(i, v.e))}</td>
+        </tr>`).join("")}</table>
+      ${v.n?`<p class="small" style="margin:6px 0 0">${esc(v.n)}</p>`:""}
+      ${hit.length>1?`<p class="small" style="margin:6px 0 0">Careful: this same form is used for ${hit.map(i=>PRON[i]).join(" and ")}. The rest of the sentence tells you which.</p>`:""}`;
+  }
+  const label = {noun:"noun", adj:"adjective", word:""}[e.kind] || "";
+  return `<div style="font-size:15.5px"><b>${esc(raw)}</b> = ${esc(e.gloss)}</div>
+    ${e.note?`<p class="small" style="margin:5px 0 0">${esc(e.note)}</p>`:""}
+    ${label?`<div style="margin-top:6px"><span class="pill">${label}</span></div>`:""}`;
+}
+function engPerson(i, inf){
+  let base = String(inf).replace(/^to /,"").split(" / ")[0].split(" (")[0].trim();
+  const words = base.split(" ");
+  const first = words[0], rest = words.slice(1).join(" ");
+  const tail = rest ? " " + rest : "";
+  if(first === "be")   return ["I am","you are","he / she is","we are","you are","they are"][i] + tail;
+  if(first === "have") return ["I have","you have","he / she has","we have","you have","they have"][i] + tail;
+  if(["can","must","may","should","will"].includes(first)) return ["I","you","he / she","we","you","they"][i] + " " + base;
+  const third = /([sxz]|ch|sh)$/.test(first) ? first+"es"
+              : /[^aeiou]y$/.test(first) ? first.slice(0,-1)+"ies"
+              : first+"s";
+  return ["I "+base, "you "+base, "he / she "+third+tail, "we "+base, "you "+base, "they "+base][i];
+}
+
+document.addEventListener("click", e=>{
+  const w = e.target.closest(".w");
+  if(w){ e.stopPropagation(); openWord(w.getAttribute("data-w")); }
+});
+
+/* ============================================================
+   VIEW: Saved — word list and notes
+   ============================================================ */
+function renderSaved(){
+  S.list = S.list || {}; S.notes = S.notes || [];
+  const words = Object.entries(S.list).sort((a,b)=> a[1].w.localeCompare(b[1].w));
+  const notes = S.notes.slice().sort((a,b)=> b.id - a.id);
+  view.innerHTML = `
+    <h1>Saved</h1>
+    <p class="lede">Words you tapped and kept, and anything you wrote down while using the app. Both live on this device.</p>
+
+    <h2>Word list <span class="count">${words.length}</span></h2>
+    ${words.length ? `
+      <div class="card">${words.map(([k,v])=>`
+        <div class="phrase">
+          <div class="row">
+            <button class="speak" data-say="${esc(v.w)}">▶</button>
+            <div class="grow"><div class="it"><span class="w" data-w="${esc(v.w)}">${esc(v.w)}</span></div>
+              <div class="en">${esc(v.g||"tap the word for the meaning")}</div></div>
+            <button class="star" aria-pressed="true" data-drop="${esc(k)}" title="Remove">★</button>
+          </div>
+        </div>`).join("")}</div>
+      <button class="btn wide" id="drillWords" style="margin-top:8px">Practise these words</button>
+      <button class="btn ghost wide" id="clearWords" style="margin-top:8px">Empty the word list</button>`
+    : `<div class="card"><p style="margin:0">Empty so far. Tap any Italian word anywhere in the app, then tap the star in the pop-up to keep it here.</p></div>`}
+
+    <h2>Notes <span class="count">${notes.length}</span></h2>
+    <div class="card">
+      <textarea id="newNote" class="notebox" rows="3" placeholder="Something a waiter said, a word you keep forgetting, a place someone recommended…"></textarea>
+      <button class="btn wide" id="saveNote" style="margin-top:8px">Save note</button>
+    </div>
+    ${notes.map(n=>`
+      <div class="card tight" data-note="${n.id}">
+        <div class="row" style="align-items:baseline">
+          <div class="small grow">${esc(n.d)}</div>
+          <button class="btn quiet" data-edit="${n.id}" style="padding:6px 10px;font-size:13px">Edit</button>
+          <button class="btn quiet" data-del="${n.id}" style="padding:6px 10px;font-size:13px;margin-left:6px">Delete</button>
+        </div>
+        <div class="notetext">${esc(n.t).replace(/\n/g,"<br>")}</div>
+      </div>`).join("")}
+    ${notes.length ? `
+      <div class="row" style="gap:8px;margin-top:10px">
+        <button class="btn ghost grow" id="copyNotes">Copy all notes</button>
+        <button class="btn ghost grow" id="dlNotes">Download</button>
+      </div>
+      <p class="small" style="margin-top:8px">Notes are kept in this browser only. Copy or download them now and then so you don't lose them.</p>` : ""}
+  `;
+  view.querySelectorAll("[data-drop]").forEach(b=> b.onclick = ()=>{
+    delete S.list[b.getAttribute("data-drop")]; save(); renderSaved();
+  });
+  if($("#drillWords")) $("#drillWords").onclick = ()=>{
+    if(Object.keys(S.list).length < 3) return toast("Save at least three words first");
+    go("drills"); startDrill("flash","study");
+  };
+  if($("#clearWords")) $("#clearWords").onclick = ()=>{
+    if(confirm("Remove every word from the list?")){ S.list = {}; save(); renderSaved(); }
+  };
+  const box = $("#newNote");
+  if(S.draft) box.value = S.draft;
+  box.oninput = ()=>{ S.draft = box.value; save(); };
+  $("#saveNote").onclick = ()=>{
+    const t = box.value.trim();
+    if(!t) return toast("Nothing to save yet");
+    S.notes.push({id:Date.now(), t, d:new Date().toLocaleDateString()});
+    S.draft = ""; save(); renderSaved(); toast("Note saved");
+  };
+  view.querySelectorAll("[data-del]").forEach(b=> b.onclick = ()=>{
+    if(!confirm("Delete this note?")) return;
+    S.notes = S.notes.filter(n=> n.id !== +b.getAttribute("data-del")); save(); renderSaved();
+  });
+  view.querySelectorAll("[data-edit]").forEach(b=> b.onclick = ()=>{
+    const id = +b.getAttribute("data-edit");
+    const card = view.querySelector(`[data-note="${id}"]`);
+    const n = S.notes.find(x=>x.id===id);
+    card.querySelector(".notetext").innerHTML =
+      `<textarea class="notebox" rows="4">${esc(n.t)}</textarea>
+       <button class="btn wide" style="margin-top:8px">Save changes</button>`;
+    const ta = card.querySelector("textarea");
+    ta.focus();
+    card.querySelector("button.btn.wide").onclick = ()=>{ n.t = ta.value; save(); renderSaved(); toast("Note updated"); };
+  });
+  const asText = ()=> S.notes.slice().sort((a,b)=>a.id-b.id).map(n=>n.d+"\n"+n.t).join("\n\n———\n\n");
+  if($("#copyNotes")) $("#copyNotes").onclick = async ()=>{
+    try{ await navigator.clipboard.writeText(asText()); toast("Copied"); }
+    catch(e){ toast("Select and copy by hand — this browser blocked it"); }
+  };
+  if($("#dlNotes")) $("#dlNotes").onclick = ()=>{
+    try{
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([asText()], {type:"text/plain"}));
+      a.download = "andiamo-notes.txt"; a.click(); URL.revokeObjectURL(a.href);
+    }catch(e){ toast("Download blocked here — use Copy all notes"); }
   };
 }
 

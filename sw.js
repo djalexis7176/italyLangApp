@@ -1,5 +1,5 @@
 /* Andiamo offline cache — lets the app work on a plane or with no roaming data. */
-const V = "andiamo-v1";
+const V = "andiamo-v2";
 const SHELL = [
   "./", "./index.html", "./manifest.webmanifest",
   "./favicon.png", "./favicon.ico", "./apple-touch-icon.png",

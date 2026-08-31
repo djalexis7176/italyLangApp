@@ -47,6 +47,16 @@ The **Voice** button in the top bar cycles through the Italian voices installed 
 - **iPhone:** Settings → Accessibility → Spoken Content → Voices → Italian.
 - **Android:** Settings → System → Languages & input → Text-to-speech → install the Italian voice.
 
+## Tapping a word
+
+Every Italian word in the app is underlined and tappable — in phrase lists, flashcards, quiz feedback, gap-fills and role-play conversations. Tap one and a panel slides up with the meaning. If it's a verb, you also get the full present-tense table with the form you tapped highlighted, so `sono` shows: *the io form of essere (to be), irregular* — and the whole table underneath. Words that change ending (plurals, feminine forms, past participles like `visitato`) are traced back to the base word automatically.
+
+Tap the star in that panel and the word goes to your word list under **Saved**, where you can practise the collection as flashcards.
+
+## Notes
+
+**Saved → Notes** is a notepad: type, save, edit, delete. Notes stay in the browser on that device, so use **Copy all notes** or **Download** now and then to get them somewhere permanent.
+
 ## What's in it
 
 - 300 phrases across 18 travel situations, with pronunciation and audio
@@ -56,6 +66,7 @@ The **Voice** button in the top bar cycles through the Italian voices installed 
 - 10 full role-play conversations
 - 19 confusable word pairs — sapere/conoscere, piace/piacciono, vorrei/voglio and the rest
 - 10 drill types and a 14-day plan
+- A built-in dictionary covering every Italian word the app shows you, plus a word list and notepad you fill as you go
 
 **Plan → Clear all progress** wipes everything on that device.
 
