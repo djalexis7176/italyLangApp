@@ -244,6 +244,9 @@ ol.plan li b{display:block;font-size:15px}
 .notebox:focus{outline:2px solid var(--blu);outline-offset:1px}
 .notetext{white-space:pre-wrap;margin-top:6px;font-size:15px}
 .hint{font-size:12.5px;color:var(--muted);margin:2px 0 10px}
+.azrow{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 12px}
+.az{border:1px solid var(--line);background:#fff;border-radius:8px;min-width:28px;padding:5px 0;
+  font-size:12.5px;font-weight:700;color:var(--blu)}
 @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
 @media (max-width:400px){
   header.top .mark{font-size:19px}
@@ -273,7 +276,7 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2.5px sol
 <nav class="tabs" id="tabs">
   <button data-tab="home"><span class="g">A</span>Today</button>
   <button data-tab="phrases"><span class="g">F</span>Phrases</button>
-  <button data-tab="verbs"><span class="g">V</span>Verbs</button>
+  <button data-tab="words"><span class="g">V</span>Words</button>
   <button data-tab="drills"><span class="g">E</span>Practice</button>
   <button data-tab="plan"><span class="g">P</span>Plan</button>
   <button data-tab="saved"><span class="g">S</span>Saved</button>
@@ -1476,7 +1479,7 @@ function studyOrder(items, n){
 
 /* --- router --- */
 let TAB = "home";
-const TABS = {home:renderHome, phrases:renderPhrases, verbs:renderVerbs, drills:renderDrills, plan:renderPlan, saved:renderSaved};
+const TABS = {home:renderHome, phrases:renderPhrases, words:renderDict, drills:renderDrills, plan:renderPlan, saved:renderSaved};
 function go(tab){
   TAB = tab;
   document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-current", String(b.dataset.tab===tab)));
@@ -1544,7 +1547,7 @@ function renderHome(){
   $("#nextDay").onclick = () => { S.day = Math.min(PLAN.length, S.day+1); addXp(3); save(); renderHome(); toast("Nice. On to " + PLAN[S.day-1].d); };
   view.querySelectorAll("[data-drill]").forEach(b=> b.onclick = ()=>{ go("drills"); startDrill(b.dataset.drill,"all"); });
   view.querySelectorAll("[data-goCat]").forEach(b=> b.onclick = ()=>{ go("phrases"); openCat(b.getAttribute("data-goCat")); });
-  view.querySelectorAll("[data-goVerb]").forEach(b=> b.onclick = ()=>{ go("verbs"); openVerb(b.getAttribute("data-goVerb")); });
+  view.querySelectorAll("[data-goVerb]").forEach(b=> b.onclick = ()=> openVerb(b.getAttribute("data-goVerb")));
 }
 
 /* ============================================================
@@ -1613,52 +1616,14 @@ function openCat(id){
   if(d){ d.open = true; scrollSafe(d); }
 }
 
-/* ============================================================
-   VIEW: Verbs
-   ============================================================ */
-let verbFilter = "all";
+/* ---------- verb helpers, used by the dictionary and the word sheet ---------- */
 function famLabel(v){ return v.irr ? "irregular" : (v.fam==="isc" ? "-ire (-isc-)" : "-"+v.fam); }
-function renderVerbs(){
-  const list = VERBS.filter(v => verbFilter==="all" ? true : verbFilter==="irr" ? v.irr : v.fam===verbFilter);
-  view.innerHTML = `
-    <h1>Verbs</h1>
-    <p class="lede">Chop off -are, -ere or -ire, keep the stem, add the ending that says who. That's the whole system.</p>
-    <div class="note">
-      <b>-are</b> o · i · a · iamo · ate · ano &nbsp;&nbsp; <b>-ere</b> o · i · e · iamo · ete · ono &nbsp;&nbsp; <b>-ire</b> o · i · e · iamo · ite · ono<br>
-      Some -ire verbs add <b>-isc-</b>: capisco, capisci, capisce, capiamo, capite, capiscono.
-    </div>
-    <div class="chips">
-      ${[["all","All"],["are","-are"],["ere","-ere"],["ire","-ire"],["isc","-isc-"],["irr","Irregular"]]
-        .map(([k,n])=>`<button class="chip" data-fam="${k}" aria-pressed="${verbFilter===k}">${n}</button>`).join("")}
-    </div>
-    <button class="btn wide" id="drillVerbs" style="margin:4px 0 12px">Practise conjugations</button>
-    ${list.map(v=>`
-      <details class="acc" data-verb="${v.i}">
-        <summary>${v.i} <span class="count">${v.e}</span></summary>
-        <div class="body">
-          <div class="row" style="align-items:center;margin-bottom:6px">
-            <span class="pill ${v.irr?"red":"green"}">${famLabel(v)}</span>
-            <button class="speak" style="margin-left:auto" data-say="${esc(v.f.join(", "))}">▶</button>
-          </div>
-          <table class="conj">${PRON.map((p,i)=>`<tr><td>${p}</td><td>${hilite(v,i)}</td></tr>`).join("")}</table>
-          <p class="small" style="margin:8px 0 0">${esc(v.n)}</p>
-        </div>
-      </details>`).join("")}
-  `;
-  view.querySelectorAll("[data-fam]").forEach(b=> b.onclick = ()=>{ verbFilter=b.dataset.fam; renderVerbs(); });
-  $("#drillVerbs").onclick = ()=>{ go("drills"); startDrill("conj","all"); };
-}
 function hilite(v,i){
   const f = v.f[i];
   if(v.irr) return esc(f);
   const stem = v.i.slice(0,-3);
   if(f.startsWith(stem)) return esc(stem) + '<span class="ending">' + esc(f.slice(stem.length)) + '</span>';
   return esc(f);
-}
-function openVerb(inf){
-  verbFilter = "all"; renderVerbs();
-  const d = view.querySelector(`details[data-verb="${inf}"]`);
-  if(d){ d.open = true; scrollSafe(d); }
 }
 
 /* ============================================================
@@ -1689,7 +1654,7 @@ function renderPlan(){
     <button class="btn ghost wide" id="reset">Clear all progress</button>
   `;
   view.querySelectorAll("[data-goCat]").forEach(b=> b.onclick = ()=>{ go("phrases"); openCat(b.getAttribute("data-goCat")); });
-  view.querySelectorAll("[data-goVerb]").forEach(b=> b.onclick = ()=>{ go("verbs"); openVerb(b.getAttribute("data-goVerb")); });
+  view.querySelectorAll("[data-goVerb]").forEach(b=> b.onclick = ()=> openVerb(b.getAttribute("data-goVerb")));
   $("#reset").onclick = ()=>{
     if(confirm("Clear streak, saved phrases and card progress?")){ S = Object.assign({}, DEF); save(); paintHeader(); renderPlan(); toast("Cleared"); }
   };
@@ -2294,6 +2259,15 @@ function openWord(raw){
     body = ents.map(e=>entryHTML(e, raw)).join("<hr style='border:0;border-top:1px solid var(--line);margin:14px 0'>");
     if(res.extra) body += `<div class="note" style="margin-top:12px">${res.extra}</div>`;
   }
+  exprFor(raw).forEach(e => body += exprHTML(e));
+  const vf = (res && res.entries.find(e=>e.v)) ? res.entries.find(e=>e.v).v : null;
+  const ex = exampleFor(raw, vf ? vf.f.concat([vf.i]) : null);
+  if(ex) body += `<div style="margin-top:14px">
+      <div class="small">In the app</div>
+      <div class="row" style="margin-top:4px">
+        <button class="speak" data-say="${esc(ex[0])}">▶</button>
+        <div class="grow"><div class="it">${gloss(ex[0])}</div><div class="en">${esc(ex[1])}</div></div>
+      </div></div>`;
   const sheet = document.createElement("div");
   sheet.className = "sheetbg";
   sheet.innerHTML = `
@@ -2461,6 +2435,180 @@ function renderSaved(){
     }catch(e){ toast("Download blocked here — use Copy all notes"); }
   };
 }
+
+
+/* ============================================================
+   DATA: set expressions that need a person in front of them
+   ============================================================ */
+const EXPR = [
+{keys:["fame"], it:"avere fame", en:"to be hungry", v:"avere", tail:" fame",
+ enf:["I'm hungry","you're hungry","he / she is hungry","we're hungry","you're hungry","they're hungry"],
+ n:"Italian HAS hunger. Never sono fame."},
+{keys:["sete"], it:"avere sete", en:"to be thirsty", v:"avere", tail:" sete",
+ enf:["I'm thirsty","you're thirsty","he / she is thirsty","we're thirsty","you're thirsty","they're thirsty"]},
+{keys:["freddo"], it:"avere freddo", en:"to be cold (a person)", v:"avere", tail:" freddo",
+ enf:["I'm cold","you're cold","he / she is cold","we're cold","you're cold","they're cold"],
+ n:"For the weather it's fa freddo instead."},
+{keys:["caldo"], it:"avere caldo", en:"to be hot (a person)", v:"avere", tail:" caldo",
+ enf:["I'm hot","you're hot","he / she is hot","we're hot","you're hot","they're hot"],
+ n:"For the weather it's fa caldo instead."},
+{keys:["sonno"], it:"avere sonno", en:"to be sleepy", v:"avere", tail:" sonno",
+ enf:["I'm sleepy","you're sleepy","he / she is sleepy","we're sleepy","you're sleepy","they're sleepy"]},
+{keys:["paura"], it:"avere paura", en:"to be afraid", v:"avere", tail:" paura",
+ enf:["I'm afraid","you're afraid","he / she is afraid","we're afraid","you're afraid","they're afraid"]},
+{keys:["fretta"], it:"avere fretta", en:"to be in a hurry", v:"avere", tail:" fretta",
+ enf:["I'm in a hurry","you're in a hurry","he / she is in a hurry","we're in a hurry","you're in a hurry","they're in a hurry"]},
+{keys:["ragione"], it:"avere ragione", en:"to be right", v:"avere", tail:" ragione",
+ enf:["I'm right","you're right","he / she is right","we're right","you're right","they're right"]},
+{keys:["bisogno"], it:"avere bisogno di", en:"to need", v:"avere", tail:" bisogno di",
+ enf:["I need","you need","he / she needs","we need","you need","they need"],
+ n:"Ho bisogno di un medico = I need a doctor."},
+{keys:["anni","anno"], it:"avere … anni", en:"to be … years old", v:"avere", tail:" cinquant'anni",
+ enf:["I'm fifty","you're fifty","he / she is fifty","we're fifty","you're fifty","they're fifty"],
+ n:"Age uses avere: Quanti anni ha? = how old are you?"},
+{keys:["bene","stare"], it:"stare bene", en:"to be well", v:"stare", tail:" bene",
+ enf:["I'm well","you're well","he / she is well","we're well","you're well","they're well"],
+ n:"Come sta? — Sto bene, grazie."},
+{keys:["piace","piacciono","piacere"], it:"mi piace / mi piacciono", en:"to like",
+ forms:[["mi piace","I like it"],["ti piace","you like it"],["gli piace / le piace","he likes it / she likes it"],
+        ["ci piace","we like it"],["vi piace","you like it"],["a loro piace","they like it"]],
+ n:"Swap piace for piacciono when the thing liked is plural: mi piacciono i formaggi."},
+{keys:["chiamo","chiamarsi","chiamare"], it:"chiamarsi", en:"to be called",
+ forms:[["mi chiamo","my name is"],["ti chiami","your name is"],["si chiama","his / her name is"],
+        ["ci chiamiamo","our names are"],["vi chiamate","your names are"],["si chiamano","their names are"]],
+ n:"Literally 'I call myself'. Mi chiamo Marco."},
+{keys:["fermiamo","fermarsi"], it:"fermarsi", en:"to stop / to stay",
+ forms:[["mi fermo","I'm staying"],["ti fermi","you're staying"],["si ferma","he / she is staying"],
+        ["ci fermiamo","we're staying"],["vi fermate","you're staying"],["si fermano","they're staying"]],
+ n:"Ci fermiamo tre notti = we're staying three nights."},
+{keys:["scusi","scusa"], it:"scusare", en:"excuse me",
+ forms:[["scusi","excuse me (formal)"],["scusa","sorry (informal)"],["mi scusi","I'm sorry (formal)"],
+        ["scusate","excuse me (to a group)"],["mi dispiace","I'm sorry (regret)"],["permesso","may I come through"]],
+ n:"Six ways to get someone's attention or apologise."}
+];
+function exprFor(word){
+  const k = norm(word).replace(/[^a-z']/g,"");
+  return EXPR.filter(e => e.keys.some(x => norm(x) === k));
+}
+function exprForms(e){
+  if(e.forms) return e.forms;
+  const v = ALLVERBS.find(x => x.i === e.v);
+  return v.f.map((f,i)=> [f + e.tail, e.enf[i]]);
+}
+function exprHTML(e){
+  return `<div class="note gold" style="margin-top:14px">
+    <div style="font-weight:700;margin-bottom:2px">${esc(e.it)} — ${esc(e.en)}</div>
+    <table class="conj">${exprForms(e).map(([it,en])=>`
+      <tr><td style="width:46%;color:var(--ink);font-weight:600">${gloss(it)}</td>
+      <td style="font-weight:400;color:var(--muted)">${esc(en)}</td></tr>`).join("")}</table>
+    ${e.n?`<p class="small" style="margin:6px 0 0">${esc(e.n)}</p>`:""}
+  </div>`;
+}
+
+/* ---------- an example sentence from the app, for any word ---------- */
+const EXAMPLES = (function(){
+  const idx = new Map();
+  const add = (it, en) => {
+    it.split(/([A-Za-zÀ-ÿ]+['’])|([A-Za-zÀ-ÿ]+)/).filter(x=>x && /[A-Za-zÀ-ÿ]/.test(x)).forEach(tok=>{
+      const k = norm(tok).replace(/[^a-z']/g,"");
+      if(k && !idx.has(k)) idx.set(k, [it, en]);
+    });
+  };
+  ALLPHRASES.forEach(p => add(p.it, p.en));
+  QA.forEach(q => { add(q[0], q[1]); add(q[2], q[3]); });
+  DIALOGHI.forEach(d => d.l.forEach(l => add(l[1], l[2])));
+  return idx;
+})();
+function exampleFor(word, forms){
+  const tries = [word].concat(forms||[]);
+  for(const t of tries){
+    const k = norm(t).replace(/[^a-z']/g,"");
+    if(EXAMPLES.has(k)) return EXAMPLES.get(k);
+  }
+  return null;
+}
+
+/* ============================================================
+   VIEW: Words — the dictionary, both directions
+   ============================================================ */
+let dictDir = "it", dictType = "all", dictQ = "";
+function dictEntries(){
+  const out = [];
+  ALLVERBS.forEach(v => out.push({it:v.i, en:v.e, type:"verb", sub:famLabel(v), v}));
+  NOUNS.forEach(([full,en,g]) => out.push({it:full, en, type:"noun", sub:(g==="m"?"masculine":"feminine"), look:full.replace(/^(il|lo|la|i|le|gli|l')\s?/,"")}));
+  ADJ.forEach(([a,en]) => out.push({it:a, en, type:"adj", sub:"adjective"}));
+  const seen = new Set(out.map(o => norm(o.look||o.it)));
+  FUNC.forEach(([w,en,note]) => {
+    const k = norm(w);
+    if(seen.has(k) || /English word in the prompt/.test(en)) return;
+    seen.add(k);
+    out.push({it:w, en, type:"word", sub:note||""});
+  });
+  return out;
+}
+const DICT = null;
+function renderDict(){
+  const all = (renderDict._cache = renderDict._cache || dictEntries());
+  const t = norm(dictQ);
+  let list = all.filter(e => dictType === "all" || e.type === dictType);
+  if(t) list = list.filter(e => norm(e.it).includes(t) || norm(e.en).includes(t));
+  const keyOf = e => dictDir === "it" ? norm(e.look || e.it) : norm(e.en.replace(/^(to|a|the) /,""));
+  list = list.slice().sort((a,b)=> keyOf(a).localeCompare(keyOf(b)));
+  const groups = new Map();
+  list.forEach(e => {
+    const L = (keyOf(e)[0] || "#").toUpperCase();
+    if(!groups.has(L)) groups.set(L, []);
+    groups.get(L).push(e);
+  });
+  view.innerHTML = `
+    <h1>Words</h1>
+    <p class="lede">Everything the app uses, in one list. Tap an entry for the meaning, the verb table, and a sentence it appears in.</p>
+    <div class="row" style="gap:8px;margin:6px 0 4px">
+      <button class="btn ${dictDir==="it"?"":"ghost"} grow" data-dir="it">Italian → English</button>
+      <button class="btn ${dictDir==="en"?"":"ghost"} grow" data-dir="en">English → Italian</button>
+    </div>
+    <div class="searchwrap"><input id="dq" type="search" placeholder="Search either language…" value="${esc(dictQ)}"></div>
+    <div class="chips">
+      ${[["all","All"],["verb","Verbs"],["noun","Nouns"],["adj","Adjectives"],["word","Everything else"]]
+        .map(([k,n])=>`<button class="chip" data-type="${k}" aria-pressed="${dictType===k}">${n}</button>`).join("")}
+    </div>
+    ${dictType==="verb" ? `<div class="note">
+      <b>-are</b> o · i · a · iamo · ate · ano &nbsp; <b>-ere</b> o · i · e · iamo · ete · ono &nbsp; <b>-ire</b> o · i · e · iamo · ite · ono<br>
+      Some -ire verbs add <b>-isc-</b>: capisco, capisci, capisce, capiamo, capite, capiscono.
+      </div>
+      <button class="btn wide" id="drillVerbs" style="margin:8px 0">Practise conjugations</button>` : ""}
+    <p class="small" style="margin:2px 0 6px">${list.length} entries</p>
+    <div class="azrow">${[...groups.keys()].map(L=>`<button class="az" data-jump="${L}">${L}</button>`).join("")}</div>
+    ${[...groups.entries()].map(([L,items])=>`
+      <h3 id="L-${L}" style="font-family:var(--serif);font-size:19px;color:var(--blu);border-bottom:1px solid var(--line);padding-bottom:4px;scroll-margin-top:60px">${L}</h3>
+      <div class="card" style="padding:2px 12px">
+        ${items.map(e=>`
+          <div class="phrase">
+            <div class="row" style="align-items:center">
+              <button class="speak" data-say="${esc(e.it)}">▶</button>
+              <button class="grow" data-open="${esc(e.look||e.it)}" style="background:none;border:0;text-align:left;padding:0">
+                <div class="it">${esc(dictDir==="it" ? e.it : e.en)}</div>
+                <div class="en">${esc(dictDir==="it" ? e.en : e.it)}</div>
+              </button>
+              <span class="pill ${e.type==="verb"?"gold":""}" style="font-size:10.5px">${esc(e.type==="verb"?e.sub:e.type==="noun"?e.sub[0]:e.type==="adj"?"adj":"")}</span>
+            </div>
+          </div>`).join("")}
+      </div>`).join("") || `<div class="card"><p style="margin:0">Nothing matched “${esc(dictQ)}”.</p></div>`}
+  `;
+  view.querySelectorAll("[data-jump]").forEach(b=> b.onclick = ()=> scrollSafe(view.querySelector("#L-"+b.dataset.jump)));
+  view.querySelectorAll("[data-dir]").forEach(b=> b.onclick = ()=>{ dictDir = b.dataset.dir; renderDict(); });
+  view.querySelectorAll("[data-type]").forEach(b=> b.onclick = ()=>{ dictType = b.dataset.type; renderDict(); });
+  view.querySelectorAll("[data-open]").forEach(b=> b.onclick = ()=> openWord(b.getAttribute("data-open")));
+  if($("#drillVerbs")) $("#drillVerbs").onclick = ()=>{ go("drills"); startDrill("conj","all"); };
+  const q = $("#dq");
+  q.oninput = ()=>{
+    dictQ = q.value;
+    const pos = q.selectionStart;
+    renderDict();
+    const nq = $("#dq"); nq.focus(); nq.setSelectionRange(pos,pos);
+  };
+}
+function openVerb(inf){ go("words"); dictType = "verb"; dictQ = inf; renderDict(); openWord(inf); }
 
 /* ---------- offline: cache the app so it works without data ---------- */
 if("serviceWorker" in navigator && location.protocol.startsWith("http")){

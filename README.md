@@ -47,6 +47,12 @@ The **Voice** button in the top bar cycles through the Italian voices installed 
 - **iPhone:** Settings → Accessibility → Spoken Content → Voices → Italian.
 - **Android:** Settings → System → Languages & input → Text-to-speech → install the Italian voice.
 
+## The Words page
+
+A full dictionary of everything the app uses — verbs, nouns, adjectives and the small words that hold sentences together. One button flips it between **Italian → English** and **English → Italian**, there's a search box that looks in both languages, filters for each word type, and an A–Z strip to jump down the list.
+
+Tap any entry and you get the same panel as tapping a word anywhere else: the meaning, the full verb table if it's a verb, and a real sentence from the app showing it in use. Expressions that need a person in front of them are conjugated out in full — look up **hunger** and you get *avere fame*, then ho fame / hai fame / ha fame / abbiamo fame / avete fame / hanno fame with the English beside each.
+
 ## Tapping a word
 
 Every Italian word in the app is underlined and tappable — in phrase lists, flashcards, quiz feedback, gap-fills and role-play conversations. Tap one and a panel slides up with the meaning. If it's a verb, you also get the full present-tense table with the form you tapped highlighted, so `sono` shows: *the io form of essere (to be), irregular* — and the whole table underneath. Words that change ending (plurals, feminine forms, past participles like `visitato`) are traced back to the base word automatically.
@@ -60,13 +66,13 @@ Tap the star in that panel and the word goes to your word list under **Saved**, 
 ## What's in it
 
 - 300 phrases across 18 travel situations, with pronunciation and audio
-- 44 verbs conjugated in the present tense, stem and ending colour-coded
+- 93 verbs conjugated in the present tense, stem and ending colour-coded
 - 100 nouns with their articles, 30 adjectives
 - 52 question-and-answer pairs (they ask, you answer)
 - 10 full role-play conversations
 - 19 confusable word pairs — sapere/conoscere, piace/piacciono, vorrei/voglio and the rest
 - 10 drill types and a 14-day plan
-- A built-in dictionary covering every Italian word the app shows you, plus a word list and notepad you fill as you go
+- A two-way dictionary of 860 entries, plus a word list and notepad you fill as you go
 
 **Plan → Clear all progress** wipes everything on that device.
 
