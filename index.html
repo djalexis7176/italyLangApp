@@ -7,7 +7,17 @@
 <meta name="description" content="Andiamo — practical Italian for travellers: phrases, verb conjugation, flashcards and role-play drills for food, wine, craft beer, art, trains and directions.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Andiamo">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="favicon.png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:title" content="Andiamo — Italian for travellers">
+<meta property="og:description" content="Phrases, verbs, flashcards and role-play for food, wine, craft beer, art, trains and directions.">
+<meta property="og:image" content="social-preview.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
 <title>Andiamo — Italian for travellers</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1849,6 +1859,11 @@ function paintDialog(){
       speechSynthesis.speak(u);
     });
   };
+}
+
+/* ---------- offline: cache the app so it works without data ---------- */
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+  window.addEventListener("load", ()=> navigator.serviceWorker.register("sw.js").catch(()=>{}));
 }
 
 /* ---------- go ---------- */
