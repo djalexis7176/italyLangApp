@@ -8,7 +8,7 @@ A single-page web app: phrases, verb conjugation, flashcards, matching, and role
 
 ## Version
 
-This build is **3.0.0**. The file is named `index-v3.0.0-dictionary-wordtap-notes.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version is shown at the bottom of the Today page and on the Plan page under *This app*, along with a list of what changed in each build.
+This build is **3.1.0**. The file is named `index-v3.1.0-version-stamp.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits under the **Andiamo.** wordmark at the top of every screen — `v3.1 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
 
 ## How updating works
 
@@ -16,8 +16,8 @@ This build is **3.0.0**. The file is named `index-v3.0.0-dictionary-wordtap-note
 
 When you upload a new build, change two numbers so phones know something moved:
 
-1. In `index.html`, near the top of the script: `const BUILD = "3.0.0";` — and add a line to the `CHANGES` list describing what you did.
-2. In `sw.js`, line 5: `const BUILD = "3.0.0";`
+1. In `index.html`, near the top of the script: `const BUILD = "3.1.0";` — and add a line to the `CHANGES` list describing what you did.
+2. In `sw.js`, line 5: `const BUILD = "3.1.0";`
 
 Keep them the same. If you forget, the app still updates (HTML is network-first), but the icons and manifest may stay on the old cached copies.
 

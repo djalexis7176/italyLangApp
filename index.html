@@ -66,6 +66,12 @@ header.top{
 header.top .mark{
   font-family:var(--serif);font-weight:700;font-size:22px;letter-spacing:.01em;line-height:1;
 }
+header.top .ver{
+  display:block;margin-top:3px;background:none;border:0;padding:0;
+  font-size:11px;letter-spacing:.02em;color:#9FBED2;font-weight:500;
+}
+header.top .ver.latest{color:#A9D3A0}
+header.top .ver.new{color:var(--oro);font-weight:700}
 header.top .mark span{color:var(--oro)}
 header.top .streak{
   margin-left:auto;font-size:12.5px;letter-spacing:.02em;color:#BFD5E4;
@@ -244,12 +250,17 @@ ol.plan li b{display:block;font-size:15px}
 .notebox:focus{outline:2px solid var(--blu);outline-offset:1px}
 .notetext{white-space:pre-wrap;margin-top:6px;font-size:15px}
 .hint{font-size:12.5px;color:var(--muted);margin:2px 0 10px}
+.updbar{position:fixed;left:12px;right:12px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:70;
+  background:var(--blu-dark);color:#fff;border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:10px;
+  font-size:14px;box-shadow:0 8px 24px rgba(14,34,48,.35)}
+.updbar .btn{padding:8px 12px;font-size:14px;background:var(--oro);color:#12222c;margin-left:auto}
 .azrow{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 12px}
 .az{border:1px solid var(--line);background:#fff;border-radius:8px;min-width:28px;padding:5px 0;
   font-size:12.5px;font-weight:700;color:var(--blu)}
 @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
 @media (max-width:400px){
   header.top .mark{font-size:19px}
+  header.top .ver{font-size:10px}
   header.top .streak{font-size:11.5px;gap:6px}
   header.top .streak span:nth-child(2){display:none}
 }
@@ -263,7 +274,10 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2.5px sol
 <body>
 <div id="app">
   <header class="top">
-    <div class="mark">Andiamo<span>.</span></div>
+    <div>
+      <div class="mark">Andiamo<span>.</span></div>
+      <button class="ver" id="verBtn" title="Tap to check for a newer build">v0.0 · 0.0.00</button>
+    </div>
     <div class="streak">
       <span>Streak <b id="streakN">0</b></span>
       <span>Learned <b id="xpN">0</b></span>
@@ -1383,6 +1397,19 @@ const FUNC = [
 /* ============================================================
    ENGINE
    ============================================================ */
+const BUILD = "3.1.0";
+const BUILT = "2026-08-31";
+const VERSTAMP = (function(){
+  const [y,m,d] = BUILT.split("-");
+  return "v" + BUILD.split(".").slice(0,2).join(".") + " · " + (+m) + "." + (+d) + "." + y.slice(2);
+})();
+let UPD = {state:"unknown", at:0};
+const CHANGES = [
+  ["3.1.0","2026-08-31","Version stamp under the wordmark, showing whether this is the newest build on GitHub. Tap it to check."],
+  ["3.0.0","2026-08-31","Words tab: two-way dictionary, 860 entries, A–Z jump, set expressions like avere fame conjugated in full. Tap any Italian word anywhere for its meaning and verb table. Saved tab: word list and notepad. Verbs tab folded into Words."],
+  ["2.0.0","2026-08-31","Icons, web manifest, offline cache, add-to-home-screen support."],
+  ["1.0.0","2026-08-31","First build: 300 phrases, 44 verbs, 10 drill types, role-play, 14-day plan."]
+];
 const $ = s => document.querySelector(s);
 const view = $("#view");
 
@@ -1410,7 +1437,22 @@ function daysIn(){
   return Math.max(1, Math.min(PLAN.length, d));
 }
 function addXp(n){ S.xp += n; save(); paintHeader(); }
-function paintHeader(){ $("#streakN").textContent = S.streak; $("#xpN").textContent = S.xp; }
+function paintHeader(){
+  $("#streakN").textContent = S.streak;
+  $("#xpN").textContent = S.xp;
+  paintVersion();
+}
+function paintVersion(){
+  const b = $("#verBtn");
+  if(!b) return;
+  b.className = "ver" + (UPD.state === "latest" ? " latest" : UPD.state === "new" ? " new" : "");
+  b.textContent = VERSTAMP
+    + (UPD.state === "latest" ? " ✓ latest"
+     : UPD.state === "new"    ? " · update ready"
+     : UPD.state === "offline"? " · offline"
+     : "");
+}
+function setUpd(state){ UPD = {state, at:Date.now()}; paintVersion(); if(TAB === "plan") renderPlan(); }
 
 /* --- helpers --- */
 const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];} return a; };
@@ -1438,6 +1480,7 @@ document.addEventListener("click", e=>{
   const b = e.target.closest("[data-say]");
   if(b){ speak(b.getAttribute("data-say")); }
 });
+$("#verBtn").onclick = () => checkForUpdate(true);
 $("#voiceBtn").onclick = () => {
   loadVoices();
   const names = voices.map(v=>v.name);
@@ -1650,9 +1693,26 @@ function renderPlan(){
       </details>`).join("")}
     <h2>Skip these for now</h2>
     <div class="card"><p style="margin:0">The subjunctive, the passato remoto, and any vocabulary you wouldn't say on a normal day. They cost weeks and buy you almost nothing on a two-week trip.</p></div>
+    <h2>This app</h2>
+    <div class="card">
+      <div class="row" style="align-items:center">
+        <div class="grow"><div style="font-weight:700">Andiamo ${VERSTAMP}</div>
+        <div class="small">Build ${BUILD}, published ${BUILT}<br>${
+          UPD.state === "latest" ? "This is the newest build on GitHub." :
+          UPD.state === "new"    ? "A newer build is waiting — tap the bar at the bottom to load it." :
+          UPD.state === "offline"? "You're offline, running the cached build." :
+          "Checking GitHub for a newer build…"}</div></div>
+        <button class="btn quiet" id="checkUpd">Check for updates</button>
+      </div>
+      <details class="acc" style="margin:12px 0 0;box-shadow:none">
+        <summary>What changed</summary>
+        <div class="body">${CHANGES.map(c=>`<p style="margin:0 0 10px"><b>${c[0]}</b> <span class="small">${c[1]}</span><br>${esc(c[2])}</p>`).join("")}</div>
+      </details>
+    </div>
     <h2>Reset</h2>
     <button class="btn ghost wide" id="reset">Clear all progress</button>
   `;
+  $("#checkUpd").onclick = ()=> checkForUpdate(true);
   view.querySelectorAll("[data-goCat]").forEach(b=> b.onclick = ()=>{ go("phrases"); openCat(b.getAttribute("data-goCat")); });
   view.querySelectorAll("[data-goVerb]").forEach(b=> b.onclick = ()=> openVerb(b.getAttribute("data-goVerb")));
   $("#reset").onclick = ()=>{
@@ -2610,10 +2670,68 @@ function renderDict(){
 }
 function openVerb(inf){ go("words"); dictType = "verb"; dictQ = inf; renderDict(); openWord(inf); }
 
-/* ---------- offline: cache the app so it works without data ---------- */
-if("serviceWorker" in navigator && location.protocol.startsWith("http")){
-  window.addEventListener("load", ()=> navigator.serviceWorker.register("sw.js").catch(()=>{}));
+/* ---------- keep the app up to date, and working offline ---------- */
+let swReg = null, reloading = false;
+
+function showUpdateBar(){
+  setUpd("new");
+  if(document.getElementById("updbar")) return;
+  const bar = document.createElement("div");
+  bar.id = "updbar"; bar.className = "updbar";
+  bar.innerHTML = `<span>A newer build is ready.</span><button class="btn" id="updNow">Load it</button>`;
+  document.body.appendChild(bar);
+  bar.querySelector("#updNow").onclick = ()=>{
+    const wtg = swReg && (swReg.waiting || swReg.installing);
+    if(wtg) wtg.postMessage("SKIP_WAITING");
+    setTimeout(()=>location.reload(), 300);
+  };
 }
+
+async function checkForUpdate(loud){
+  if(!navigator.onLine){ setUpd("offline"); if(loud) toast("You're offline — running the cached build"); return; }
+  if(!swReg){
+    if(loud){ toast("Reloading the newest build…"); setTimeout(()=>location.reload(true), 600); }
+    return;
+  }
+  if(loud) toast("Checking GitHub…");
+  try{
+    await swReg.update();
+    setTimeout(()=>{
+      if(swReg.waiting || swReg.installing){
+        setUpd("new"); showUpdateBar();
+      } else {
+        setUpd("latest");
+        if(loud) toast("You're on the newest build — " + VERSTAMP);
+      }
+    }, 1200);
+  }catch(e){ setUpd("unknown"); if(loud) toast("Couldn't reach GitHub just now"); }
+}
+
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+  window.addEventListener("load", async ()=>{
+    try{
+      swReg = await navigator.serviceWorker.register("sw.js");
+      if(navigator.serviceWorker.controller){
+        swReg.addEventListener("updatefound", ()=>{
+          const nw = swReg.installing;
+          if(!nw) return;
+          nw.addEventListener("statechange", ()=>{ if(nw.state === "installed") showUpdateBar(); });
+        });
+      }
+      checkForUpdate(false);
+    }catch(e){}
+  });
+  navigator.serviceWorker.addEventListener("controllerchange", ()=>{
+    if(reloading) return;
+    reloading = true;
+    location.reload();
+  });
+  /* check again whenever you come back to the app */
+  document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) checkForUpdate(false); });
+}
+
+window.addEventListener("offline", ()=> setUpd("offline"));
+window.addEventListener("online",  ()=> checkForUpdate(false));
 
 /* ---------- go ---------- */
 touchStreak();
