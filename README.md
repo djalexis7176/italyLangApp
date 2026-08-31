@@ -6,11 +6,26 @@ A single-page web app: phrases, verb conjugation, flashcards, matching, and role
 
 ![Andiamo](social-preview.png)
 
+## Version
+
+This build is **3.0.0**. The file is named `index-v3.0.0-dictionary-wordtap-notes.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version is shown at the bottom of the Today page and on the Plan page under *This app*, along with a list of what changed in each build.
+
+## How updating works
+
+`sw.js` fetches the page from the network first, so opening the app on your phone with any signal pulls the newest build straight from GitHub. The cached copy is only used when you're offline. If a new build lands while the app is open, a bar appears at the bottom saying a newer build is ready. **Plan → Check for updates** forces the check by hand and tells you if you're already current.
+
+When you upload a new build, change two numbers so phones know something moved:
+
+1. In `index.html`, near the top of the script: `const BUILD = "3.0.0";` — and add a line to the `CHANGES` list describing what you did.
+2. In `sw.js`, line 5: `const BUILD = "3.0.0";`
+
+Keep them the same. If you forget, the app still updates (HTML is network-first), but the icons and manifest may stay on the old cached copies.
+
 ## Files — upload all of these to the repository
 
 | File | What it does |
 |---|---|
-| `index.html` | The whole app. This is the only file that has to be there. |
+| `index.html` | The whole app. Rename the versioned file to this. |
 | `manifest.webmanifest` | Tells the phone the app's name, colours and icons. |
 | `sw.js` | Caches the app so it still works with no signal. |
 | `apple-touch-icon.png` | The icon iPhone and iPad use on the home screen. |

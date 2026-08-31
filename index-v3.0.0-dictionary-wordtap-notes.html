@@ -1,0 +1,2696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#123449">
+<meta name="description" content="Andiamo — practical Italian for travellers: phrases, verb conjugation, flashcards and role-play drills for food, wine, craft beer, art, trains and directions.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Andiamo">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="favicon.png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:title" content="Andiamo — Italian for travellers">
+<meta property="og:description" content="Phrases, verbs, flashcards and role-play for food, wine, craft beer, art, trains and directions.">
+<meta property="og:image" content="social-preview.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<title>Andiamo — Italian for travellers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,700&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0E2230;
+  --blu:#1D5C82;
+  --blu-dark:#123449;
+  --blu-soft:#E4EDF3;
+  --rosso:#B03A2B;
+  --oro:#C9962F;
+  --verde:#4A6B3A;
+  --carta:#FBF8F2;
+  --tile:#FFFFFF;
+  --line:#D8D2C6;
+  --muted:#6C7A84;
+  --radius:14px;
+  --shadow:0 1px 0 rgba(14,34,48,.06), 0 6px 18px -12px rgba(14,34,48,.35);
+  --serif:"Bodoni Moda", Georgia, "Times New Roman", serif;
+  --sans:"Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--sans);
+  background:var(--carta);
+  color:var(--ink);
+  -webkit-text-size-adjust:100%;
+  line-height:1.5;
+}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--blu)}
+
+/* ---------- shell ---------- */
+#app{max-width:760px;margin:0 auto;padding:0 16px 120px;}
+header.top{
+  position:sticky;top:0;z-index:40;
+  margin:0 -16px 14px;padding:10px 16px 10px;
+  background:var(--blu-dark);
+  color:#fff;
+  display:flex;align-items:center;gap:12px;
+  box-shadow:0 1px 0 rgba(0,0,0,.15);
+}
+header.top .mark{
+  font-family:var(--serif);font-weight:700;font-size:22px;letter-spacing:.01em;line-height:1;
+}
+header.top .mark span{color:var(--oro)}
+header.top .streak{
+  margin-left:auto;font-size:12.5px;letter-spacing:.02em;color:#BFD5E4;
+  display:flex;align-items:center;gap:8px;
+}
+header.top .streak b{color:#fff;font-weight:600}
+.iconbtn{
+  background:rgba(255,255,255,.12);border:0;color:#fff;border-radius:9px;
+  padding:6px 9px;font-size:13px;
+}
+
+/* ---------- nav ---------- */
+nav.tabs{
+  position:fixed;left:0;right:0;bottom:0;z-index:50;
+  background:rgba(251,248,242,.97);
+  backdrop-filter:saturate(140%) blur(8px);
+  border-top:1px solid var(--line);
+  padding:6px 6px calc(6px + env(safe-area-inset-bottom));
+  display:flex;justify-content:center;gap:2px;
+}
+nav.tabs button{
+  flex:1 1 0;max-width:110px;background:none;border:0;padding:7px 2px 5px;
+  color:var(--muted);font-size:10.5px;font-weight:600;letter-spacing:.01em;
+  display:flex;flex-direction:column;align-items:center;gap:3px;border-radius:10px;
+}
+nav.tabs button .g{font-family:var(--serif);font-size:19px;line-height:1;font-weight:700}
+nav.tabs button[aria-current="true"]{color:var(--blu);background:var(--blu-soft)}
+
+/* ---------- type ---------- */
+h1{font-family:var(--serif);font-weight:700;font-size:30px;line-height:1.12;margin:14px 0 6px;letter-spacing:-.01em}
+h2{font-family:var(--serif);font-weight:700;font-size:21px;margin:26px 0 8px}
+h3{font-size:14px;font-weight:700;margin:18px 0 6px;letter-spacing:.01em}
+p.lede{color:var(--muted);margin:0 0 14px;max-width:60ch}
+.small{font-size:13px;color:var(--muted)}
+.it{font-weight:600}
+.ph{font-family:var(--serif);font-style:italic;color:var(--blu);font-size:14.5px}
+
+/* ---------- cards ---------- */
+.card{
+  background:var(--tile);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px;margin:10px 0;box-shadow:var(--shadow);
+}
+.card.tight{padding:11px 12px}
+.row{display:flex;gap:10px;align-items:flex-start}
+.grow{flex:1;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+.chip{
+  border:1px solid var(--line);background:#fff;border-radius:999px;
+  padding:7px 12px;font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;
+}
+.chip[aria-pressed="true"]{background:var(--blu);border-color:var(--blu);color:#fff}
+.btn{
+  background:var(--blu);color:#fff;border:0;border-radius:11px;
+  padding:12px 16px;font-weight:600;font-size:15px;
+}
+.btn.ghost{background:#fff;color:var(--blu);border:1.5px solid var(--blu)}
+.btn.quiet{background:var(--blu-soft);color:var(--blu-dark)}
+.btn.wide{display:block;width:100%;text-align:center}
+.btn:disabled{opacity:.45}
+.speak{
+  border:1px solid var(--line);background:#fff;border-radius:10px;width:38px;height:38px;
+  flex:0 0 38px;display:grid;place-items:center;font-size:15px;color:var(--blu);
+}
+.star{border:0;background:none;font-size:17px;line-height:1;color:var(--line);padding:4px}
+.star[aria-pressed="true"]{color:var(--oro)}
+
+/* ---------- hero (home only) ---------- */
+.hero{
+  position:relative;overflow:hidden;border-radius:18px;color:#fff;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(201,150,47,.55) 0 9px, transparent 10px),
+    radial-gradient(circle at 88% 82%, rgba(176,58,43,.55) 0 9px, transparent 10px),
+    repeating-linear-gradient(45deg, rgba(255,255,255,.05) 0 12px, transparent 12px 24px),
+    linear-gradient(160deg,#1D5C82,#123449 70%);
+  padding:22px 20px 20px;margin-top:14px;
+}
+.hero h1{margin:0 0 6px;font-size:34px;color:#fff}
+.hero p{margin:0;color:#CBDDE9;font-size:14.5px;max-width:44ch}
+.hero .meter{margin-top:16px;display:flex;gap:14px;font-size:12.5px;color:#CBDDE9}
+.hero .meter b{display:block;font-family:var(--serif);font-size:22px;color:#fff;font-weight:700}
+
+/* ---------- lists ---------- */
+.phrase{border-bottom:1px solid var(--line);padding:11px 0}
+.phrase:last-child{border-bottom:0}
+.phrase .en{font-size:14px;color:var(--muted)}
+details.acc{border:1px solid var(--line);border-radius:var(--radius);background:#fff;margin:8px 0;overflow:hidden}
+details.acc>summary{padding:13px 14px;font-weight:700;cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc>summary::after{content:"+";margin-left:auto;color:var(--blu);font-weight:700;font-size:18px}
+details.acc[open]>summary::after{content:"–"}
+details.acc .body{padding:0 14px 12px}
+.count{font-size:12px;color:var(--muted);font-weight:500}
+
+/* ---------- tables ---------- */
+table.conj{width:100%;border-collapse:collapse;font-size:14.5px;margin:6px 0}
+table.conj td{padding:7px 6px;border-bottom:1px solid var(--line)}
+table.conj td:first-child{color:var(--muted);width:34%}
+table.conj td:last-child{font-weight:600}
+table.conj tr:last-child td{border-bottom:0}
+.ending{color:var(--rosso);font-weight:700}
+
+/* ---------- drills ---------- */
+.opt{
+  display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);
+  border-radius:12px;padding:13px 14px;margin:8px 0;font-size:15.5px;font-weight:500;
+}
+.opt.correct{border-color:var(--verde);background:#EEF4E9}
+.opt.wrong{border-color:var(--rosso);background:#FBEDEB}
+.opt.dim{opacity:.5}
+.bar{height:6px;background:var(--blu-soft);border-radius:99px;overflow:hidden;margin:2px 0 14px}
+.bar i{display:block;height:100%;background:var(--blu);transition:width .25s}
+.fb{border-radius:12px;padding:12px 14px;margin:10px 0;font-size:14.5px}
+.fb.ok{background:#EEF4E9;border:1px solid #C4D8B6}
+.fb.no{background:#FBEDEB;border:1px solid #E8C3BC}
+.flash{
+  min-height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:10px;padding:26px 18px;
+}
+.flash .big{font-family:var(--serif);font-size:29px;font-weight:700;line-height:1.2}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.match{
+  border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:12px 8px;
+  font-size:14px;font-weight:600;min-height:62px;display:grid;place-items:center;text-align:center;
+}
+.match.sel{border-color:var(--blu);background:var(--blu-soft)}
+.match.done{opacity:.25;border-style:dashed}
+.match.err{border-color:var(--rosso);background:#FBEDEB}
+input.answer{
+  width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;
+  background:#fff;font-size:16px;
+}
+input.answer:focus{outline:2px solid var(--blu);outline-offset:1px;border-color:var(--blu)}
+.line{display:flex;gap:9px;margin:9px 0;align-items:flex-start}
+.line .who{
+  flex:0 0 54px;font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--muted);
+  padding-top:4px;
+}
+.line.you .bubble{background:var(--blu-soft);border-color:#C6DAE7}
+.bubble{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;flex:1}
+.hidden{display:none !important}
+.tokens{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.token{border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:9px 12px;font-size:15px}
+.slot{min-height:52px;border:1.5px dashed var(--line);border-radius:12px;padding:8px;background:#fff}
+.pill{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.03em;
+  background:var(--blu-soft);color:var(--blu-dark);border-radius:999px;padding:3px 9px}
+.pill.gold{background:#F7ECD2;color:#7A5A12}
+.pill.red{background:#FBEDEB;color:#8C2A1E}
+.pill.green{background:#EEF4E9;color:#3C5730}
+.toast{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:88px;z-index:60;
+  background:var(--ink);color:#fff;padding:10px 16px;border-radius:99px;font-size:14px;
+  opacity:0;transition:opacity .2s;pointer-events:none;
+}
+.toast.show{opacity:1}
+.searchwrap{position:relative;margin:6px 0 4px}
+.searchwrap input{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:16px}
+.note{background:var(--blu-soft);border-left:3px solid var(--blu);padding:11px 13px;border-radius:0 10px 10px 0;margin:10px 0;font-size:14.5px}
+.note.gold{background:#F9F1DE;border-color:var(--oro)}
+ol.plan{padding-left:0;list-style:none;margin:0}
+ol.plan li{border-left:2px solid var(--line);padding:0 0 18px 16px;position:relative}
+ol.plan li:last-child{border-left-color:transparent;padding-bottom:0}
+ol.plan li::before{
+  content:"";position:absolute;left:-6px;top:5px;width:10px;height:10px;border-radius:50%;
+  background:var(--blu);
+}
+ol.plan li b{display:block;font-size:15px}
+/* tappable words + word sheet */
+.w{cursor:pointer;border-bottom:1px dotted rgba(29,92,130,.45);padding-bottom:1px}
+.w:active{background:#F7ECD2}
+.sheetbg{position:fixed;inset:0;z-index:80;background:rgba(14,34,48,.45);display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--carta);width:100%;max-width:600px;max-height:86vh;overflow:auto;
+  border-radius:18px 18px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -8px 40px rgba(14,34,48,.35)}
+@media (min-width:640px){.sheetbg{align-items:center}.sheet{border-radius:18px;max-height:80vh}}
+.notebox{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px;font:inherit;font-size:16px;background:#fff;resize:vertical}
+.notebox:focus{outline:2px solid var(--blu);outline-offset:1px}
+.notetext{white-space:pre-wrap;margin-top:6px;font-size:15px}
+.hint{font-size:12.5px;color:var(--muted);margin:2px 0 10px}
+.updbar{position:fixed;left:12px;right:12px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:70;
+  background:var(--blu-dark);color:#fff;border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:10px;
+  font-size:14px;box-shadow:0 8px 24px rgba(14,34,48,.35)}
+.updbar .btn{padding:8px 12px;font-size:14px;background:var(--oro);color:#12222c;margin-left:auto}
+.azrow{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 12px}
+.az{border:1px solid var(--line);background:#fff;border-radius:8px;min-width:28px;padding:5px 0;
+  font-size:12.5px;font-weight:700;color:var(--blu)}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+@media (max-width:400px){
+  header.top .mark{font-size:19px}
+  header.top .streak{font-size:11.5px;gap:6px}
+  header.top .streak span:nth-child(2){display:none}
+}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:2.5px solid var(--oro);outline-offset:2px}
+@media (min-width:700px){
+  .grid2{grid-template-columns:repeat(4,1fr)}
+  h1{font-size:36px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <div class="mark">Andiamo<span>.</span></div>
+    <div class="streak">
+      <span>Streak <b id="streakN">0</b></span>
+      <span>Learned <b id="xpN">0</b></span>
+      <button class="iconbtn" id="voiceBtn" title="Voice settings">Voice</button>
+    </div>
+  </header>
+  <main id="view"></main>
+</div>
+
+<nav class="tabs" id="tabs">
+  <button data-tab="home"><span class="g">A</span>Today</button>
+  <button data-tab="phrases"><span class="g">F</span>Phrases</button>
+  <button data-tab="words"><span class="g">V</span>Words</button>
+  <button data-tab="drills"><span class="g">E</span>Practice</button>
+  <button data-tab="plan"><span class="g">P</span>Plan</button>
+  <button data-tab="saved"><span class="g">S</span>Saved</button>
+</nav>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   ANDIAMO — Italian for travellers
+   Single-file app. No build step, no dependencies.
+   Data first, then engine, then views.
+   ============================================================ */
+
+/* ---------- DATA: phrases [italian, english, pronunciation] ---------- */
+const CATS = [
+ {id:"saluti", name:"Greetings & introductions", blurb:"Open a conversation and say who you are."},
+ {id:"io", name:"Your background & small talk", blurb:"Work, family, where you're from, how long you're staying."},
+ {id:"gusti", name:"Likes & dislikes", blurb:"Mi piace / non mi piace — for you and your partner."},
+ {id:"storie", name:"Books, films & series", blurb:"Science fiction, crime dramas, what you're reading."},
+ {id:"arte", name:"Art & museums", blurb:"Modern, abstract, frescoes, and saying what you feel."},
+ {id:"caffe", name:"Coffee & the bar", blurb:"Ordering at the counter like a local."},
+ {id:"ristorante", name:"Restaurant & ordering", blurb:"Booking, menu questions, spicy or not, the bill."},
+ {id:"salumi", name:"Cheese & cured meats", blurb:"Tagliere, salami, prosciutto, mortadella, pecorino."},
+ {id:"vino", name:"Wine & tasting", blurb:"Tasting notes, grapes, cellars, how it's made."},
+ {id:"birra", name:"Craft beer", blurb:"IPA, sour, stout, lager — and how to find the good stuff."},
+ {id:"richieste", name:"Requests & politeness", blurb:"The five formulas that carry most of the trip."},
+ {id:"strada", name:"Directions", blurb:"Getting yourself unlost."},
+ {id:"trasporti", name:"Trains, buses, boats, planes", blurb:"Tickets, platforms, times, luggage."},
+ {id:"orari", name:"Opening times & tickets", blurb:"When to go, when to skip, how to book."},
+ {id:"consigli", name:"Recommendations", blurb:"Ask a local where to find the good version of anything."},
+ {id:"viaggi", name:"Where we've been & where we're going", blurb:"Past trips and today's plan."},
+ {id:"soldi", name:"Numbers, prices & paying", blurb:"How much, card or cash, splitting."},
+ {id:"aiuto", name:"Useful problems", blurb:"Pharmacy, wifi, toilets, lost things."}
+];
+
+const P = {};
+
+P.saluti = [
+["Buongiorno!","Good morning / Good day","bwon-JOR-no"],
+["Buonasera!","Good evening","bwo-na-SEH-ra"],
+["Ciao!","Hi / Bye (informal)","chow"],
+["Salve!","Hello (polite, neutral)","SAL-veh"],
+["Arrivederci!","Goodbye (polite)","a-rri-ve-DER-chee"],
+["A presto!","See you soon","a PRES-to"],
+["Come sta?","How are you? (formal)","KO-meh sta"],
+["Come stai?","How are you? (informal)","KO-meh sty"],
+["Sto bene, grazie. E lei?","I'm well, thanks. And you? (formal)","sto BEH-neh GRA-tsyeh eh lay"],
+["Mi chiamo Marco. E lei?","My name is Marco. And you?","mee KYA-mo MAR-ko"],
+["Piacere di conoscerla.","Pleased to meet you (formal).","pya-CHEH-reh dee ko-NO-sher-la"],
+["Piacere mio!","My pleasure!","pya-CHEH-reh MEE-o"],
+["Questa è mia moglie, Anna.","This is my wife, Anna.","KWES-ta eh MEE-a MO-lyeh"],
+["Questo è mio marito, Paolo.","This is my husband, Paolo.","KWES-to eh MEE-o ma-REE-to"],
+["Scusi, parla inglese?","Excuse me, do you speak English?","SKOO-zee PAR-la een-GLEH-zeh"],
+["Parlo un po' d'italiano.","I speak a little Italian.","PAR-lo oon po dee-ta-LYA-no"],
+["Può ripetere più lentamente, per favore?","Can you repeat that more slowly, please?","pwo ree-PEH-teh-reh pyoo len-ta-MEN-teh"],
+["Non ho capito, mi scusi.","I didn't understand, sorry.","non o ka-PEE-to mee SKOO-zee"],
+["Come si dice ... in italiano?","How do you say ... in Italian?","KO-meh see DEE-cheh"],
+["Buona giornata!","Have a good day!","BWO-na jor-NA-ta"]
+];
+
+P.io = [
+["Sono americano. / Sono americana.","I'm American. (m / f)","SO-no a-me-ree-KA-no"],
+["Siamo di San Diego, in California.","We're from San Diego, in California.","SYA-mo dee ... in ka-lee-FOR-nya"],
+["È la nostra prima volta in Italia.","It's our first time in Italy.","eh la NOS-tra PREE-ma VOL-ta"],
+["Siamo qui per due settimane.","We're here for two weeks.","SYA-mo kwee per DOO-eh set-tee-MA-neh"],
+["Siamo in vacanza.","We're on holiday.","SYA-mo een va-KAN-tsa"],
+["Sono in pensione.","I'm retired.","SO-no een pen-SYO-neh"],
+["Lavoro nel settore informatico.","I work in tech.","la-VO-ro nel set-TO-reh in-for-MA-tee-ko"],
+["Sono insegnante. / Sono medico.","I'm a teacher. / I'm a doctor.","SO-no in-se-NYAN-teh"],
+["Abbiamo due figli e un cane.","We have two children and a dog.","ab-BYA-mo DOO-eh FEE-lyee"],
+["Mia nonna era italiana, di Napoli.","My grandmother was Italian, from Naples.","MEE-a NON-na EH-ra ee-ta-LYA-na"],
+["Studio l'italiano da sei mesi.","I've been studying Italian for six months.","STOO-dyo lee-ta-LYA-no da say MEH-zee"],
+["Nel tempo libero cucino e cammino.","In my free time I cook and I walk.","nel TEM-po LEE-beh-ro koo-CHEE-no"],
+["E lei, di dov'è?","And you, where are you from?","eh lay dee do-VEH"],
+["Che lavoro fa?","What do you do for work?","keh la-VO-ro fa"],
+["Vive qui da molto tempo?","Have you lived here long?","VEE-veh kwee da MOL-to TEM-po"],
+["Che bella città!","What a beautiful city!","keh BEL-la cheet-TA"],
+["Ci troviamo benissimo qui.","We're loving it here.","chee tro-VYA-mo be-NEE-see-mo kwee"],
+["Scusi il mio italiano, sto imparando.","Sorry for my Italian, I'm learning.","SKOO-zee eel MEE-o ee-ta-LYA-no"]
+];
+
+P.gusti = [
+["Mi piace molto.","I like it a lot.","mee PYA-cheh MOL-to"],
+["Mi piacciono molto.","I like them a lot.","mee PYAT-cho-no MOL-to"],
+["Non mi piace.","I don't like it.","non mee PYA-cheh"],
+["Mi piace tantissimo!","I love it!","mee PYA-cheh tan-TEE-see-mo"],
+["Adoro la cucina italiana.","I adore Italian food.","a-DO-ro la koo-CHEE-na"],
+["A mia moglie piace il vino rosso.","My wife likes red wine.","a MEE-a MO-lyeh PYA-cheh"],
+["A mio marito non piacciono i funghi.","My husband doesn't like mushrooms.","a MEE-o ma-REE-to non PYAT-cho-no"],
+["A noi piace tutto!","We like everything!","a noy PYA-cheh TOOT-to"],
+["Preferisco qualcosa di leggero.","I prefer something light.","pre-feh-REES-ko kwal-KO-za"],
+["Preferiamo mangiare fuori.","We prefer to eat outside.","pre-feh-RYA-mo man-JA-reh FWO-ree"],
+["Non sono un grande fan del pesce.","I'm not a big fan of fish.","non SO-no oon GRAN-deh fan del PEH-sheh"],
+["Lo trovo delizioso.","I find it delicious.","lo TRO-vo de-lee-TSYO-zo"],
+["Non fa per me, grazie.","It's not for me, thanks.","non fa per meh"],
+["Che cosa le piace di più?","What do you like most?","keh KO-za leh PYA-cheh dee pyoo"],
+["Anche a me!","Me too!","AN-keh a meh"],
+["A me no, invece.","Not me, actually.","a meh no in-VEH-cheh"],
+["Sono curioso di provare.","I'm curious to try it.","SO-no koo-RYO-zo dee pro-VA-reh"],
+["Mi piace tutto tranne il fegato.","I like everything except liver.","mee PYA-cheh TOOT-to TRAN-neh"]
+];
+
+P.storie = [
+["Mi piace la fantascienza.","I like science fiction.","mee PYA-cheh la fan-ta-SHEN-tsa"],
+["Adoro i gialli e i polizieschi.","I love crime novels and crime dramas.","a-DO-ro ee JAL-lee eh ee po-lee-TSYES-kee"],
+["Guardiamo molte serie TV.","We watch a lot of TV series.","gwar-DYA-mo MOL-teh SEH-ryeh"],
+["Sto leggendo un romanzo italiano.","I'm reading an Italian novel.","sto led-JEN-do oon ro-MAN-tso"],
+["Qual è il suo film preferito?","What's your favourite film?","kwal eh eel SOO-o film pre-feh-REE-to"],
+["Mi piacciono i film con un bel finale.","I like films with a good ending.","mee PYAT-cho-no ee film"],
+["Preferisco i libri ai film.","I prefer books to films.","pre-feh-REES-ko ee LEE-bree eye film"],
+["Ha letto qualcosa di Elena Ferrante?","Have you read anything by Elena Ferrante?","a LET-to kwal-KO-za dee"],
+["Ci consiglia una serie italiana?","Can you recommend an Italian series?","chee kon-SEE-lya OO-na SEH-ryeh"],
+["Mi piacciono le storie vere.","I like true stories.","mee PYAT-cho-no leh STO-ryeh VEH-reh"],
+["Non mi piacciono i film dell'orrore.","I don't like horror films.","non mee PYAT-cho-no ee film del-lo-RRO-reh"],
+["È un thriller molto avvincente.","It's a very gripping thriller.","eh oon THREE-ler av-veen-CHEN-teh"],
+["Di che cosa parla?","What is it about?","dee keh KO-za PAR-la"],
+["È tratto da un libro.","It's based on a book.","eh TRAT-to da oon LEE-bro"]
+];
+
+P.arte = [
+["Mi interessa l'arte moderna.","I'm interested in modern art.","mee in-teh-RES-sa LAR-teh mo-DER-na"],
+["Mi piace l'arte astratta.","I like abstract art.","mee PYA-cheh LAR-teh as-TRAT-ta"],
+["Chi è l'artista?","Who is the artist?","kee eh lar-TEES-ta"],
+["Di che anno è questo quadro?","What year is this painting from?","dee keh AN-no eh KWES-to KWA-dro"],
+["Che tecnica è? Olio o acrilico?","What medium is it? Oil or acrylic?","keh TEK-nee-ka eh"],
+["Mi colpiscono i colori.","The colours strike me.","mee kol-PEES-ko-no ee ko-LO-ree"],
+["Le pennellate sono bellissime.","The brushstrokes are beautiful.","leh pen-nel-LA-teh"],
+["Preferisco i pittori contemporanei.","I prefer contemporary painters.","pre-feh-REES-ko ee peet-TO-ree"],
+["Non capisco molto di arte, ma mi piace guardare.","I don't know much about art, but I like looking.","non ka-PEES-ko MOL-to dee AR-teh"],
+["Questo affresco è del Quattrocento.","This fresco is from the 1400s.","KWES-to af-FRES-ko"],
+["C'è una mostra temporanea?","Is there a temporary exhibition?","cheh OO-na MOS-tra tem-po-RA-neh-a"],
+["Si possono fare foto?","Are photos allowed?","see POS-so-no FA-reh FO-to"],
+["Avete un'audioguida in inglese?","Do you have an audio guide in English?","a-VEH-teh oon ow-dyo-GWEE-da"],
+["Che cosa rappresenta?","What does it represent?","keh KO-za rap-preh-ZEN-ta"],
+["Mi trasmette calma.","It gives me a feeling of calm.","mee tras-MET-teh KAL-ma"],
+["Non mi dice niente, sinceramente.","It does nothing for me, honestly.","non mee DEE-cheh NYEN-teh"]
+];
+
+P.caffe = [
+["Un caffè, per favore.","An espresso, please.","oon kaf-FEH"],
+["Due cappuccini e un cornetto.","Two cappuccinos and a croissant.","DOO-eh kap-poo-CHEE-nee"],
+["Un caffè macchiato, per cortesia.","An espresso with a drop of milk, please.","kaf-FEH mak-KYA-to"],
+["Un caffè lungo / ristretto.","A longer / shorter espresso.","LOON-go / rees-TRET-to"],
+["Un decaffeinato, per favore.","A decaf, please.","de-kaf-fey-NA-to"],
+["Al banco o al tavolo?","At the counter or at the table?","al BAN-ko o al TA-vo-lo"],
+["Al banco, grazie.","At the counter, thanks.","al BAN-ko"],
+["Un bicchiere d'acqua, per favore.","A glass of water, please.","oon beek-KYEH-reh DAK-kwa"],
+["Dov'è un buon bar qui vicino?","Where's a good café near here?","do-VEH oon bwon bar kwee vee-CHEE-no"],
+["Il caffè qui è ottimo.","The coffee here is excellent.","eel kaf-FEH kwee eh OT-tee-mo"],
+["Fate anche il caffè d'orzo?","Do you also do barley coffee?","FA-teh AN-keh eel kaf-FEH DOR-tso"],
+["Un tè freddo al limone.","An iced lemon tea.","oon teh FRED-do al lee-MO-neh"],
+["Pago qui o alla cassa?","Do I pay here or at the till?","PA-go kwee o AL-la KAS-sa"],
+["Ancora uno, per favore.","One more, please.","an-KO-ra OO-no"]
+];
+
+P.ristorante = [
+["Un tavolo per due, per favore.","A table for two, please.","oon TA-vo-lo per DOO-eh"],
+["Abbiamo prenotato a nome Smith.","We have a booking under Smith.","ab-BYA-mo pre-no-TA-to a NO-meh"],
+["Possiamo sederci fuori?","Can we sit outside?","pos-SYA-mo se-DER-chee FWO-ree"],
+["Il menù, per favore.","The menu, please.","eel meh-NOO"],
+["Che cosa ci consiglia?","What do you recommend?","keh KO-za chee kon-SEE-lya"],
+["Qual è il piatto tipico di qui?","What's the typical local dish?","kwal eh eel PYAT-to TEE-pee-ko"],
+["Che cosa c'è in questo piatto?","What's in this dish?","keh KO-za cheh in KWES-to PYAT-to"],
+["È piccante?","Is it spicy?","eh peek-KAN-teh"],
+["Ci piace il cibo molto piccante.","We like very spicy food.","chee PYA-cheh eel CHEE-bo"],
+["Non troppo piccante, per favore.","Not too spicy, please.","non TROP-po peek-KAN-teh"],
+["Sono allergico alle noci.","I'm allergic to nuts. (m)","SO-no al-LER-jee-ko AL-leh NO-chee"],
+["C'è del glutine?","Does it contain gluten?","cheh del gloo-TEE-neh"],
+["Prendo gli spaghetti alle vongole.","I'll have the spaghetti with clams.","PREN-do lyee spa-GET-tee"],
+["Per me lo stesso.","The same for me.","per meh lo STES-so"],
+["Una porzione da condividere.","One portion to share.","OO-na por-TSYO-neh da kon-dee-VEE-deh-reh"],
+["Ancora un po' di pane, per favore.","A bit more bread, please.","an-KO-ra oon po dee PA-neh"],
+["Era tutto buonissimo.","It was all delicious.","EH-ra TOOT-to bwo-NEE-see-mo"],
+["Il conto, per favore.","The bill, please.","eel KON-to"],
+["Possiamo pagare con la carta?","Can we pay by card?","pos-SYA-mo pa-GA-reh kon la KAR-ta"],
+["Il coperto è incluso?","Is the cover charge included?","eel ko-PER-to eh in-KLOO-zo"]
+];
+
+P.salumi = [
+["Un tagliere misto di salumi e formaggi.","A mixed board of cured meats and cheeses.","oon ta-LYEH-reh MEES-to"],
+["Che formaggi avete?","What cheeses do you have?","keh for-MAJ-jee a-VEH-teh"],
+["Un formaggio stagionato, per favore.","An aged cheese, please.","for-MAJ-jo sta-jo-NA-to"],
+["Preferisco i formaggi freschi.","I prefer fresh cheeses.","for-MAJ-jee FRES-kee"],
+["Il pecorino è di pecora, giusto?","Pecorino is sheep's milk, right?","eel pe-ko-REE-no eh dee PEH-ko-ra"],
+["Questo è di capra o di mucca?","Is this goat or cow?","dee KA-pra o dee MOOK-ka"],
+["Il prosciutto crudo di Parma è il mio preferito.","Parma raw ham is my favourite.","pro-SHOOT-to KROO-do"],
+["Che differenza c'è fra crudo e cotto?","What's the difference between raw and cooked ham?","keh deef-feh-REN-tsa cheh"],
+["Un etto di mortadella, per favore.","100 grams of mortadella, please.","oon ET-to dee mor-ta-DEL-la"],
+["Il salame è piccante?","Is the salami spicy?","eel sa-LA-meh eh peek-KAN-teh"],
+["Vorrei assaggiare la 'nduja.","I'd like to taste 'nduja.","vo-RRAY as-sad-JA-reh la nDOO-ya"],
+["Da quanto tempo è stagionato?","How long has it been aged?","da KWAN-to TEM-po"],
+["È un prodotto locale?","Is it a local product?","eh oon pro-DOT-to lo-KA-leh"],
+["Posso assaggiare prima di comprare?","May I taste before buying?","POS-so as-sad-JA-reh PREE-ma"],
+["Mi dia un pezzo così.","Give me a piece about this big.","mee DEE-a oon PET-tso ko-ZEE"],
+["Sotto vuoto, per favore — devo prendere l'aereo.","Vacuum-packed please — I'm flying.","SOT-to VWO-to"]
+];
+
+P.vino = [
+["Una bottiglia di vino rosso della casa.","A bottle of the house red.","OO-na bot-TEE-lya dee VEE-no ROS-so"],
+["Un bicchiere di bianco fresco.","A glass of chilled white.","oon beek-KYEH-reh dee BYAN-ko"],
+["Che vini locali avete?","What local wines do you have?","keh VEE-nee lo-KA-lee"],
+["Quale vino consiglia con questo piatto?","Which wine goes with this dish?","KWA-leh VEE-no kon-SEE-lya"],
+["Vorrei fare una degustazione.","I'd like to do a tasting.","vo-RRAY FA-reh OO-na de-goos-ta-TSYO-neh"],
+["Facciamo un giro in cantina?","Shall we do a cellar tour?","fa-CHA-mo oon JEE-ro in kan-TEE-na"],
+["Di che uve è fatto?","Which grapes is it made from?","dee keh OO-veh eh FAT-to"],
+["Quanti anni ha questo vino?","How old is this wine?","KWAN-tee AN-nee a"],
+["Invecchia in botte di rovere?","Is it aged in oak barrels?","in-VEK-kya in BOT-teh dee RO-veh-reh"],
+["È secco o dolce?","Is it dry or sweet?","eh SEK-ko o DOL-cheh"],
+["È un vino corposo.","It's a full-bodied wine.","eh oon VEE-no kor-PO-zo"],
+["Sento profumo di frutti rossi.","I smell red fruit.","SEN-to pro-FOO-mo dee FROOT-tee"],
+["Ha un finale lungo.","It has a long finish.","a oon fee-NA-leh LOON-go"],
+["Un po' tannico per i miei gusti.","A bit tannic for my taste.","oon po TAN-nee-ko"],
+["Prendiamo una bottiglia da portare via.","We'll take a bottle to go.","pren-DYA-mo OO-na bot-TEE-lya"],
+["Come si fa il vino qui?","How is the wine made here?","KO-meh see fa eel VEE-no"],
+["La vendemmia è a settembre?","Is the harvest in September?","la ven-DEM-mya eh a set-TEM-breh"],
+["Fate anche il vino biologico?","Do you also make organic wine?","bee-o-LO-jee-ko"],
+["Un prosecco, per favore. Salute!","A prosecco, please. Cheers!","oon pro-SEK-ko  sa-LOO-teh"],
+["Possiamo spedirlo negli Stati Uniti?","Can you ship it to the United States?","spe-DEER-lo NEH-lyee STA-tee oo-NEE-tee"]
+];
+
+P.birra = [
+["Una birra alla spina, per favore.","A draft beer, please.","OO-na BEER-ra AL-la SPEE-na"],
+["Avete birre artigianali?","Do you have craft beers?","a-VEH-teh BEER-reh ar-tee-ja-NA-lee"],
+["Un birrificio artigianale qui vicino?","A craft brewery near here?","oon beer-ree-FEE-cho"],
+["Che stili avete oggi?","What styles do you have today?","keh STEE-lee a-VEH-teh OJ-jee"],
+["Vorrei una IPA, ben luppolata.","I'd like an IPA, nice and hoppy.","OO-na EE-pa ben loop-po-LA-ta"],
+["Una pale ale leggera.","A light pale ale.","OO-na payl ayl led-JEH-ra"],
+["Avete una birra acida?","Do you have a sour beer?","OO-na BEER-ra A-chee-da"],
+["Mi piacciono le birre scure: porter e stout.","I like dark beers: porters and stouts.","leh BEER-reh SKOO-reh"],
+["Una lager chiara, per favore.","A pale lager, please.","OO-na LA-ger KYA-ra"],
+["Preferisco l'artigianale alla birra industriale.","I prefer craft to mass-market beer.","ar-tee-ja-NA-leh"],
+["Quanti gradi ha?","What's the alcohol content?","KWAN-tee GRA-dee a"],
+["È amara o dolce?","Is it bitter or sweet?","eh a-MA-ra o DOL-cheh"],
+["Sento note di caffè e cioccolato.","I get notes of coffee and chocolate.","NO-teh dee kaf-FEH"],
+["Questa è troppo amara per me.","This one is too bitter for me.","TROP-po a-MA-ra"],
+["Un assaggio, posso?","Could I have a taste?","oon as-SAJ-jo POS-so"],
+["Media o piccola?","Half litre or small?","MEH-dya o PEEK-ko-la"],
+["Fate visite al birrificio?","Do you do brewery tours?","FA-teh VEE-zee-teh"],
+["Con che malti la fate?","Which malts do you brew it with?","kon keh MAL-tee la FA-teh"],
+["La fermentazione dura quanto?","How long does fermentation take?","la fer-men-ta-TSYO-neh DOO-ra"],
+["Cin cin!","Cheers!","cheen cheen"]
+];
+
+P.richieste = [
+["Vorrei ...","I would like ...","vo-RRAY"],
+["Vorremmo ...","We would like ...","vo-RREM-mo"],
+["Posso avere ...?","Can I have ...?","POS-so a-VEH-reh"],
+["Mi può aiutare?","Can you help me?","mee pwo a-yoo-TA-reh"],
+["Mi porta il conto, per favore?","Could you bring me the bill, please?","mee POR-ta eel KON-to"],
+["È possibile ...?","Is it possible to ...?","eh pos-SEE-bee-leh"],
+["Avrei bisogno di ...","I need ...","a-VRAY bee-ZO-nyo dee"],
+["Un attimo, per favore.","One moment, please.","oon AT-tee-mo"],
+["Per favore. / Per cortesia.","Please.","per fa-VO-reh"],
+["Grazie mille. / La ringrazio.","Thanks so much. / Thank you (formal).","GRA-tsyeh MEEL-leh"],
+["Prego.","You're welcome / Go ahead.","PREH-go"],
+["Scusi, permesso.","Excuse me, may I pass.","SKOO-zee per-MES-so"],
+["Mi dispiace.","I'm sorry.","mee dees-PYA-cheh"],
+["Va bene così, grazie.","That's fine as it is, thanks.","va BEH-neh ko-ZEE"],
+["Solo un momento, sto pensando.","Just a moment, I'm thinking.","SO-lo oon mo-MEN-to"],
+["Può scriverlo, per favore?","Could you write it down, please?","pwo SKREE-ver-lo"]
+];
+
+P.strada = [
+["Scusi, dov'è la stazione?","Excuse me, where's the station?","do-VEH la sta-TSYO-neh"],
+["Come si arriva al Duomo?","How do I get to the cathedral?","KO-meh see ar-REE-va"],
+["È lontano da qui?","Is it far from here?","eh lon-TA-no da kwee"],
+["È qui vicino.","It's nearby.","eh kwee vee-CHEE-no"],
+["Sempre dritto.","Straight ahead.","SEM-preh DREET-to"],
+["Giri a destra. / Giri a sinistra.","Turn right. / Turn left.","JEE-ree a DES-tra"],
+["Alla seconda traversa.","At the second turning.","AL-la se-KON-da tra-VER-sa"],
+["Di fronte alla chiesa.","Opposite the church.","dee FRON-teh AL-la KYEH-za"],
+["Accanto al bar, sulla piazza.","Next to the bar, on the square.","ak-KAN-to al bar"],
+["Quanto ci vuole a piedi?","How long does it take on foot?","KWAN-to chee VWO-leh a PYEH-dee"],
+["Dieci minuti a piedi.","Ten minutes on foot.","DYEH-chee mee-NOO-tee"],
+["Mi sono perso. / Mi sono persa.","I'm lost. (m / f)","mee SO-no PER-so"],
+["Può mostrarmelo sulla mappa?","Can you show me on the map?","pwo mos-TRAR-meh-lo"],
+["Siamo sulla strada giusta?","Are we on the right road?","SYA-mo SOOL-la STRA-da JOOS-ta"],
+["Dov'è il bagno, per favore?","Where's the toilet, please?","do-VEH eel BA-nyo"]
+];
+
+P.trasporti = [
+["Dove si comprano i biglietti?","Where do you buy tickets?","DO-veh see KOM-pra-no ee bee-LYET-tee"],
+["Due biglietti per Firenze, andata e ritorno.","Two return tickets to Florence.","an-DA-ta eh ree-TOR-no"],
+["Solo andata, per favore.","One way, please.","SO-lo an-DA-ta"],
+["A che ora parte il prossimo treno?","What time does the next train leave?","a keh O-ra PAR-teh"],
+["A che ora arriva?","What time does it arrive?","a keh O-ra ar-REE-va"],
+["Da quale binario parte?","Which platform does it leave from?","da KWA-leh bee-NA-ryo"],
+["Devo cambiare treno?","Do I have to change trains?","DEH-vo kam-BYA-reh TREH-no"],
+["Questo posto è libero?","Is this seat free?","KWES-to POS-to eh LEE-be-ro"],
+["Il treno è in ritardo?","Is the train delayed?","eh in ree-TAR-do"],
+["Devo convalidare il biglietto?","Do I have to validate the ticket?","kon-va-lee-DA-reh"],
+["Quale autobus va in centro?","Which bus goes to the centre?","KWA-leh OW-to-boos"],
+["Dov'è la fermata dell'autobus?","Where's the bus stop?","la fer-MA-ta del-LOW-to-boos"],
+["A che ora è l'ultimo traghetto?","What time is the last ferry?","LOOL-tee-mo tra-GET-to"],
+["Il molo di partenza qual è?","Which pier does it depart from?","eel MO-lo dee par-TEN-tsa"],
+["Un taxi per l'aeroporto, per favore.","A taxi to the airport, please.","per la-eh-ro-POR-to"],
+["Quanto costa la corsa?","How much is the fare?","KWAN-to KOS-ta la KOR-sa"],
+["A che ora devo essere in aeroporto?","What time should I be at the airport?","DEH-vo ES-seh-reh"],
+["Dove posso lasciare i bagagli?","Where can I leave my luggage?","la-SHA-reh ee ba-GA-lyee"],
+["Ho perso la coincidenza.","I missed my connection.","o PER-so la ko-een-chee-DEN-tsa"],
+["Questo treno ferma a Orvieto?","Does this train stop at Orvieto?","FER-ma a"]
+];
+
+P.orari = [
+["A che ora aprite?","What time do you open?","a keh O-ra a-PREE-teh"],
+["A che ora chiudete?","What time do you close?","a keh O-ra kyoo-DEH-teh"],
+["Siete aperti la domenica?","Are you open on Sundays?","SYEH-teh a-PER-tee la do-MEH-nee-ka"],
+["Qual è l'orario migliore per visitare?","What's the best time to visit?","lo-RA-ryo mee-LYO-reh"],
+["Meglio la mattina presto o il tardo pomeriggio?","Better early morning or late afternoon?","MEH-lyo la mat-TEE-na PRES-to"],
+["C'è molta fila?","Is there a long queue?","cheh MOL-ta FEE-la"],
+["Bisogna prenotare?","Do you need to book?","bee-ZO-nya pre-no-TA-reh"],
+["Posso prenotare online?","Can I book online?","pre-no-TA-reh on-line"],
+["Due biglietti interi e uno ridotto.","Two full-price tickets and one reduced.","in-TEH-ree ... ree-DOT-to"],
+["Quanto dura la visita?","How long does the visit take?","KWAN-to DOO-ra la VEE-zee-ta"],
+["C'è una visita guidata in inglese?","Is there a guided tour in English?","VEE-zee-ta gwee-DA-ta"],
+["L'ultimo ingresso a che ora è?","What time is the last entry?","LOOL-tee-mo in-GRES-so"],
+["È chiuso per restauro.","It's closed for restoration.","eh KYOO-zo per res-TOW-ro"],
+["Vale la pena?","Is it worth it?","VA-leh la PEH-na"],
+["Che cosa evitereste?","What would you skip?","keh KO-za e-vee-teh-RES-teh"],
+["È troppo turistico?","Is it too touristy?","eh TROP-po too-REES-tee-ko"]
+];
+
+P.consigli = [
+["Ci consiglia un buon ristorante qui vicino?","Can you recommend a good restaurant nearby?","chee kon-SEE-lya"],
+["Dove si mangia bene, senza turisti?","Where do you eat well, without tourists?","DO-veh see MAN-ja BEH-neh"],
+["Dove posso trovare un buon caffè?","Where can I find a good coffee?","tro-VA-reh oon bwon kaf-FEH"],
+["Dove si beve la birra artigianale in città?","Where do you drink craft beer in town?","see BEH-veh la BEER-ra"],
+["Conosce una buona enoteca?","Do you know a good wine bar?","ko-NO-sheh OO-na eh-no-TEH-ka"],
+["Qual è la specialità della zona?","What's the local speciality?","spe-cha-lee-TA DEL-la ZO-na"],
+["Che cosa non devo perdermi?","What shouldn't I miss?","non DEH-vo PER-der-mee"],
+["Che cosa fa un vero locale la domenica?","What does a real local do on Sunday?","oon VEH-ro lo-KA-leh"],
+["C'è un mercato oggi?","Is there a market today?","cheh oon mer-KA-to OJ-jee"],
+["Vale la pena andare a Orvieto?","Is Orvieto worth a trip?","VA-leh la PEH-na an-DA-reh"],
+["Che cosa c'è da vedere nei dintorni?","What's there to see nearby?","nay deen-TOR-nee"],
+["Ci sono gite di un giorno da qui?","Are there day trips from here?","JEE-teh dee oon JOR-no"],
+["Sa dove posso comprare del buon olio d'oliva?","Do you know where I can buy good olive oil?","sa DO-veh POS-so kom-PRA-reh"],
+["Meglio a piedi o in autobus?","Better on foot or by bus?","MEH-lyo a PYEH-dee"],
+["Grazie del consiglio!","Thanks for the tip!","GRA-tsyeh del kon-SEE-lyo"]
+];
+
+P.viaggi = [
+["Siamo già stati a Roma e a Venezia.","We've already been to Rome and Venice.","SYA-mo ja STA-tee"],
+["Non siamo mai stati in Sicilia.","We've never been to Sicily.","non SYA-mo my STA-tee"],
+["Ieri abbiamo visitato gli Uffizi.","Yesterday we visited the Uffizi.","YEH-ree ab-BYA-mo vee-zee-TA-to"],
+["Domani andiamo a Siena.","Tomorrow we're going to Siena.","do-MA-nee an-DYA-mo"],
+["Stasera restiamo qui.","This evening we're staying here.","sta-SEH-ra res-TYA-mo"],
+["Dopodomani partiamo per Bologna.","The day after tomorrow we leave for Bologna.","do-po-do-MA-nee par-TYA-mo"],
+["Abbiamo affittato una macchina.","We've rented a car.","af-feet-TA-to OO-na MAK-kee-na"],
+["Ci fermiamo tre notti.","We're staying three nights.","chee fer-MYA-mo treh NOT-tee"],
+["Che cosa avete fatto oggi?","What did you do today?","keh KO-za a-VEH-teh FAT-to"],
+["Abbiamo camminato tutto il giorno.","We walked all day.","kam-mee-NA-to TOOT-to eel JOR-no"],
+["È stata una giornata bellissima.","It was a wonderful day.","eh STA-ta OO-na jor-NA-ta"],
+["Torneremo sicuramente.","We'll definitely come back.","tor-neh-REH-mo see-koo-ra-MEN-teh"],
+["Vorremmo tornare in primavera.","We'd like to come back in spring.","tor-NA-reh in pree-ma-VEH-ra"],
+["Ci è piaciuta molto la costiera.","We really liked the coast.","chee eh pya-CHOO-ta MOL-to"]
+];
+
+P.soldi = [
+["Quanto costa?","How much does it cost?","KWAN-to KOS-ta"],
+["Quanto costano?","How much do they cost?","KWAN-to KOS-ta-no"],
+["Quant'è in tutto?","How much is it altogether?","kwan-TEH in TOOT-to"],
+["È troppo caro.","It's too expensive.","eh TROP-po KA-ro"],
+["C'è uno sconto?","Is there a discount?","cheh OO-no SKON-to"],
+["Accettate carte di credito?","Do you accept credit cards?","at-chet-TA-teh KAR-teh"],
+["Pago in contanti.","I'll pay cash.","PA-go in kon-TAN-tee"],
+["Possiamo dividere il conto?","Can we split the bill?","dee-VEE-deh-reh eel KON-to"],
+["Paghiamo insieme.","We'll pay together.","pa-GYA-mo in-SYEH-meh"],
+["Mi dà una ricevuta, per favore?","Could I have a receipt, please?","OO-na ree-cheh-VOO-ta"],
+["Il resto, grazie.","The change, thanks.","eel RES-to"],
+["C'è un bancomat qui vicino?","Is there an ATM nearby?","oon BAN-ko-mat"],
+["Costa dieci euro e cinquanta.","It costs ten euros fifty.","DYEH-chee EH-oo-ro"],
+["Va bene, lo prendo.","OK, I'll take it.","va BEH-neh lo PREN-do"]
+];
+
+P.aiuto = [
+["Mi scusi, ha il wifi?","Excuse me, do you have wifi?","a eel WEE-fee"],
+["Qual è la password?","What's the password?","kwal eh la PASS-word"],
+["Dov'è la farmacia più vicina?","Where's the nearest pharmacy?","la far-ma-CHEE-a pyoo vee-CHEE-na"],
+["Ho mal di testa. / Ho mal di stomaco.","I have a headache. / a stomach ache.","o mal dee TES-ta"],
+["Ho bisogno di un medico.","I need a doctor.","o bee-ZO-nyo dee oon MEH-dee-ko"],
+["Ho perso il portafoglio.","I've lost my wallet.","o PER-so eel por-ta-FO-lyo"],
+["Può chiamare un taxi?","Can you call a taxi?","pwo kya-MA-reh oon TA-xi"],
+["Non funziona.","It doesn't work.","non foon-TSYO-na"],
+["Fa caldo oggi! / Fa freddo!","It's hot today! / It's cold!","fa KAL-do OJ-jee"],
+["Che tempo fa domani?","What's the weather tomorrow?","keh TEM-po fa do-MA-nee"],
+["Aiuto!","Help!","a-YOO-to"],
+["Ho fame. / Ho sete.","I'm hungry. / I'm thirsty.","o FA-meh  o SEH-teh"],
+["Sono stanco morto.","I'm exhausted. (m)","SO-no STAN-ko MOR-to"],
+["Tutto a posto, grazie.","All good, thanks.","TOOT-to a POS-to"]
+];
+
+/* ---------- DATA: verbs ---------- */
+/* fam: are | ere | ire | isc ;  f = [io, tu, lui/lei, noi, voi, loro] */
+const VERBS = [
+{i:"essere",e:"to be",fam:"ere",irr:1,f:["sono","sei","è","siamo","siete","sono"],n:"The single most useful verb. Also the helper for 'I have gone' (sono andato)."},
+{i:"avere",e:"to have",fam:"ere",irr:1,f:["ho","hai","ha","abbiamo","avete","hanno"],n:"Italians 'have' hunger, thirst, and years: ho fame, ho sete, ho 50 anni."},
+{i:"fare",e:"to do / to make",fam:"are",irr:1,f:["faccio","fai","fa","facciamo","fate","fanno"],n:"Weather and activities: fa caldo, facciamo una passeggiata."},
+{i:"andare",e:"to go",fam:"are",irr:1,f:["vado","vai","va","andiamo","andate","vanno"],n:"andiamo = we go / let's go. Andare a + city, andare in + country."},
+{i:"stare",e:"to stay / to be (feeling)",fam:"are",irr:1,f:["sto","stai","sta","stiamo","state","stanno"],n:"Come sta? = how are you. Sto bene. Also 'sto mangiando' = I'm eating."},
+{i:"dire",e:"to say / to tell",fam:"ire",irr:1,f:["dico","dici","dice","diciamo","dite","dicono"],n:"Come si dice...? = how do you say...?"},
+{i:"potere",e:"can / to be able to",fam:"ere",irr:1,f:["posso","puoi","può","possiamo","potete","possono"],n:"Posso + infinitive = may I. Posso vedere il menù?"},
+{i:"volere",e:"to want",fam:"ere",irr:1,f:["voglio","vuoi","vuole","vogliamo","volete","vogliono"],n:"Softer in shops: use vorrei (I'd like) instead of voglio."},
+{i:"dovere",e:"must / to have to",fam:"ere",irr:1,f:["devo","devi","deve","dobbiamo","dovete","devono"],n:"Devo prenotare? = do I have to book?"},
+{i:"sapere",e:"to know (a fact / how to)",fam:"ere",irr:1,f:["so","sai","sa","sappiamo","sapete","sanno"],n:"Sa dov'è la stazione? = do you know where the station is?"},
+{i:"conoscere",e:"to know (a person / place)",fam:"ere",irr:0,f:["conosco","conosci","conosce","conosciamo","conoscete","conoscono"],n:"Conosce un buon ristorante? = do you know a good restaurant?"},
+{i:"vedere",e:"to see",fam:"ere",irr:0,f:["vedo","vedi","vede","vediamo","vedete","vedono"],n:"Ci vediamo! = see you!"},
+{i:"venire",e:"to come",fam:"ire",irr:1,f:["vengo","vieni","viene","veniamo","venite","vengono"],n:"Da dove viene? = where do you come from?"},
+{i:"bere",e:"to drink",fam:"ere",irr:1,f:["bevo","bevi","beve","beviamo","bevete","bevono"],n:"Stem changes to bev-. Beviamo un bicchiere di rosso."},
+{i:"mangiare",e:"to eat",fam:"are",irr:0,f:["mangio","mangi","mangia","mangiamo","mangiate","mangiano"],n:"Verbs in -giare drop the i: mangi, not mangii."},
+{i:"parlare",e:"to speak",fam:"are",irr:0,f:["parlo","parli","parla","parliamo","parlate","parlano"],n:"The model for the whole -are family."},
+{i:"prendere",e:"to take / to have (food)",fam:"ere",irr:0,f:["prendo","prendi","prende","prendiamo","prendete","prendono"],n:"Ordering: prendo un caffè = I'll have a coffee."},
+{i:"partire",e:"to leave / to depart",fam:"ire",irr:0,f:["parto","parti","parte","partiamo","partite","partono"],n:"Model for straight -ire verbs. A che ora parte il treno?"},
+{i:"capire",e:"to understand",fam:"isc",irr:0,f:["capisco","capisci","capisce","capiamo","capite","capiscono"],n:"An -isc- verb: the ending grows in all forms except noi and voi."},
+{i:"finire",e:"to finish",fam:"isc",irr:0,f:["finisco","finisci","finisce","finiamo","finite","finiscono"],n:"Same -isc- pattern as capire."},
+{i:"preferire",e:"to prefer",fam:"isc",irr:0,f:["preferisco","preferisci","preferisce","preferiamo","preferite","preferiscono"],n:"Gold for saying what you want: preferisco il rosso."},
+{i:"pagare",e:"to pay",fam:"are",irr:0,f:["pago","paghi","paga","paghiamo","pagate","pagano"],n:"-gare keeps the hard g with an h: paghi, paghiamo."},
+{i:"cercare",e:"to look for",fam:"are",irr:0,f:["cerco","cerchi","cerca","cerchiamo","cercate","cercano"],n:"-care keeps the hard c with an h: cerchi, cerchiamo."},
+{i:"assaggiare",e:"to taste",fam:"are",irr:0,f:["assaggio","assaggi","assaggia","assaggiamo","assaggiate","assaggiano"],n:"Posso assaggiare? = may I taste?"},
+{i:"ordinare",e:"to order",fam:"are",irr:0,f:["ordino","ordini","ordina","ordiniamo","ordinate","ordinano"],n:"Regular -are, no surprises."},
+{i:"prenotare",e:"to book / reserve",fam:"are",irr:0,f:["prenoto","prenoti","prenota","prenotiamo","prenotate","prenotano"],n:"Abbiamo prenotato per le otto."},
+{i:"visitare",e:"to visit (a place)",fam:"are",irr:0,f:["visito","visiti","visita","visitiamo","visitate","visitano"],n:"For people, use andare a trovare."},
+{i:"abitare",e:"to live (reside)",fam:"are",irr:0,f:["abito","abiti","abita","abitiamo","abitate","abitano"],n:"Abito a San Diego."},
+{i:"comprare",e:"to buy",fam:"are",irr:0,f:["compro","compri","compra","compriamo","comprate","comprano"],n:"Dove posso comprare...?"},
+{i:"aspettare",e:"to wait",fam:"are",irr:0,f:["aspetto","aspetti","aspetta","aspettiamo","aspettate","aspettano"],n:"Aspettiamo un tavolo."},
+{i:"arrivare",e:"to arrive",fam:"are",irr:0,f:["arrivo","arrivi","arriva","arriviamo","arrivate","arrivano"],n:"A che ora arriva il treno?"},
+{i:"portare",e:"to bring / to carry",fam:"are",irr:0,f:["porto","porti","porta","portiamo","portate","portano"],n:"Mi porta il conto? = could you bring me the bill?"},
+{i:"trovare",e:"to find",fam:"are",irr:0,f:["trovo","trovi","trova","troviamo","trovate","trovano"],n:"Lo trovo delizioso = I find it delicious."},
+{i:"consigliare",e:"to recommend",fam:"are",irr:0,f:["consiglio","consigli","consiglia","consigliamo","consigliate","consigliano"],n:"Che cosa mi consiglia? = what do you recommend?"},
+{i:"scusare",e:"to excuse",fam:"are",irr:0,f:["scuso","scusi","scusa","scusiamo","scusate","scusano"],n:"Scusi = formal excuse me; scusa = informal."},
+{i:"dormire",e:"to sleep",fam:"ire",irr:0,f:["dormo","dormi","dorme","dormiamo","dormite","dormono"],n:"Straight -ire, like partire."},
+{i:"sentire",e:"to hear / to feel / to smell",fam:"ire",irr:0,f:["sento","senti","sente","sentiamo","sentite","sentono"],n:"Tasting rooms: sento profumo di frutta."},
+{i:"aprire",e:"to open",fam:"ire",irr:0,f:["apro","apri","apre","apriamo","aprite","aprono"],n:"A che ora aprite?"},
+{i:"uscire",e:"to go out",fam:"ire",irr:1,f:["esco","esci","esce","usciamo","uscite","escono"],n:"Stem changes to esc- except noi and voi."},
+{i:"scegliere",e:"to choose",fam:"ere",irr:1,f:["scelgo","scegli","sceglie","scegliamo","scegliete","scelgono"],n:"Non riesco a scegliere = I can't choose."},
+{i:"rimanere",e:"to stay / remain",fam:"ere",irr:1,f:["rimango","rimani","rimane","rimaniamo","rimanete","rimangono"],n:"Rimaniamo tre notti."},
+{i:"leggere",e:"to read",fam:"ere",irr:0,f:["leggo","leggi","legge","leggiamo","leggete","leggono"],n:"Sto leggendo un giallo."},
+{i:"chiudere",e:"to close",fam:"ere",irr:0,f:["chiudo","chiudi","chiude","chiudiamo","chiudete","chiudono"],n:"A che ora chiudete?"},
+{i:"piacere",e:"to be pleasing (to like)",fam:"ere",irr:1,f:["piaccio","piaci","piace","piacciamo","piacete","piacciono"],n:"In practice you only need piace (one thing) and piacciono (several)."}
+];
+const PRON = ["io","tu","lui / lei","noi","voi","loro"];
+
+/* ---------- DATA: nouns & words [italian, english, article, theme] ---------- */
+const NOUNS = [
+["il caffè","coffee","m","caffe"],["il cappuccino","cappuccino","m","caffe"],["il cornetto","croissant","m","caffe"],
+["il bar","café/bar","m","caffe"],["lo zucchero","sugar","m","caffe"],["il latte","milk","m","caffe"],
+["l'acqua","water","f","ristorante"],["il pane","bread","m","ristorante"],["il vino","wine","m","vino"],
+["la birra","beer","f","birra"],["il menù","menu","m","ristorante"],["il conto","bill","m","ristorante"],
+["il cameriere","waiter","m","ristorante"],["il tavolo","table","m","ristorante"],["il piatto","dish/plate","m","ristorante"],
+["l'antipasto","starter","m","ristorante"],["il primo","first course","m","ristorante"],["il secondo","main course","m","ristorante"],
+["il contorno","side dish","m","ristorante"],["il dolce","dessert","m","ristorante"],["il coltello","knife","m","ristorante"],
+["la forchetta","fork","f","ristorante"],["il cucchiaio","spoon","m","ristorante"],["il bicchiere","glass","m","vino"],
+["la bottiglia","bottle","f","vino"],["il pesce","fish","m","ristorante"],["la carne","meat","f","ristorante"],
+["il pollo","chicken","m","ristorante"],["il manzo","beef","m","ristorante"],["la verdura","vegetables","f","ristorante"],
+["il formaggio","cheese","m","salumi"],["il prosciutto","ham","m","salumi"],["il salame","salami","m","salumi"],
+["la mortadella","mortadella","f","salumi"],["il tagliere","board (of meats/cheese)","m","salumi"],["il pecorino","sheep's cheese","m","salumi"],
+["la mozzarella","mozzarella","f","salumi"],["il peperoncino","chilli","m","ristorante"],["il sale","salt","m","ristorante"],
+["l'olio","oil","m","ristorante"],["l'aceto","vinegar","m","ristorante"],["il fungo","mushroom","m","ristorante"],
+["l'uva","grapes","f","vino"],["la cantina","cellar/winery","f","vino"],["la degustazione","tasting","f","vino"],
+["la botte","barrel","f","vino"],["la vendemmia","grape harvest","f","vino"],["il produttore","producer","m","vino"],
+["il birrificio","brewery","m","birra"],["il luppolo","hops","m","birra"],["il malto","malt","m","birra"],
+["la spina","tap (draft)","f","birra"],["il lievito","yeast","m","birra"],["la schiuma","foam/head","f","birra"],
+["la stazione","station","f","trasporti"],["il treno","train","m","trasporti"],["il binario","platform","m","trasporti"],
+["il biglietto","ticket","m","trasporti"],["l'autobus","bus","m","trasporti"],["il traghetto","ferry","m","trasporti"],
+["l'aereo","plane","m","trasporti"],["la macchina","car","f","trasporti"],["la fermata","stop","f","trasporti"],
+["il bagaglio","luggage","m","trasporti"],["la partenza","departure","f","trasporti"],["l'arrivo","arrival","m","trasporti"],
+["la strada","street/road","f","strada"],["la piazza","square","f","strada"],["la chiesa","church","f","strada"],
+["il ponte","bridge","m","strada"],["il museo","museum","m","arte"],["la mostra","exhibition","f","arte"],
+["il quadro","painting","m","arte"],["il pittore","painter","m","arte"],["l'affresco","fresco","m","arte"],
+["il colore","colour","m","arte"],["la chiave","key","f","aiuto"],["il bagno","toilet","m","aiuto"],
+["la farmacia","pharmacy","f","aiuto"],["il negozio","shop","m","soldi"],["il mercato","market","m","soldi"],
+["il prezzo","price","m","soldi"],["i contanti","cash","m","soldi"],["la carta","card","f","soldi"],
+["il giorno","day","m","orari"],["la mattina","morning","f","orari"],["il pomeriggio","afternoon","m","orari"],
+["la sera","evening","f","orari"],["l'orario","timetable/hours","m","orari"],["la fila","queue","f","orari"],
+["il libro","book","m","storie"],["il film","film","m","storie"],["il romanzo","novel","m","storie"],
+["il giallo","crime story","m","storie"],["la moglie","wife","f","io"],["il marito","husband","m","io"],
+["l'amico","friend","m","io"],["la città","city","f","io"],["la casa","house","f","io"],
+["il lavoro","job/work","m","io"],["la vacanza","holiday","f","io"]
+];
+
+const ADJ = [
+["buono","good"],["cattivo","bad"],["ottimo","excellent"],["caro","expensive/dear"],["economico","cheap"],
+["grande","big"],["piccolo","small"],["aperto","open"],["chiuso","closed"],["vicino","near"],["lontano","far"],
+["caldo","hot"],["freddo","cold"],["piccante","spicy"],["dolce","sweet"],["secco","dry (wine)"],["amaro","bitter"],
+["leggero","light"],["corposo","full-bodied"],["fresco","fresh/cool"],["stagionato","aged"],["chiaro","pale/light"],
+["scuro","dark"],["artigianale","craft/artisanal"],["locale","local"],["famoso","famous"],["tranquillo","quiet"],
+["affollato","crowded"],["stanco","tired"],["contento","happy"]
+];
+
+/* ---------- DATA: confusable pairs [sentence, correct, decoy, why] ---------- */
+const PAIRS = [
+{t:"sapere vs conoscere",rule:"sapere = to know a fact or how to do something. conoscere = to be familiar with a person, a place or a thing.",
+ items:[["Scusi, ___ dov'è il Duomo?","sa","conosce","Where something is = information, so sapere."],
+        ["___ un buon ristorante qui vicino?","Conosce","Sa","You're familiar with a place, so conoscere."],
+        ["Non ___ come si dice in italiano.","so","conosco","Knowing how to do something = sapere."],
+        ["___ già Roma? Ci siamo stati due volte.","Conosce","Sa","Being acquainted with a city = conoscere."]]},
+{t:"mi piace vs mi piacciono",rule:"The Italian verb agrees with the thing that is liked, not with you. One thing = piace. More than one = piacciono.",
+ items:[["Mi ___ il vino rosso.","piace","piacciono","il vino is singular."],
+        ["Mi ___ i formaggi stagionati.","piacciono","piace","i formaggi is plural."],
+        ["Non mi ___ le birre acide.","piacciono","piace","le birre is plural."],
+        ["A mia moglie ___ la birra scura.","piace","piacciono","la birra is singular; a mia moglie just says who likes it."]]},
+{t:"vorrei vs voglio",rule:"voglio = I want (blunt). vorrei = I would like (polite). In shops, bars and restaurants, always vorrei.",
+ items:[["___ un tavolo per due, per favore.","Vorrei","Voglio","Ordering: soften it to vorrei."],
+        ["___ imparare l'italiano bene.","Voglio","Vorrei","A real personal goal, not a request."],
+        ["___ prenotare per stasera, grazie.","Vorrei","Voglio","A polite request to a stranger."],
+        ["Mia moglie ___ assaggiare il pecorino.","vorrebbe","vuole","Same softening, third person."]]},
+{t:"c'è vs ci sono",rule:"c'è = there is (one). ci sono = there are (several).",
+ items:[["___ una farmacia qui vicino?","C'è","Ci sono","One pharmacy."],
+        ["___ molti turisti oggi.","Ci sono","C'è","molti turisti is plural."],
+        ["___ del glutine in questo piatto?","C'è","Ci sono","del glutine is treated as singular."],
+        ["Quanti posti ___ sul traghetto?","ci sono","c'è","posti is plural."]]},
+{t:"buono vs bene",rule:"buono is an adjective describing a thing (good). bene is an adverb describing how something is done (well).",
+ items:[["Questo vino è molto ___.","buono","bene","It describes the wine itself."],
+        ["Sto ___, grazie. E lei?","bene","buono","How you are doing = bene."],
+        ["Si mangia ___ in questo posto.","bene","buono","It describes how one eats."],
+        ["Che ___ questo formaggio!","buono","bene","Describing the cheese."]]},
+{t:"essere vs stare",rule:"essere = to be (identity, description). stare = how you are feeling, and where you're staying.",
+ items:[["Come ___? Tutto bene?","stai","sei","Feelings and health use stare."],
+        ["___ americano, di San Diego.","Sono","Sto","Identity uses essere."],
+        ["___ bene, grazie.","Sto","Sono","Health uses stare."],
+        ["Il museo ___ chiuso il lunedì.","è","sta","A fact about the museum uses essere."]]},
+{t:"prendere vs portare",rule:"prendere = to take, or to have (food and drink you order). portare = to bring or carry something to someone.",
+ items:[["___ un caffè macchiato, grazie.","Prendo","Porto","Ordering what you'll have."],
+        ["Mi ___ il conto, per favore?","porta","prende","You're asking them to bring it to you."],
+        ["___ il treno delle otto e dieci.","Prendiamo","Portiamo","You take a train."],
+        ["Ci ___ ancora un po' di pane?","porta","prende","Bring more bread to us."]]},
+{t:"sentire vs ascoltare",rule:"sentire = to hear, feel, or smell (it happens to you). ascoltare = to listen on purpose.",
+ items:[["___ profumo di frutti rossi in questo vino.","Sento","Ascolto","Smelling and tasting notes use sentire."],
+        ["Mi piace ___ la musica italiana in macchina.","ascoltare","sentire","Deliberate listening."],
+        ["Non ti ___ bene, c'è troppo rumore.","sento","ascolto","Hearing, not choosing to listen."],
+        ["___ questa canzone, è bellissima!","Ascolta","Senti","You're telling someone to pay attention."]]},
+{t:"andare a vs andare in",rule:"a + city or small place. in + country, region, and many places ending in -ia or thought of as areas (in centro, in banca).",
+ items:[["Domani andiamo ___ Siena.","a","in","Cities take a."],
+        ["Andiamo ___ Italia ogni due anni.","in","a","Countries take in."],
+        ["Vado ___ centro a piedi.","in","a","in centro is fixed."],
+        ["Andiamo ___ piedi, è vicino.","a","in","a piedi = on foot, fixed."]]},
+{t:"da vs di",rule:"da = from (origin, starting point) and 'for' with time. di = of (belonging, material, quantity).",
+ items:[["Vengo ___ San Diego, in California.","da","di","Where you come from."],
+        ["Un bicchiere ___ vino rosso, grazie.","di","da","A glass of wine: quantity."],
+        ["Abito qui ___ tre anni.","da","di","For three years and still going."],
+        ["È il vino ___ mio nonno.","di","da","Belonging."]]},
+{t:"quanto costa vs quanto costano",rule:"costa for one item, costano for several. Same logic as piace / piacciono.",
+ items:[["___ questi due biglietti?","Quanto costano","Quanto costa","Two tickets, plural."],
+        ["___ un caffè al banco?","Quanto costa","Quanto costano","One coffee."],
+        ["___ le degustazioni?","Quanto costano","Quanto costa","Plural."],
+        ["___ la bottiglia?","Quanto costa","Quanto costano","One bottle."]]},
+{t:"chiara vs scura (beer)",rule:"chiara = pale (lager, pilsner, most pale ales). scura = dark (porter, stout, dark ales). They agree with birra, which is feminine.",
+ items:[["Una lager ___, per favore.","chiara","scura","Lagers are pale."],
+        ["Una stout è una birra ___.","scura","chiara","Stouts are dark."],
+        ["Mi piacciono le birre ___ come il porter.","scure","chiare","Plural feminine of scura."],
+        ["Per l'aperitivo prendo una ___ leggera.","chiara","scura","Light and pale for an aperitivo."]]},
+{t:"secco vs dolce (wine)",rule:"secco = dry. dolce = sweet. amabile sits in between. Never use asciutto for wine — that's dry laundry.",
+ items:[["Il prosecco brut è ___.","secco","dolce","Brut means dry."],
+        ["Il vin santo è un vino ___ da dessert.","dolce","secco","A dessert wine."],
+        ["Preferisco un bianco ___, non zuccherino.","secco","dolce","Not sugary means dry."]]},
+{t:"troppo vs molto",rule:"molto = very / a lot (positive). troppo = too much (a complaint).",
+ items:[["È ___ caro, lasciamo perdere.","troppo","molto","You're rejecting it: too expensive."],
+        ["Mi piace ___, lo prendo.","molto","troppo","A lot, in a good way."],
+        ["Questa IPA è ___ amara per me.","troppo","molto","More bitter than you can enjoy."],
+        ["Grazie ___ per il consiglio.","molto","troppo","Very much, politely."]]},
+{t:"scusi vs scusa",rule:"scusi = excuse me to a stranger or anyone you'd call lei. scusa = to a friend, a child, someone your age in a casual place.",
+ items:[["___, dov'è la stazione? (to a stranger)","Scusi","Scusa","Formal."],
+        ["___, sono in ritardo! (to a friend)","Scusa","Scusi","Informal."],
+        ["Mi ___, non ho capito. (to a waiter)","scusi","scusa","Formal."]]},
+{t:"ho fame vs sono stanco",rule:"Italian HAS hunger, thirst, and age (with avere), but IS tired and happy (with essere). Learn the ones with avere as a set.",
+ items:[["___ fame, andiamo a mangiare.","Ho","Sono","avere fame."],
+        ["___ sete, prendiamo un'acqua.","Ho","Sono","avere sete."],
+        ["___ stanco morto dopo il museo.","Sono","Ho","essere stanco."],
+        ["___ cinquant'anni.","Ho","Sono","Age uses avere."]]},
+{t:"un po' di vs poco",rule:"un po' di + noun = a little of something (positive). poco = little, not much (often a shortage).",
+ items:[["Ancora ___ pane, per favore.","un po' di","poco","A little more bread."],
+        ["Parlo ___ italiano, scusi.","poco","un po' di","Not much Italian — a limitation."],
+        ["Vorrei ___ vino, solo un assaggio.","un po' di","poco","A small amount, deliberately."]]},
+{t:"questo vs quello",rule:"questo = this, near you. quello = that, over there. Both change ending with the noun: questo/questa, quel/quella.",
+ items:[["___ è il nostro primo viaggio in Italia.","Questo","Quello","Here and now."],
+        ["Vorrei ___ formaggio là in fondo.","quel","questo","Over there in the case."],
+        ["___ birra qui è artigianale?","Questa","Quella","The one in front of you, feminine."]]},
+{t:"piccante vs saporito",rule:"piccante = chilli hot. saporito = full of flavour, well seasoned (and sometimes a bit salty).",
+ items:[["Ci piace il cibo molto ___, con peperoncino.","piccante","saporito","Chilli heat."],
+        ["Questo pecorino è molto ___.","saporito","piccante","Strong tasty flavour, not chilli."],
+        ["La 'nduja è ___ davvero.","piccante","saporita","'nduja is chilli-hot."]]}
+];
+
+/* ---------- DATA: they ask / you answer [question, en, answer, en] ---------- */
+const QA = [
+["Buongiorno, come sta?","Good morning, how are you?","Bene, grazie. E lei?","Well, thanks. And you?"],
+["Di dove siete?","Where are you from?","Siamo americani, di San Diego.","We're American, from San Diego."],
+["È la prima volta in Italia?","Is this your first time in Italy?","No, siamo già stati a Roma due anni fa.","No, we were in Rome two years ago."],
+["Quanto vi fermate?","How long are you staying?","Ci fermiamo dieci giorni.","We're staying ten days."],
+["Che lavoro fa?","What do you do?","Lavoro nel settore informatico. E lei?","I work in tech. And you?"],
+["Parla italiano?","Do you speak Italian?","Un po'. Sto imparando.","A little. I'm learning."],
+["Prego, mi dica.","Go ahead, what can I get you?","Vorrei due caffè e un cornetto, per favore.","I'd like two coffees and a croissant, please."],
+["Al banco o al tavolo?","At the counter or the table?","Al banco, grazie.","At the counter, thanks."],
+["Avete prenotato?","Do you have a reservation?","Sì, a nome Smith, per le otto.","Yes, under Smith, for eight o'clock."],
+["Quanti siete?","How many of you are there?","Siamo in due.","There are two of us."],
+["Dentro o fuori?","Inside or outside?","Fuori, se è possibile.","Outside, if possible."],
+["Da bere?","Anything to drink?","Una bottiglia di rosso della casa e un'acqua frizzante.","A bottle of house red and a sparkling water."],
+["Naturale o frizzante?","Still or sparkling?","Frizzante, per favore.","Sparkling, please."],
+["Avete deciso?","Have you decided?","Non ancora, ci dia un minuto.","Not yet, give us a minute."],
+["Che cosa vi porto?","What can I bring you?","Per me gli gnocchi, per lei il pesce.","The gnocchi for me, the fish for her."],
+["Come antipasto?","As a starter?","Un tagliere misto di salumi e formaggi.","A mixed board of cured meats and cheeses."],
+["Va bene così?","Is everything all right?","Buonissimo, grazie.","Delicious, thank you."],
+["Desidera altro?","Anything else?","No, grazie. Il conto, per favore.","No thanks. The bill, please."],
+["Come pagate?","How are you paying?","Con la carta, grazie.","By card, thanks."],
+["Le è piaciuto?","Did you enjoy it?","Moltissimo, torneremo.","Very much, we'll come back."],
+["Che vino preferisce, rosso o bianco?","Which wine do you prefer, red or white?","Un rosso corposo, se avete qualcosa di locale.","A full-bodied red, if you have something local."],
+["Vuole assaggiare?","Would you like to taste?","Sì, volentieri.","Yes, gladly."],
+["Che cosa sente?","What do you get on the nose?","Sento frutti rossi e un po' di vaniglia.","I get red fruit and a little vanilla."],
+["Le piace?","Do you like it?","Molto. È secco e ha un finale lungo.","A lot. It's dry with a long finish."],
+["Di che uve è fatto?","Which grapes is it made from?","Non lo so, me lo spiega?","I don't know, can you explain?"],
+["Ne prende una bottiglia?","Will you take a bottle?","Sì, ne prendo due.","Yes, I'll take two."],
+["Che birra le do?","Which beer shall I give you?","Una IPA alla spina, media.","A half litre of IPA on tap."],
+["Chiara o scura?","Pale or dark?","Scura, mi piacciono le stout.","Dark, I like stouts."],
+["Come la trova?","How do you find it?","Molto luppolata, proprio come piace a me.","Very hoppy, just how I like it."],
+["Vuole un assaggio prima?","Would you like a taste first?","Sì, grazie. Posso assaggiare anche l'acida?","Yes, thanks. Could I taste the sour one too?"],
+["Quanto ne vuole?","How much would you like?","Un etto e mezzo, per favore.","150 grams, please."],
+["Altro?","Anything else?","Anche un pezzo di pecorino stagionato.","Also a piece of aged pecorino."],
+["Glielo metto sotto vuoto?","Shall I vacuum-pack it for you?","Sì, per favore, devo prendere l'aereo.","Yes please, I'm flying."],
+["Dove andate oggi?","Where are you going today?","Andiamo agli Uffizi, poi a piedi in centro.","We're going to the Uffizi, then walking into town."],
+["Avete già visitato il museo?","Have you already visited the museum?","No, ci andiamo domani mattina presto.","No, we're going tomorrow morning early."],
+["Le piace l'arte moderna?","Do you like modern art?","Sì, soprattutto l'arte astratta.","Yes, especially abstract art."],
+["Che cosa ne pensa di questo quadro?","What do you think of this painting?","Mi colpiscono i colori, mi trasmette calma.","The colours strike me, it gives me a feeling of calm."],
+["Il biglietto, prego.","Ticket, please.","Eccolo.","Here it is."],
+["Dove scende?","Where are you getting off?","Alla prossima fermata.","At the next stop."],
+["Andata o andata e ritorno?","One way or return?","Andata e ritorno, per favore.","Return, please."],
+["Per quando?","For when?","Per domani mattina, verso le nove.","For tomorrow morning, around nine."],
+["Il treno è in ritardo di venti minuti.","The train is twenty minutes late.","Va bene, aspettiamo. Grazie.","OK, we'll wait. Thanks."],
+["Ha bisogno di aiuto?","Do you need help?","Sì, cerco la stazione. È lontana?","Yes, I'm looking for the station. Is it far?"],
+["Sempre dritto e poi a destra.","Straight on and then right.","Grazie mille, molto gentile.","Thanks very much, that's very kind."],
+["Che cosa cercate?","What are you looking for?","Un posto dove si mangia bene, senza turisti.","Somewhere you eat well, without tourists."],
+["Vi consiglio la trattoria dietro la chiesa.","I'd recommend the trattoria behind the church.","Perfetto, ci andiamo stasera.","Perfect, we'll go there tonight."],
+["A che ora volete cenare?","What time do you want to have dinner?","Verso le otto e mezza.","Around eight thirty."],
+["Vale la pena andarci?","Is it worth going there?","Dicono di sì, ma è molto affollato.","They say so, but it's very crowded."],
+["Quanto costa l'ingresso?","How much is the entrance?","Venti euro, ridotto quindici.","Twenty euros, fifteen reduced."],
+["Preferite la mattina o il pomeriggio?","Do you prefer the morning or the afternoon?","La mattina presto, c'è meno fila.","Early morning, there's less of a queue."],
+["Come vi trovate in Italia?","How are you finding Italy?","Benissimo. Ci piace tutto, soprattutto il cibo.","Wonderful. We like everything, especially the food."],
+["Tornerete?","Will you come back?","Sicuramente, magari in primavera.","Definitely, maybe in spring."]
+];
+
+/* ---------- DATA: role-play dialogues ---------- */
+const DIALOGHI = [
+{id:"bar",t:"Al bar — morning coffee",s:"Standing at the counter in a busy bar at 8am.",
+ l:[["them","Buongiorno! Mi dica.","Morning! What can I get you?"],
+    ["you","Buongiorno. Un cappuccino e un caffè, per favore.","Morning. A cappuccino and an espresso, please."],
+    ["them","Qualcosa da mangiare?","Anything to eat?"],
+    ["you","Sì, due cornetti. Uno alla crema, se c'è.","Yes, two croissants. One with custard, if you have it."],
+    ["them","Al banco o al tavolo?","At the counter or the table?"],
+    ["you","Al banco, grazie. Quant'è?","At the counter, thanks. How much is it?"],
+    ["them","Sette euro e venti.","Seven euros twenty."],
+    ["you","Ecco. Grazie mille, buona giornata!","Here you go. Thanks a lot, have a good day!"]]},
+{id:"rist",t:"Al ristorante — ordering dinner",s:"You've just sat down. You want to know what's good and how spicy it is.",
+ l:[["them","Buonasera. Avete prenotato?","Good evening. Do you have a booking?"],
+    ["you","Sì, a nome Smith, per le otto. Possiamo sederci fuori?","Yes, under Smith, for eight. Can we sit outside?"],
+    ["them","Certo. Ecco il menù. Da bere?","Of course. Here's the menu. Anything to drink?"],
+    ["you","Una bottiglia di rosso locale e un'acqua frizzante, grazie.","A bottle of local red and a sparkling water, thanks."],
+    ["them","Avete deciso?","Have you decided?"],
+    ["you","Che cosa ci consiglia? Qual è il piatto tipico di qui?","What do you recommend? What's the typical dish here?"],
+    ["them","Le consiglio la pasta all'amatriciana, è la nostra specialità.","I'd recommend the amatriciana, it's our speciality."],
+    ["you","È piccante? A noi piace molto piccante.","Is it spicy? We like it very spicy."],
+    ["them","Un po'. Posso chiedere in cucina di aggiungere peperoncino.","A little. I can ask the kitchen to add chilli."],
+    ["you","Perfetto. Due, allora. E un tagliere per iniziare.","Perfect. Two, then. And a board to start."]]},
+{id:"enoteca",t:"In enoteca — wine tasting",s:"A small wine shop that pours by the glass.",
+ l:[["them","Buonasera, cercate qualcosa in particolare?","Evening, are you looking for anything in particular?"],
+    ["you","Vorremmo assaggiare qualche vino della zona.","We'd like to taste a few local wines."],
+    ["them","Rosso o bianco?","Red or white?"],
+    ["you","Cominciamo con un bianco secco, poi un rosso corposo.","Let's start with a dry white, then a full-bodied red."],
+    ["them","Questo è un Verdicchio. Che cosa sente?","This is a Verdicchio. What do you get on the nose?"],
+    ["you","Sento agrumi e un po' di mandorla. Mi piace molto.","I get citrus and a little almond. I like it a lot."],
+    ["them","E questo rosso? Invecchia due anni in botte.","And this red? It ages two years in barrel."],
+    ["you","È più tannico. Di che uve è fatto?","It's more tannic. Which grapes is it made from?"],
+    ["them","Sangiovese in purezza.","Pure Sangiovese."],
+    ["you","Ne prendiamo due bottiglie. Potete spedirle negli Stati Uniti?","We'll take two bottles. Can you ship them to the US?"]]},
+{id:"birra",t:"Al birrificio — craft beer",s:"A taproom with eight taps and a chalkboard.",
+ l:[["them","Ciao! Che ti do?","Hi! What can I get you?"],
+    ["you","Ciao. Che stili avete oggi?","Hi. What styles do you have today?"],
+    ["them","Abbiamo una pils, due IPA, una sour al lampone e una stout.","We have a pilsner, two IPAs, a raspberry sour and a stout."],
+    ["you","Posso assaggiare la sour? Non l'ho mai provata.","Can I taste the sour? I've never tried one."],
+    ["them","Certo. È acida e fruttata.","Sure. It's tart and fruity."],
+    ["you","Buona! Però prendo la IPA. Quanti gradi ha?","Nice! But I'll take the IPA. What's the ABV?"],
+    ["them","Sei e mezzo. Ben luppolata, americana.","Six and a half. Nice and hoppy, American style."],
+    ["you","Perfetta. Una media, e una stout per mia moglie.","Perfect. A half litre, and a stout for my wife."],
+    ["them","Fate anche la visita al birrificio?","Would you like the brewery tour too?"],
+    ["you","Volentieri! A che ora comincia?","Gladly! What time does it start?"]]},
+{id:"stazione",t:"Alla stazione — buying train tickets",s:"At the ticket window, going to Florence tomorrow.",
+ l:[["them","Buongiorno, mi dica.","Morning, how can I help?"],
+    ["you","Due biglietti per Firenze, per domani mattina.","Two tickets to Florence, for tomorrow morning."],
+    ["them","Andata o andata e ritorno?","One way or return?"],
+    ["you","Andata e ritorno. A che ora parte il primo treno?","Return. What time does the first train leave?"],
+    ["them","Alle sei e quarantacinque, e poi ogni ora.","At 6:45, then every hour."],
+    ["you","Prendiamo quello delle otto e dieci. Devo cambiare?","We'll take the 8:10. Do I have to change?"],
+    ["them","No, è diretto. Arriva alle dieci e mezza.","No, it's direct. It arrives at 10:30."],
+    ["you","Da quale binario parte?","Which platform does it leave from?"],
+    ["them","Binario sette. Quarantasei euro in tutto.","Platform seven. Forty-six euros in total."],
+    ["you","Posso pagare con la carta? Devo convalidare il biglietto?","Can I pay by card? Do I need to validate the ticket?"]]},
+{id:"strada",t:"Per strada — asking directions",s:"You're lost between the square and the museum.",
+ l:[["you","Scusi, mi può aiutare? Cerco il museo civico.","Excuse me, can you help me? I'm looking for the civic museum."],
+    ["them","Certo. Allora, sempre dritto fino alla piazza.","Of course. So, straight on to the square."],
+    ["you","Fino alla piazza, va bene.","To the square, OK."],
+    ["them","Poi gira a sinistra, alla seconda traversa.","Then turn left, at the second turning."],
+    ["you","A sinistra alla seconda. È lontano a piedi?","Left at the second. Is it far on foot?"],
+    ["them","No, cinque minuti. È di fronte alla chiesa.","No, five minutes. It's opposite the church."],
+    ["you","Può mostrarmelo sulla mappa? Non ho capito bene.","Can you show me on the map? I didn't quite understand."],
+    ["them","Ecco, siamo qui e il museo è qui.","Here, we're here and the museum is here."],
+    ["you","Adesso è chiaro. Grazie mille, molto gentile!","Now it's clear. Thanks so much, very kind!"]]},
+{id:"museo",t:"Al museo — tickets and opinions",s:"Buying entry, then talking about a painting.",
+ l:[["you","Buongiorno, due biglietti, per favore. C'è la riduzione per gli over 65?","Morning, two tickets please. Is there a reduction for over 65s?"],
+    ["them","Sì, ridotto quindici euro. Volete l'audioguida?","Yes, fifteen euros reduced. Would you like the audio guide?"],
+    ["you","Sì, una in inglese. Quanto dura la visita?","Yes, one in English. How long does the visit take?"],
+    ["them","Circa un'ora e mezza. L'ultimo ingresso è alle sei.","About an hour and a half. Last entry is at six."],
+    ["you","Si possono fare foto?","Are photos allowed?"],
+    ["them","Sì, ma senza flash.","Yes, but without flash."],
+    ["you","Che bel quadro. Di che anno è?","What a beautiful painting. What year is it from?"],
+    ["them","È del 1962, arte astratta.","It's from 1962, abstract art."],
+    ["you","Mi colpiscono i colori. Mi trasmette calma.","The colours strike me. It gives me a feeling of calm."]]},
+{id:"salumi",t:"Al banco — cheese and cured meats",s:"A deli counter. You want a picnic and something to take home.",
+ l:[["them","Buongiorno! Che le do?","Morning! What can I get you?"],
+    ["you","Vorrei un po' di prosciutto crudo. Un etto, per favore.","I'd like some raw ham. 100 grams, please."],
+    ["them","Va bene così?","Is that about right?"],
+    ["you","Perfetto. E che differenza c'è fra questi due salami?","Perfect. And what's the difference between these two salamis?"],
+    ["them","Questo è dolce, quello è piccante, con peperoncino.","This one is mild, that one is spicy, with chilli."],
+    ["you","Allora quello piccante. E un pezzo di pecorino stagionato.","The spicy one then. And a piece of aged pecorino."],
+    ["them","Questo è stagionato dodici mesi. Vuole assaggiare?","This one is aged twelve months. Would you like to taste?"],
+    ["you","Volentieri. Mmm, molto saporito. Lo prendo.","Gladly. Mmm, very tasty. I'll take it."],
+    ["them","Altro?","Anything else?"],
+    ["you","No, grazie. Me lo mette sotto vuoto? Devo prendere l'aereo.","No, thanks. Could you vacuum-pack it? I'm flying."]]},
+{id:"consigli",t:"Chiedere consigli — asking a local",s:"Your host at breakfast. Get the real recommendations.",
+ l:[["you","Buongiorno! Posso chiederle un consiglio?","Morning! Can I ask you for a tip?"],
+    ["them","Certo, dica.","Of course, go ahead."],
+    ["you","Dove si mangia bene qui, senza turisti?","Where do you eat well here, without tourists?"],
+    ["them","Vi consiglio la trattoria dietro il mercato. Chiedete della zuppa.","I'd recommend the trattoria behind the market. Ask for the soup."],
+    ["you","Perfetto. E dove posso trovare una buona birra artigianale?","Perfect. And where can I find good craft beer?"],
+    ["them","C'è un birrificio a dieci minuti, in via Roma.","There's a brewery ten minutes away, on via Roma."],
+    ["you","E che cosa non dobbiamo perderci nei dintorni?","And what shouldn't we miss nearby?"],
+    ["them","Il paese sulla collina. Ma andateci la mattina presto.","The hill town. But go early in the morning."],
+    ["you","Che cosa eviterebbe, invece?","And what would you avoid?"],
+    ["them","Il ristorante sulla piazza principale: caro e turistico.","The restaurant on the main square: expensive and touristy."]]},
+{id:"presentazioni",t:"Chiacchiere — small talk at a table",s:"You've been seated next to a couple at a communal table.",
+ l:[["them","Salve! Siete in vacanza?","Hello! Are you on holiday?"],
+    ["you","Sì, siamo qui per due settimane. Siamo di San Diego.","Yes, we're here for two weeks. We're from San Diego."],
+    ["them","Bello! È la prima volta in Italia?","Lovely! Is it your first time in Italy?"],
+    ["you","No, siamo già stati a Roma. Ma non siamo mai stati qui.","No, we've been to Rome. But we've never been here."],
+    ["them","E che cosa vi piace dell'Italia?","And what do you like about Italy?"],
+    ["you","Il cibo, il vino, e la gente. A mia moglie piacciono i musei.","The food, the wine, and the people. My wife likes the museums."],
+    ["them","Anche a noi! Che lavoro fate?","Us too! What do you do for work?"],
+    ["you","Io lavoro nel settore informatico, mia moglie è insegnante.","I work in tech, my wife is a teacher."],
+    ["them","E parlate già bene italiano!","And you already speak Italian well!"],
+    ["you","Grazie, ma parlo poco. Sto imparando. Scusi il mio italiano!","Thanks, but I speak little. I'm learning. Excuse my Italian!"]]}
+];
+
+/* ---------- DATA: lesson plan ---------- */
+const PLAN = [
+{d:"Day 1",t:"Sound and survival",do:"Learn the 10 greetings, plus per favore / grazie / scusi. Italian is phonetic: read every letter, always the same way.",
+ cats:["saluti"],verbs:["essere","stare"],drill:"Flashcards, then Listen & choose"},
+{d:"Day 2",t:"Say who you are",do:"Sono / siamo, where you're from, how long you're staying. Drill essere and avere until they're automatic.",
+ cats:["io"],verbs:["essere","avere"],drill:"Conjugation trainer"},
+{d:"Day 3",t:"The five request formulas",do:"Vorrei, posso avere, mi può, c'è, dov'è. These five carry more of the trip than any vocabulary list.",
+ cats:["richieste"],verbs:["potere","volere"],drill:"Which word? (vorrei vs voglio, c'è vs ci sono)"},
+{d:"Day 4",t:"Coffee and the counter",do:"Order at a bar without hesitating. Short, fast, no full sentences needed.",
+ cats:["caffe"],verbs:["prendere","pagare"],drill:"Role-play: Al bar"},
+{d:"Day 5",t:"Regular verbs, all three families",do:"-are, -ere, -ire. Drop the ending, keep the stem, add the new ending. Learn parlare, prendere, partire as your three models.",
+ cats:[],verbs:["parlare","prendere","partire","capire"],drill:"Conjugation trainer, all families"},
+{d:"Day 6",t:"Likes and dislikes",do:"Mi piace / mi piacciono, and how to say what your partner likes. The verb agrees with the thing, not with you.",
+ cats:["gusti"],verbs:["piacere","preferire"],drill:"Which word? (piace vs piacciono)"},
+{d:"Day 7",t:"Ordering a meal end to end",do:"Book, sit, ask what's good, ask about spice, pay. Rehearse the whole arc out loud.",
+ cats:["ristorante"],verbs:["prendere","consigliare","portare"],drill:"Role-play: Al ristorante"},
+{d:"Day 8",t:"Wine, tasting, and how it's made",do:"Tasting vocabulary is mostly adjectives: secco, corposo, tannico. Add sentire for aromas.",
+ cats:["vino"],verbs:["bere","assaggiare","sentire"],drill:"Matching game (wine words)"},
+{d:"Day 9",t:"Beer styles and breweries",do:"Chiara, scura, luppolata, acida. Plus the questions that get you a taste before you commit.",
+ cats:["birra"],verbs:["bere","provare"],drill:"Role-play: Al birrificio"},
+{d:"Day 10",t:"Cheese, salami, and the deli counter",do:"Quantities (un etto), tasting first, and getting it vacuum-packed for the flight home.",
+ cats:["salumi"],verbs:["comprare","assaggiare"],drill:"Q&A responder"},
+{d:"Day 11",t:"Getting there",do:"Tickets, platforms, times, delays. Numbers matter here — drill 1 to 100 and the clock.",
+ cats:["trasporti","strada"],verbs:["andare","partire","arrivare"],drill:"Role-play: Alla stazione"},
+{d:"Day 12",t:"Times, tickets and what to skip",do:"Ask when to go, whether to book, and what a local would avoid. Then actually follow the advice.",
+ cats:["orari","consigli"],verbs:["aprire","chiudere","prenotare"],drill:"Q&A responder"},
+{d:"Day 13",t:"Art, books and films",do:"Enough to hold an opinion: mi colpisce, mi trasmette, preferisco. Say why, not just what.",
+ cats:["arte","storie"],verbs:["vedere","leggere","preferire"],drill:"Sentence builder"},
+{d:"Day 14",t:"Past and future, the cheap way",do:"Siamo stati a Roma (been), abbiamo visitato (did), domani andiamo (going). Present tense covers the future — no extra grammar needed.",
+ cats:["viaggi"],verbs:["essere","avere","andare"],drill:"Everything: mixed review"}
+];
+
+const GRAMMAR = [
+{t:"How Italian verbs work, in one screen",
+ h:["Every Italian verb in the dictionary ends in -are, -ere or -ire. That's the infinitive: 'to speak', 'to take', 'to leave'.",
+    "Chop off those last three letters and you have the stem: parl-, prend-, part-.",
+    "Then add an ending that says WHO is doing it. The ending does the job that 'I', 'you', 'we' do in English — which is why Italians usually drop the pronoun entirely.",
+    "So: parlo = I speak. Parliamo = we speak. No 'io' or 'noi' needed unless you want emphasis.",
+    "One more thing: Italian has no -ing form. Parlo covers 'I speak', 'I am speaking' and 'I do speak'. Three for the price of one."]},
+{t:"The endings you need",
+ h:["-are verbs: -o, -i, -a, -iamo, -ate, -ano  (parlo, parli, parla, parliamo, parlate, parlano)",
+    "-ere verbs: -o, -i, -e, -iamo, -ete, -ono  (prendo, prendi, prende, prendiamo, prendete, prendono)",
+    "-ire verbs: -o, -i, -e, -iamo, -ite, -ono  (parto, parti, parte, partiamo, partite, partono)",
+    "-ire verbs, second type: some -ire verbs stretch out with -isc- (capisco, capisci, capisce, capiamo, capite, capiscono). Noi and voi never take it. A dictionary tells you which type; otherwise you pick it up by ear.",
+    "Notice two patterns that never break: io always ends in -o, and noi always ends in -iamo."]},
+{t:"Nouns have a gender — learn it with the article",
+ h:["Don't learn casa. Learn la casa. Don't learn libro. Learn il libro. The article is part of the word.",
+    "Rough rule: -o endings are usually masculine (il vino), -a endings usually feminine (la birra), -e endings could be either (il pane, la chiave).",
+    "Plural: -o becomes -i (il vino → i vini), -a becomes -e (la birra → le birre), -e becomes -i (il pane → i pani).",
+    "Adjectives follow the noun and match it: vino rosso, birra scura, vini rossi, birre scure."]},
+{t:"Mi piace — the verb that runs backwards",
+ h:["Italian doesn't say 'I like wine'. It says 'wine is pleasing to me': mi piace il vino.",
+    "So the verb agrees with the THING, not with you. One thing: mi piace il vino. Several things: mi piacciono i formaggi.",
+    "To say who likes it, put a in front of the person: a mia moglie piace la birra scura. A mio marito non piacciono i funghi.",
+    "Negative: just add non at the front. Non mi piace. Non mi piacciono."]},
+{t:"You already know hundreds of words",
+ h:["English -y becomes Italian -ia: biology → la biologia, philosophy → la filosofia.",
+    "English -ic / -ics becomes -ica: music → la musica, politics → la politica.",
+    "English -ty becomes -tà: city → la città, university → l'università, opportunity → l'opportunità.",
+    "English -tion becomes -zione: station → la stazione, reservation → la prenotazione, fermentation → la fermentazione.",
+    "Try it before you look it up. You'll be right more often than you expect."]},
+{t:"Questions: six words that open any door",
+ h:["Dove? = where. Dov'è la stazione?",
+    "Quando? = when. Quando aprite?",
+    "Quanto? = how much. Quanto costa?",
+    "Come? = how. Come si dice?",
+    "Che cosa? = what. Che cosa ci consiglia?",
+    "Perché? = why (and also 'because'). Perché no?",
+    "Italian asks questions with tone of voice alone. Word order doesn't change: È aperto. → È aperto? Just lift your voice at the end."]},
+{t:"Past and future without new grammar",
+ h:["For the future, just use the present tense with a time word: domani andiamo a Siena. Stasera mangiamo qui. Italians do this constantly.",
+    "For the past, you need two building blocks. With avere: abbiamo visitato, abbiamo mangiato, ho preso.",
+    "With essere (for coming, going, staying): siamo andati, siamo stati, sono arrivato. With essere the ending agrees: siamo andati / siamo andate.",
+    "Two ready-made sentences worth memorising whole: Siamo già stati a Roma. Non siamo mai stati in Sicilia."]},
+{t:"Memory hooks that stick",
+ h:["Link the new word to something you already know — a sound, an image, a person. It doesn't have to make sense to anyone but you.",
+    "Salve (formal hello) → 'greetings and salutations'. Formal, old-fashioned, exactly the right register.",
+    "Lui (he) and lei (she) → King Louis and Princess Leia.",
+    "Tavolo (table) → a table covered in tapas: 'tapas volo'.",
+    "Chiara (pale beer) → clear. Scura (dark) → obscure. Both are already in English.",
+    "Make yours weird. Weird is what your brain keeps."]}
+];
+
+/* ============================================================
+   DATA: dictionary for tap-a-word
+   Verbs get conjugated automatically, so every form is tappable.
+   ============================================================ */
+/* [infinitive, english, family]  — regular verbs, conjugated by rule below */
+const EXTRA_VERBS = [
+["aiutare","to help","are"],["provare","to try","are"],["guardare","to watch / to look at","are"],
+["ascoltare","to listen to","are"],["imparare","to learn","are"],["studiare","to study","are"],
+["cucinare","to cook","are"],["camminare","to walk","are"],["tornare","to come back","are"],
+["restare","to stay","are"],["fermare","to stop","are"],["affittare","to rent","are"],
+["accettare","to accept","are"],["funzionare","to work / to function","are"],["chiamare","to call","are"],
+["invecchiare","to age","are"],["interessare","to interest","are"],["rappresentare","to represent","are"],
+["cominciare","to begin","are"],["spiegare","to explain","are"],["cenare","to have dinner","are"],
+["evitare","to avoid","are"],["lasciare","to leave (behind)","are"],["desiderare","to wish / to want","are"],
+["durare","to last","are"],["cambiare","to change","are"],["mostrare","to show","are"],
+["convalidare","to validate","are"],["costare","to cost","are"],["amare","to love","are"],
+["trasmettere","to transmit / to give off","ere"],["mettere","to put","ere"],["scrivere","to write","ere"],
+["perdere","to lose / to miss","ere"],["dividere","to divide / to split","ere"],["condividere","to share","ere"],
+["chiedere","to ask","ere"],["aggiungere","to add","ere"],["scendere","to get off / to go down","ere"],
+["ripetere","to repeat","ere"],["vivere","to live","ere"],["vendere","to sell","ere"],
+["offrire","to offer","ire"],["seguire","to follow","ire"],["servire","to need / to serve","ire"],
+["spedire","to ship / to send","isc"],["colpire","to strike","isc"],["pulire","to clean","isc"],
+["suggerire","to suggest","isc"]
+];
+
+/* single words: [word, meaning, note?] */
+const FUNC = [
+/* articles and prepositions */
+["il","the (m sing)"],["lo","the (m sing, before s+consonant or z)"],["la","the (f sing) / it (her)"],
+["l'","the (before a vowel)"],["i","the (m plural)"],["gli","the (m plural) / to him"],["le","the (f plural) / to her"],
+["un","a / one (m)"],["uno","a / one (m)"],["una","a / one (f)"],["un'","a / one (f, before a vowel)"],
+["di","of / from","Also 'than' in comparisons."],["del","of the / some (m)"],["dello","of the (m)"],["della","of the (f)"],
+["dell'","of the (before a vowel)"],["dei","of the / some (m pl)"],["degli","of the (m pl)"],["delle","of the / some (f pl)"],
+["a","to / at"],["ad","to / at (before a vowel)"],["al","to the / at the (m)"],["allo","to the (m)"],["alla","to the / at the (f)"],
+["all'","to the (before a vowel)"],["ai","to the (m pl)"],["agli","to the (m pl)"],["alle","at the (f pl)","Clock times: alle otto = at eight."],
+["da","from / by / since","Also 'at someone's place': da Marco."],["dal","from the (m)"],["dalla","from the (f)"],
+["in","in / to (countries and regions)"],["nel","in the (m)"],["nello","in the (m)"],["nella","in the (f)"],
+["nei","in the (m pl)"],["negli","in the (m pl)"],["nelle","in the (f pl)"],
+["con","with"],["su","on"],["sul","on the (m)"],["sulla","on the (f)"],["sui","on the (m pl)"],
+["per","for / in order to / through"],["tra","between / in (time from now)"],["fra","between / among"],
+["senza","without"],["sotto","under"],["sopra","above"],["dentro","inside"],["fuori","outside"],
+["dietro","behind"],["davanti","in front of"],["accanto","next to"],["fronte","front","Di fronte a = opposite."],
+["verso","towards / around (a time)"],["fino","until / as far as"],["circa","about / roughly"],["dopo","after"],
+["prima","before / first"],["oltre","beyond"],
+/* joining words and adverbs */
+["e","and"],["ed","and (before a vowel)"],["o","or"],["ma","but"],["però","but / however"],
+["perché","why / because"],["se","if"],["che","that / which / what","Also 'than' after a comparison."],
+["come","how / like"],["quando","when"],["dove","where"],["dov'è","where is"],
+["quanto","how much"],["quanti","how many (m)"],["quanta","how much (f)"],["quante","how many (f)"],["quant'è","how much is it"],
+["quale","which"],["quali","which (plural)"],["qual","which (before è)"],["chi","who"],
+["cosa","thing / what","Che cosa? = what?"],["non","not"],["no","no"],["sì","yes"],
+["anche","also / too"],["ancora","still / yet / more"],["già","already"],["sempre","always","Sempre dritto = straight ahead."],
+["mai","never / ever"],["più","more / most","Non… più = not any more."],["meno","less"],
+["molto","very / a lot"],["molti","many (m)"],["molta","much (f)"],["molte","many (f)"],
+["troppo","too much"],["poco","little / not much"],["po'","bit","Un po' di = a little of."],
+["tutto","everything / all"],["tutti","everyone (m pl)"],["tutta","all (f)"],["altro","other / anything else"],["altra","other (f)"],
+["ogni","every"],["qualche","some / a few"],["qualcosa","something"],["qualcuno","someone"],
+["niente","nothing"],["nulla","nothing"],["solo","only / alone"],["proprio","really / exactly / one's own"],
+["davvero","really"],["magari","maybe / if only"],["forse","perhaps"],["così","like this / so"],
+["poi","then / afterwards"],["allora","so / then / well"],["adesso","now"],["ora","now / hour"],
+["oggi","today"],["domani","tomorrow"],["ieri","yesterday"],["dopodomani","the day after tomorrow"],
+["stasera","this evening"],["stamattina","this morning"],["presto","early / soon"],["tardi","late"],["tardo","late (adj)"],
+["subito","right away"],["qui","here"],["qua","here"],["lì","there"],["là","there"],["fondo","bottom / far end","Là in fondo = over there at the back."],
+["ecco","here it is / there you go"],["insieme","together"],["invece","instead / actually"],
+["almeno","at least"],["quasi","almost"],["appena","just / as soon as"],["volentieri","gladly"],
+["bene","well"],["male","badly"],["meglio","better"],["peggio","worse"],["migliore","best / better (adj)"],
+["dritto","straight"],["destra","right (direction)"],["sinistra","left (direction)"],["via","street / away"],
+["ben","nice and… / well","Ben luppolata = nice and hoppy."],
+/* pronouns and possessives */
+["io","I"],["tu","you (informal)"],["lui","he"],["lei","she / you (formal)"],["noi","we"],["voi","you (plural)"],
+["loro","they / them"],["mi","me / to me / myself"],["ti","you / to you"],
+["ci","us / to us / there","C'è, ci sono = there is, there are."],["vi","you (pl) / to you"],
+["si","oneself / one / people in general","Si mangia bene = one eats well here."],
+["me","me (after a preposition)"],["te","you (after a preposition)"],
+["ne","of it / of them","Ne prendo due = I'll take two of them."],["li","them (m)"],["glielo","it, to him / her / you"],
+["mio","my (m)"],["mia","my (f)"],["miei","my (m pl)"],["mie","my (f pl)"],["tuo","your"],
+["suo","his / her / your (formal)"],["sua","his / her"],["nostro","our (m)"],["nostra","our (f)"],["vostro","your (pl)"],
+["questo","this (m)"],["questa","this (f)"],["questi","these (m)"],["queste","these (f)"],
+["quello","that one (m)"],["quel","that (m, before a consonant)"],["quella","that (f)"],["stesso","same"],
+/* numbers, time, money */
+["zero","zero"],["due","two"],["tre","three"],["quattro","four"],["cinque","five"],["sei","six"],
+["sette","seven"],["otto","eight"],["nove","nine"],["dieci","ten"],["undici","eleven"],["dodici","twelve"],
+["quindici","fifteen"],["venti","twenty"],["trenta","thirty"],["quaranta","forty"],
+["quarantacinque","forty-five"],["quarantasei","forty-six"],["cinquanta","fifty"],["cinquant'anni","fifty years old"],
+["cento","a hundred"],["mille","a thousand","Grazie mille = thanks a lot."],
+["mezzo","half (m)"],["mezza","half (f)","Le otto e mezza = half past eight."],
+["primo","first"],["seconda","second (f)"],["ultimo","last"],["euro","euro"],
+["etto","100 grams","Un etto e mezzo = 150g."],["chilo","kilo"],["litro","litre"],
+["anno","year"],["anni","years","Ho cinquant'anni = I'm fifty."],["mese","month"],["mesi","months"],
+["settimana","week"],["settimane","weeks"],["notte","night"],["notti","nights"],
+["volta","time / occasion"],["volte","times"],["minuto","minute"],["minuti","minutes"],["giorni","days"],
+["lunedì","Monday"],["domenica","Sunday"],["settembre","September"],["primavera","spring"],
+/* set expressions and courtesy */
+["buongiorno","good morning / good day"],["buonasera","good evening"],["buonanotte","good night"],
+["ciao","hi / bye (informal)"],["salve","hello (polite and neutral)"],["arrivederci","goodbye (polite)"],
+["grazie","thank you"],["prego","you're welcome / go ahead / please"],
+["favore","favour","Per favore = please."],["cortesia","courtesy","Per cortesia = please."],
+["scusi","excuse me (formal)"],["scusa","sorry (informal)"],["permesso","may I come through"],
+["salute","health","Salute! = cheers!"],["cin","cheers","Cin cin!"],["auguri","best wishes"],
+["giornata","day (the whole of it)"],["aiuto","help"],
+["fame","hunger","Ho fame = I'm hungry."],["sete","thirst","Ho sete = I'm thirsty."],
+["bisogno","need","Ho bisogno di = I need."],["attimo","moment"],["momento","moment"],["nome","name"],
+["pena","trouble","Vale la pena = it's worth it."],["mal","ache","Mal di testa = headache."],
+/* places, travel, everyday nouns */
+["banco","counter"],["cassa","till / checkout"],["posto","place / seat"],["posti","seats"],["gente","people"],
+["cibo","food"],["cucina","kitchen / cuisine"],["tempo","time / weather"],["libero","free"],
+["fila","queue"],["ingresso","entrance"],["ridotto","reduced price"],["interi","full price (tickets)"],
+["biglietti","tickets"],["andata","outward trip","Andata e ritorno = return ticket."],["ritorno","return"],
+["coincidenza","connection"],["ritardo","delay"],["corsa","ride / fare"],["bagagli","luggage"],
+["molo","pier"],["aeroporto","airport"],["centro","centre / downtown"],["piedi","feet","A piedi = on foot."],
+["dintorni","the area nearby"],["gite","day trips"],["zona","area"],["specialità","speciality"],
+["paese","village / country"],["collina","hill"],["enoteca","wine bar"],["trattoria","trattoria (simple restaurant)"],
+["ristorante","restaurant"],["duomo","cathedral"],["traversa","turning / side street"],["mappa","map"],
+["taxi","taxi"],["wifi","wifi"],["password","password"],["online","online"],["farmacia","pharmacy"],
+["testa","head"],["stomaco","stomach"],["portafoglio","wallet"],["civico","civic"],["guidata","guided"],
+["restauro","restoration"],["principale","main"],["turisti","tourists"],["turistico","touristy"],
+["vacanza","holiday"],["lavoro","work / job"],["settore","sector"],["informatico","IT / computing"],
+["pensione","retirement / guesthouse"],["insegnante","teacher"],["medico","doctor"],
+["moglie","wife"],["marito","husband"],["figli","children"],["cane","dog"],["nonna","grandmother"],
+["nonno","grandfather"],["amico","friend"],["gusti","tastes","Per i miei gusti = for my taste."],
+/* food, wine, beer */
+["rosso","red"],["bianco","white"],["frizzante","sparkling"],["naturale","still (water) / natural"],
+["crudo","raw"],["cotto","cooked"],["misto","mixed"],["tagliere","board"],["salumi","cured meats"],
+["formaggi","cheeses"],["pezzo","piece"],["porzione","portion"],["vuoto","empty","Sotto vuoto = vacuum-packed."],
+["glutine","gluten"],["noci","nuts"],["funghi","mushrooms"],["fegato","liver"],["vongole","clams"],
+["spaghetti","spaghetti"],["gnocchi","gnocchi"],["pasta","pasta"],["zuppa","soup"],["crema","custard"],
+["cornetti","croissants"],["limone","lemon"],["orzo","barley"],["tè","tea"],["uve","grapes (varieties)"],
+["frutti","fruits"],["agrumi","citrus"],["mandorla","almond"],["vaniglia","vanilla"],["lampone","raspberry"],
+["cioccolato","chocolate"],["note","notes"],["profumo","aroma"],["finale","finish / ending"],
+["tannico","tannic"],["luppolata","hoppy (f)"],["acida","sour (f)"],["acide","sour (f pl)"],
+["fruttata","fruity (f)"],["gradi","degrees / alcohol %"],["media","medium / half litre"],
+["botte","barrel"],["rovere","oak"],["vendemmia","grape harvest"],["biologico","organic"],
+["malti","malts"],["fermentazione","fermentation"],["pils","pilsner"],["lager","lager"],["stout","stout"],
+["porter","porter"],["ipa","IPA"],["sour","sour beer"],["pale","pale"],["ale","ale"],
+["brut","brut (dry sparkling)"],["dessert","dessert"],["zuccherino","sugary"],["saporito","tasty, well seasoned"],
+["coperto","cover charge"],["resto","change (money)"],["sconto","discount"],["ricevuta","receipt"],
+["contanti","cash"],["bancomat","ATM / debit card"],["carte","cards"],["credito","credit"],
+["pecora","sheep"],["capra","goat"],["mucca","cow"],["prodotto","product"],["differenza","difference"],
+["nduja","'nduja, a spicy spreadable salami"],["salami","salamis"],["amatriciana","amatriciana (tomato, guanciale, pecorino)"],
+["verdicchio","Verdicchio (white grape)"],["sangiovese","Sangiovese (red grape)"],["purezza","purity","In purezza = 100% one grape."],
+["prosecco","prosecco"],["parma","Parma"],
+/* art, books, film */
+["arte","art"],["astratta","abstract (f)"],["moderna","modern (f)"],["pittori","painters"],
+["contemporanei","contemporary (m pl)"],["pennellate","brushstrokes"],["quattrocento","the 1400s"],
+["temporanea","temporary (f)"],["audioguida","audio guide"],["foto","photo"],["flash","flash"],
+["tecnica","technique / medium"],["acrilico","acrylic"],["colori","colours"],["calma","calm"],
+["musica","music"],["canzone","song"],["libri","books"],["romanzo","novel"],["gialli","crime stories"],
+["polizieschi","crime dramas"],["fantascienza","science fiction"],["thriller","thriller"],
+["avvincente","gripping"],["serie","series"],["storie","stories"],["vere","true (f pl)"],
+["preferito","favourite"],["orrore","horror"],["tratto","taken / based","È tratto da = it's based on."],
+/* adjectives and descriptions */
+["americano","American (m)"],["americana","American (f)"],["americani","Americans"],
+["italiano","Italian"],["italiana","Italian (f)"],["inglese","English"],["vero","real / true"],
+["locale","local / venue"],["gentile","kind"],["morto","dead","Stanco morto = dead tired."],
+["bello","beautiful"],["bella","beautiful (f)"],["bel","beautiful (m, short form)"],
+["bellissima","gorgeous (f)"],["bellissime","gorgeous (f pl)"],["benissimo","great / very well"],
+["buonissimo","delicious"],["buon","good (short form)"],["ottimo","excellent"],
+["perfetto","perfect"],["perfetta","perfect (f)"],["certo","certainly / of course"],
+["giusto","right / correct"],["giusta","right (f)"],["sicuramente","definitely"],
+["soprattutto","especially"],["sinceramente","honestly"],["curioso","curious"],["delizioso","delicious"],
+["allergico","allergic (m)"],["possibile","possible"],["prossimo","next"],["prossima","next (f)"],
+["diretto","direct"],["industriale","industrial, mass-market"],["chiara","pale (f)"],["scura","dark (f)"],
+["scure","dark (f pl)"],["chiare","pale (f pl)"],["leggera","light (f)"],["freschi","fresh (m pl)"],
+["fan","fan"],["tranne","except"],["dica","tell me","Polite command from dire. Mi dica = what can I get you?"],
+["dia","give me","Polite command from dare. Mi dia = give me."],["dite","you say / say (pl)"],
+["chiedete","ask (plural command)"],["andateci","go there (plural command)"],
+/* forms outside the present tense that appear in the app */
+["vorrei","I would like","Conditional of volere — the polite way to ask for anything."],
+["vorremmo","we would like","Conditional of volere."],
+["vorrebbe","he / she / you would like","Conditional of volere."],
+["avrei","I would have","Conditional of avere. Avrei bisogno di = I need."],
+["potrebbe","could you","Conditional of potere."],
+["torneremo","we will come back","Future of tornare."],
+["tornerete","you will come back","Future of tornare."],
+["evitereste","you would avoid","Conditional of evitare."],
+["eviterebbe","he / she / you would avoid","Conditional of evitare."],
+["era","was","Imperfect of essere."],
+["stato","been / stayed","Past participle of essere and stare."],
+["stata","been (f)","Past participle of essere."],
+["stati","been (m pl)","Siamo stati a Roma = we've been to Rome."],
+["state","been (f pl)"],
+["fatto","done / made","Past participle of fare."],
+["detto","said","Past participle of dire."],
+["preso","taken","Past participle of prendere."],
+["letto","read / bed","Past participle of leggere."],
+["perso","lost / missed","Past participle of perdere."],
+["persa","lost (f)","Past participle of perdere."],
+["visto","seen","Past participle of vedere."],
+["aperto","open / opened","Also the past participle of aprire."],
+["chiuso","closed","Past participle of chiudere."],
+["scelto","chosen","Past participle of scegliere."],
+["bevuto","drunk","Past participle of bere."],
+["piaciuto","liked / enjoyed","Past participle of piacere. Ci è piaciuto = we enjoyed it."],
+["piaciuta","liked (f)","Past participle of piacere."],
+["conosciuto","known / met","Past participle of conoscere."],
+["capito","understood","Past participle of capire."],
+["deciso","decided","Past participle of decidere."],
+["venuto","come","Past participle of venire."],
+["imparando","learning","Sto imparando = I'm learning."],
+["pensando","thinking","Sto pensando = I'm thinking."],
+["leggendo","reading","Sto leggendo = I'm reading."],
+["vive","he / she lives","From vivere."],
+["vale","it is worth","From valere. Vale la pena = it's worth it."],
+["bisogna","one has to / it's necessary","Bisogna prenotare? = do you have to book?"],
+["desidera","would you like","Polite question from desiderare."],
+["riesco","I manage","From riuscire. Non riesco a = I can't manage to."],
+["conoscerla","to meet you","conoscere + la (you, formal). Piacere di conoscerla."],
+["sederci","to sit (ourselves)","sedersi + ci."],
+["fermiamo","we stop / we're staying","From fermarsi. Ci fermiamo tre notti."],
+["fermate","stop / you stop"],["restiamo","we're staying","From restare."],
+["chiamo","I call / my name is","Mi chiamo = my name is (literally 'I call myself')."],
+["trovo","I find","Lo trovo delizioso = I find it delicious."],
+["troviamo","we find","Ci troviamo bene = we're enjoying it here."],
+["colpiscono","they strike me","From colpire (-isc-). Mi colpiscono i colori."],
+["interessa","it interests","Mi interessa = I'm interested in it."],
+["rappresenta","it represents"],["trasmette","it gives off / conveys"],
+["invecchia","it ages"],["dura","it lasts"],["funziona","it works"],
+["costa","it costs"],["costano","they cost"],["accettate","do you accept"],
+["spiega","he / she explains"],["scende","he / she gets off"],["comincia","it begins"],
+["cominciamo","let's begin"],["ferma","it stops"],["metto","I put"],["mette","he / she puts"],
+["glassato","glazed"],
+
+["lasciamo","let's leave","Lasciamo perdere = let's forget it."],
+["guardiamo","we watch"],["ascolta","listen (command)"],["ascoltare","to listen to"],
+["chiederle","to ask you","chiedere + le (to you, formal)."],
+["chiederle","to ask you"],["mostrarmelo","to show it to me","mostrare + me + lo."],
+["scriverlo","to write it down"],["spedirlo","to ship it"],["spedirle","to ship them (f)"],
+["andarci","to go there"],["perdermi","to miss out","Che cosa non devo perdermi?"],
+["perderci","to miss out (for us)"],["condividere","to share"],["aggiungere","to add"],
+["cambiare","to change"],["convalidare","to validate"],["chiamare","to call"],["aiutare","to help"],
+["lasciare","to leave (behind)"],["cenare","to have dinner"],["ripetere","to repeat"],
+["guardare","to look at / to watch"],["imparare","to learn"],["provare","to try"],
+["assaggio","taste / I taste","Un assaggio = a taste."],["studio","I study / studio"],
+["cucino","I cook"],["cammino","I walk / path"],["eccolo","here it is"],
+["glielo","it, to him / her / you"],["l'ho","I have it","lo + ho."],
+["do","I give","From dare."],["dà","he / she gives"],["sa","he / she knows / you know (formal)"],
+["san","Saint","San Diego."],["moltissimo","very much indeed"],["tantissimo","very much indeed"],
+["adoro","I adore","From adorare."],["dispiace","it's a pity","Mi dispiace = I'm sorry."],
+["ringrazio","I thank","La ringrazio = thank you (formal)."],["porzione","portion"],
+["incluso","included"],["condividere","to share"],["dividere","to split"],
+["quarantacinque","forty-five"],["cinquant'anni","fifty years old"],["nostro","our"],["viaggio","trip / I travel"],
+["degustazioni","tastings"],["aperitivo","aperitivo (pre-dinner drink)"],["vin","wine (in vin santo)"],
+["santo","holy","Vin santo = a sweet dessert wine."],["stili","styles"],["birre","beers"],
+["vini","wines"],["bottiglie","bottles"],["musei","musei = museums"],["over","over (English)"],
+["riduzione","reduction / discount"],["circa","about"],["rumore","noise"],["canzone","song"],
+["mmm","mmm"],["smith","Smith (a name)"],["marco","Marco (a name)"],["anna","Anna (a name)"],
+["paolo","Paolo (a name)"],["elena","Elena (a name)"],["ferrante","Ferrante (a surname)"],
+["diego","Diego","San Diego."],["california","California"],["italia","Italy"],["roma","Rome"],
+["firenze","Florence"],["venezia","Venice"],["sicilia","Sicily"],["siena","Siena"],["bologna","Bologna"],
+["napoli","Naples"],["orvieto","Orvieto"],["uffizi","the Uffizi gallery"],["stranger","(English word in the prompt)"],
+["friend","(English word in the prompt)"],["waiter","(English word in the prompt)"],["to","(English word in the prompt)"],
+["tv","TV"],["uniti","united","Stati Uniti = United States."],["negli","in the (m pl)"],
+["d'oliva","of olive","Olio d'oliva = olive oil."],["d'acqua","of water"],["d'orzo","of barley"],
+["d'italiano","of Italian"],["dell'italia","of Italy"],["all'amatriciana","amatriciana style"],
+["un'ora","an hour"],["un'acqua","a water"],["l'italiano","Italian (the language)"],
+["particolare","particular"],["visite","visits / tours"],["cornetto","croissant"],
+["c'","there / it","C'è = there is. Ci sono = there are."],["dov'","where","Dov'è = where is."],
+["d'","of","d'acqua = of water."],["quant'","how much","Quant'è? = how much is it?"],
+["cinquant'","fifty"],["nell'","in the"],["sull'","on the"],["dall'","from the"],["l'ho","I have it"],
+["lungo","long / along","Caffè lungo = a longer espresso."],["macchiato","stained / with a drop of milk"],
+["ristretto","short / concentrated","Caffè ristretto = a short espresso."],["decaffeinato","decaf"],
+["tipico","typical / traditional"],["giro","tour / round","Un giro in cantina = a cellar tour."],
+["giri","turn (polite command)","From girare. Giri a destra = turn right."],
+["gira","turn (informal command) / it turns"],["girare","to turn"],
+["lentamente","slowly"],["artista","artist"],["oliva","olive"],["costiera","coast / coastline"],
+["pensa","he / she thinks","Che cosa ne pensa? = what do you think of it?"],
+["pensare","to think"],["iniziare","to start","Per iniziare = to start with."],
+["riuscire","to manage / to succeed"],["valere","to be worth"],["bisognare","to be necessary"],
+["fermarsi","to stop / to stay"],["sedersi","to sit down"],["chiamarsi","to be called"],
+["trovarsi","to find oneself / to get on"],["adorare","to adore"],["girarsi","to turn round"]
+];
+
+/* ============================================================
+   ENGINE
+   ============================================================ */
+const BUILD = "3.0.0";
+const BUILT = "2026-08-31";
+const CHANGES = [
+  ["3.0.0","2026-08-31","Words tab: two-way dictionary, 860 entries, A–Z jump, set expressions like avere fame conjugated in full. Tap any Italian word anywhere for its meaning and verb table. Saved tab: word list and notepad. Verbs tab folded into Words."],
+  ["2.0.0","2026-08-31","Icons, web manifest, offline cache, add-to-home-screen support."],
+  ["1.0.0","2026-08-31","First build: 300 phrases, 44 verbs, 10 drill types, role-play, 14-day plan."]
+];
+const $ = s => document.querySelector(s);
+const view = $("#view");
+
+/* --- storage that degrades gracefully (some preview sandboxes block it) --- */
+const store = (()=>{
+  try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); return localStorage; }
+  catch(e){ const m={}; return {getItem:k=>(k in m?m[k]:null), setItem:(k,v)=>{m[k]=String(v)}, removeItem:k=>{delete m[k]}}; }
+})();
+const DEF = {xp:0, streak:0, last:"", start:"", box:{}, star:{}, seen:{}, day:1, rate:0.9, voice:"", list:{}, notes:[], draft:""};
+let S = Object.assign({}, DEF, JSON.parse(store.getItem("andiamo")||"{}"));
+const save = () => store.setItem("andiamo", JSON.stringify(S));
+function today(){ return new Date().toISOString().slice(0,10); }
+function touchStreak(){
+  const t = today();
+  if(S.last === t) return;
+  const y = new Date(Date.now()-86400000).toISOString().slice(0,10);
+  S.streak = (S.last === y) ? S.streak+1 : 1;
+  S.last = t;
+  if(!S.start) S.start = t;
+  save();
+}
+function daysIn(){
+  if(!S.start) return 1;
+  const d = Math.floor((new Date(today()) - new Date(S.start))/86400000)+1;
+  return Math.max(1, Math.min(PLAN.length, d));
+}
+function addXp(n){ S.xp += n; save(); paintHeader(); }
+function paintHeader(){ $("#streakN").textContent = S.streak; $("#xpN").textContent = S.xp; }
+
+/* --- helpers --- */
+const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];} return a; };
+const sample = (a,n) => shuffle(a).slice(0,n);
+const esc = s => String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const norm = s => String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+  .replace(/[’']/g,"'").replace(/[^a-z' ]/g,"").replace(/\s+/g," ").trim();
+function scrollSafe(el){ try{ el && el.scrollIntoView && el.scrollIntoView({block:"nearest"}); }catch(e){} }
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._x); t._x=setTimeout(()=>t.classList.remove("show"),1600); }
+
+/* --- speech --- */
+let voices = [];
+function loadVoices(){ voices = (window.speechSynthesis ? speechSynthesis.getVoices() : []).filter(v=>/^it/i.test(v.lang)); }
+if(window.speechSynthesis){ loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+function speak(text){
+  if(!window.speechSynthesis) { toast("This browser can't speak Italian"); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(String(text).replace(/\.\.\./g,"…"));
+  u.lang = "it-IT"; u.rate = S.rate;
+  const v = voices.find(v=>v.name===S.voice) || voices[0];
+  if(v) u.voice = v;
+  speechSynthesis.speak(u);
+}
+document.addEventListener("click", e=>{
+  const b = e.target.closest("[data-say]");
+  if(b){ speak(b.getAttribute("data-say")); }
+});
+$("#voiceBtn").onclick = () => {
+  loadVoices();
+  const names = voices.map(v=>v.name);
+  const cur = names.indexOf(S.voice);
+  if(names.length){ S.voice = names[(cur+1) % names.length]; }
+  const speeds = [0.7,0.8,0.9,1];
+  S.rate = speeds[(speeds.indexOf(S.rate)+1) % speeds.length];
+  save();
+  toast((S.voice ? S.voice.split(" ")[0]+" · " : "") + "speed " + S.rate);
+  speak("Andiamo! Parliamo italiano.");
+};
+
+/* --- flattened item pools --- */
+const ALLPHRASES = [];
+CATS.forEach(c => (P[c.id]||[]).forEach((p,i) => ALLPHRASES.push({it:p[0], en:p[1], ph:p[2], cat:c.id, key:"p:"+c.id+":"+i})));
+const NOUNITEMS = NOUNS.map((n,i)=>({it:n[0], en:n[1], ph:"", cat:n[3], key:"n:"+i}));
+const ADJITEMS  = ADJ.map((a,i)=>({it:a[0], en:a[1], ph:"", cat:"agg", key:"a:"+i}));
+const catName = id => (CATS.find(c=>c.id===id)||{name:id}).name;
+
+function deckItems(deck){
+  if(deck === "study") return Object.entries(S.list||{}).map(([k,v])=>({it:v.w, en:v.g||"(no meaning saved)", ph:"", cat:"study", key:"s:"+k}));
+  if(deck === "all") return ALLPHRASES.concat(NOUNITEMS, ADJITEMS);
+  if(deck === "starred") return ALLPHRASES.concat(NOUNITEMS, ADJITEMS).filter(x=>S.star[x.key]);
+  if(deck === "vocab") return NOUNITEMS.concat(ADJITEMS);
+  return ALLPHRASES.filter(x=>x.cat===deck).concat(NOUNITEMS.filter(x=>x.cat===deck));
+}
+function boxOf(k){ return S.box[k] || 1; }
+function grade(k, ok){
+  S.box[k] = ok ? Math.min(5, boxOf(k)+1) : 1;
+  S.seen[k] = (S.seen[k]||0)+1;
+  if(ok) addXp(1); else save();
+}
+/* pick items, weakest first, with a little randomness */
+function studyOrder(items, n){
+  const scored = items.map(x=>({x, s: boxOf(x.key) + Math.random()*1.4}));
+  scored.sort((a,b)=>a.s-b.s);
+  return scored.slice(0, n).map(o=>o.x);
+}
+
+/* --- router --- */
+let TAB = "home";
+const TABS = {home:renderHome, phrases:renderPhrases, words:renderDict, drills:renderDrills, plan:renderPlan, saved:renderSaved};
+function go(tab){
+  TAB = tab;
+  document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-current", String(b.dataset.tab===tab)));
+  window.scrollTo(0,0);
+  TABS[tab]();
+}
+document.querySelectorAll("#tabs button").forEach(b=> b.onclick = ()=>go(b.dataset.tab));
+
+/* ============================================================
+   VIEW: Today
+   ============================================================ */
+function renderHome(){
+  const day = PLAN[Math.min(S.day, PLAN.length)-1];
+  const learned = Object.values(S.box).filter(b=>b>=3).length;
+  const total = ALLPHRASES.length + NOUNITEMS.length + ADJITEMS.length;
+  const pod = ALLPHRASES[(new Date().getDate()*7) % ALLPHRASES.length];
+  view.innerHTML = `
+  <section class="hero">
+    <h1>Andiamo.</h1>
+    <p>Italian you can actually use at a bar, a ticket window and a wine cellar. Fourteen days, twenty minutes each.</p>
+    <div class="meter">
+      <div><b>${S.streak}</b>day streak</div>
+      <div><b>${learned}</b>cards solid</div>
+      <div><b>${total}</b>in the deck</div>
+    </div>
+  </section>
+
+  <button class="btn wide" id="quickStart" style="margin:14px 0 4px">Start today's 10-minute session</button>
+  <p class="small" style="text-align:center;margin:0 0 8px">Flashcards, then a quiz, then three verbs to conjugate.</p>
+
+  <h2>${day.d}: ${esc(day.t)}</h2>
+  <div class="card">
+    <p style="margin:0 0 10px">${esc(day.do)}</p>
+    ${day.cats.length ? `<div class="chips">${day.cats.map(c=>`<button class="chip" data-goCat="${c}">${esc(catName(c))}</button>`).join("")}</div>` : ""}
+    <div class="chips">${day.verbs.map(v=>`<button class="chip" data-goVerb="${v}">${v}</button>`).join("")}</div>
+    <p class="small" style="margin:6px 0 10px">Then practise: ${esc(day.drill)}</p>
+    <div class="row" style="gap:8px">
+      <button class="btn quiet" id="prevDay">Back a day</button>
+      <button class="btn quiet" id="nextDay">Mark done, next day</button>
+    </div>
+  </div>
+
+  <h2>Practice</h2>
+  <div class="grid2">
+    ${[["flash","Flashcards"],["quiz","Quick quiz"],["listen","Listen &amp; choose"],["match","Matching"],
+       ["conj","Conjugation"],["which","Which word?"],["qa","Answer them"],["dialog","Role-play"]]
+      .map(([k,n])=>`<button class="match" data-drill="${k}">${n}</button>`).join("")}
+  </div>
+
+  <h2>Phrase of the day</h2>
+  <div class="card">
+    <div class="row">
+      <button class="speak" data-say="${esc(pod.it)}">▶</button>
+      <div class="grow">
+        <div class="it">${gloss(pod.it)}</div>
+        <div class="ph">${esc(pod.ph)}</div>
+        <div class="en">${esc(pod.en)}</div>
+      </div>
+    </div>
+  </div>
+  <p class="small" style="margin:18px 0 0">Tap <b>Voice</b> at the top to change the Italian voice or slow the speed down.</p>
+  <p class="small" style="margin:10px 0 0;color:var(--muted)">Build ${BUILD} · ${BUILT}</p>
+  `;
+  $("#quickStart").onclick = () => { go("drills"); startDrill("mix","all"); };
+  $("#prevDay").onclick = () => { S.day = Math.max(1, S.day-1); save(); renderHome(); };
+  $("#nextDay").onclick = () => { S.day = Math.min(PLAN.length, S.day+1); addXp(3); save(); renderHome(); toast("Nice. On to " + PLAN[S.day-1].d); };
+  view.querySelectorAll("[data-drill]").forEach(b=> b.onclick = ()=>{ go("drills"); startDrill(b.dataset.drill,"all"); });
+  view.querySelectorAll("[data-goCat]").forEach(b=> b.onclick = ()=>{ go("phrases"); openCat(b.getAttribute("data-goCat")); });
+  view.querySelectorAll("[data-goVerb]").forEach(b=> b.onclick = ()=> openVerb(b.getAttribute("data-goVerb")));
+}
+
+/* ============================================================
+   VIEW: Phrases
+   ============================================================ */
+let phraseQuery = "";
+function renderPhrases(){
+  const starred = ALLPHRASES.filter(p=>S.star[p.key]);
+  view.innerHTML = `
+    <h1>Phrases</h1>
+    <p class="lede">Eighteen situations, in the order a day actually happens. Tap ▶ to hear it, ☆ to save it.</p>
+    <p class="hint">Tap any Italian word — underlined — to see what it means, and which form of the verb it is.</p>
+    <div class="searchwrap"><input id="q" type="search" placeholder="Search English or Italian…" value="${esc(phraseQuery)}"></div>
+    <div id="results"></div>
+    ${starred.length ? `<h2>Saved (${starred.length})</h2><div class="card" id="starbox">${starred.map(rowHTML).join("")}</div>
+      <button class="btn ghost wide" id="drillStar" style="margin-top:8px">Practise saved phrases</button>` : ""}
+    <div id="catlist">${CATS.map(c=>`
+      <details class="acc" data-cat="${c.id}">
+        <summary>${esc(c.name)} <span class="count">${(P[c.id]||[]).length}</span></summary>
+        <div class="body">
+          <p class="small" style="margin:0 0 6px">${esc(c.blurb)}</p>
+          ${(P[c.id]||[]).map((p,i)=>rowHTML({it:p[0],en:p[1],ph:p[2],key:"p:"+c.id+":"+i})).join("")}
+          <button class="btn quiet wide" style="margin-top:10px" data-practise="${c.id}">Practise this set</button>
+        </div>
+      </details>`).join("")}</div>
+  `;
+  wirePhraseRows();
+  const q = $("#q");
+  q.oninput = () => { phraseQuery = q.value; paintResults(); };
+  paintResults();
+  if($("#drillStar")) $("#drillStar").onclick = ()=>{ go("drills"); startDrill("flash","starred"); };
+  view.querySelectorAll("[data-practise]").forEach(b=> b.onclick = ()=>{ go("drills"); startDrill("mix", b.dataset.practise); });
+}
+function rowHTML(p){
+  return `<div class="phrase" data-key="${p.key}">
+    <div class="row">
+      <button class="speak" data-say="${esc(p.it)}">▶</button>
+      <div class="grow">
+        <div class="it">${gloss(p.it)}</div>
+        ${p.ph?`<div class="ph">${esc(p.ph)}</div>`:""}
+        <div class="en">${esc(p.en)}</div>
+      </div>
+      <button class="star" aria-pressed="${!!S.star[p.key]}" data-star="${p.key}">★</button>
+    </div></div>`;
+}
+function wirePhraseRows(){
+  view.querySelectorAll("[data-star]").forEach(b=> b.onclick = ()=>{
+    const k = b.dataset.star;
+    if(S.star[k]) delete S.star[k]; else S.star[k]=1;
+    save(); b.setAttribute("aria-pressed", String(!!S.star[k]));
+  });
+}
+function paintResults(){
+  const box = $("#results"), list = $("#catlist");
+  const t = norm(phraseQuery);
+  if(!t){ box.innerHTML=""; list.style.display=""; return; }
+  list.style.display = "none";
+  const hits = ALLPHRASES.concat(NOUNITEMS, ADJITEMS).filter(p => norm(p.it).includes(t) || norm(p.en).includes(t)).slice(0,40);
+  box.innerHTML = hits.length
+    ? `<div class="card">${hits.map(rowHTML).join("")}</div>`
+    : `<div class="card"><p style="margin:0">Nothing matched “${esc(phraseQuery)}”. Try a shorter word, or a word in English.</p></div>`;
+  wirePhraseRows();
+}
+function openCat(id){
+  const d = view.querySelector(`details[data-cat="${id}"]`);
+  if(d){ d.open = true; scrollSafe(d); }
+}
+
+/* ---------- verb helpers, used by the dictionary and the word sheet ---------- */
+function famLabel(v){ return v.irr ? "irregular" : (v.fam==="isc" ? "-ire (-isc-)" : "-"+v.fam); }
+function hilite(v,i){
+  const f = v.f[i];
+  if(v.irr) return esc(f);
+  const stem = v.i.slice(0,-3);
+  if(f.startsWith(stem)) return esc(stem) + '<span class="ending">' + esc(f.slice(stem.length)) + '</span>';
+  return esc(f);
+}
+
+/* ============================================================
+   VIEW: Plan
+   ============================================================ */
+function renderPlan(){
+  view.innerHTML = `
+    <h1>The plan</h1>
+    <p class="lede">Built on the 80/20 idea: present tense, the top ten verbs, and the words you'll say out loud on the trip. Everything else can wait.</p>
+    <ol class="plan">
+      ${PLAN.map((d,i)=>`<li>
+        <b>${d.d} — ${esc(d.t)}</b>
+        <span class="small">${esc(d.do)}</span>
+        <div class="chips" style="margin:8px 0 0">
+          ${d.cats.map(c=>`<button class="chip" data-goCat="${c}">${esc(catName(c))}</button>`).join("")}
+          ${d.verbs.map(v=>`<button class="chip" data-goVerb="${v}">${v}</button>`).join("")}
+        </div>
+      </li>`).join("")}
+    </ol>
+    <h2>Grammar, only what you need</h2>
+    ${GRAMMAR.map(g=>`
+      <details class="acc"><summary>${esc(g.t)}</summary>
+        <div class="body">${g.h.map(x=>`<p style="margin:0 0 8px">${x.replace(/</g,"&lt;")}</p>`).join("")}</div>
+      </details>`).join("")}
+    <h2>Skip these for now</h2>
+    <div class="card"><p style="margin:0">The subjunctive, the passato remoto, and any vocabulary you wouldn't say on a normal day. They cost weeks and buy you almost nothing on a two-week trip.</p></div>
+    <h2>This app</h2>
+    <div class="card">
+      <div class="row" style="align-items:center">
+        <div class="grow"><div style="font-weight:700">Build ${BUILD}</div>
+        <div class="small">Published ${BUILT} · <span id="netState">${navigator.onLine ? "online" : "offline, running from the cache"}</span></div></div>
+        <button class="btn quiet" id="checkUpd">Check for updates</button>
+      </div>
+      <details class="acc" style="margin:12px 0 0;box-shadow:none">
+        <summary>What changed</summary>
+        <div class="body">${CHANGES.map(c=>`<p style="margin:0 0 10px"><b>${c[0]}</b> <span class="small">${c[1]}</span><br>${esc(c[2])}</p>`).join("")}</div>
+      </details>
+    </div>
+    <h2>Reset</h2>
+    <button class="btn ghost wide" id="reset">Clear all progress</button>
+  `;
+  $("#checkUpd").onclick = ()=> checkForUpdate(true);
+  view.querySelectorAll("[data-goCat]").forEach(b=> b.onclick = ()=>{ go("phrases"); openCat(b.getAttribute("data-goCat")); });
+  view.querySelectorAll("[data-goVerb]").forEach(b=> b.onclick = ()=> openVerb(b.getAttribute("data-goVerb")));
+  $("#reset").onclick = ()=>{
+    if(confirm("Clear streak, saved phrases and card progress?")){ S = Object.assign({}, DEF); save(); paintHeader(); renderPlan(); toast("Cleared"); }
+  };
+}
+
+/* ============================================================
+   VIEW: Practice
+   ============================================================ */
+const DRILLS = [
+ ["flash","Flashcards","Italian on one side, English on the other. Cards you get wrong come back sooner."],
+ ["quiz","Quick quiz","Four options, one right. Switches between Italian→English and English→Italian."],
+ ["listen","Listen &amp; choose","Hear it, then pick the meaning. The closest thing here to a real conversation."],
+ ["match","Matching","Six pairs, tap to connect. Fastest way to warm up a set."],
+ ["conj","Conjugation trainer","Type the right form. Hints show you the stem and the ending."],
+ ["which","Which word?","Two words that look interchangeable but aren't. Pick the right one and learn the rule."],
+ ["cloze","Fill the gap","A phrase with one word missing. Rebuild it from memory."],
+ ["qa","Answer them","They ask, you answer. Choose the reply that actually works."],
+ ["build","Sentence builder","Words in the wrong order. Put them back."],
+ ["dialog","Role-play","Whole conversations. Your lines stay hidden until you've tried them out loud."]
+];
+let sess = null, deckSel = "all";
+
+function renderDrills(){
+  if(sess) return paintStep();
+  const decks = [["all","Everything"],["starred","Saved phrases ★"],["study","My word list"],["vocab","Single words"]].concat(CATS.map(c=>[c.id,c.name]));
+  view.innerHTML = `
+    <h1>Practice</h1>
+    <p class="lede">Pick a set, then pick a way to drill it.</p>
+    <p class="hint">Stuck on a word mid-drill? Tap it. The meaning pops up without ending the question.</p>
+    <div class="chips">${decks.map(([k,n])=>`<button class="chip" data-deck="${k}" aria-pressed="${deckSel===k}">${esc(n)}</button>`).join("")}</div>
+    <div id="drillList">${DRILLS.map(([k,n,b])=>`
+      <div class="card tight"><div class="row" style="align-items:center">
+        <div class="grow"><div style="font-weight:700">${n}</div><div class="small">${b}</div></div>
+        <button class="btn quiet" data-start="${k}">Go</button>
+      </div></div>`).join("")}</div>
+    <button class="btn wide" id="mixBtn" style="margin-top:10px">Mixed session (10 minutes)</button>
+  `;
+  view.querySelectorAll("[data-deck]").forEach(b=> b.onclick = ()=>{ deckSel = b.dataset.deck; renderDrills(); });
+  view.querySelectorAll("[data-start]").forEach(b=> b.onclick = ()=> startDrill(b.dataset.start, deckSel));
+  $("#mixBtn").onclick = ()=> startDrill("mix", deckSel);
+}
+
+/* --- step builders --- */
+function pool(deck){
+  let items = deckItems(deck);
+  if(deck !== "study" && items.length < 8) items = deckItems("all");
+  if(!items.length) items = deckItems("all");
+  return items;
+}
+function buildFlash(deck,n){ return studyOrder(pool(deck), n).map(it=>({kind:"flash", it})); }
+function buildQuiz(deck,n,mode){
+  const p = pool(deck);
+  return studyOrder(p, n).map(it=>{
+    const dir = mode || (Math.random()<.5 ? "it2en" : "en2it");
+    const others = sample(p.filter(x=>x.key!==it.key && x.en!==it.en), 3);
+    const opts = shuffle([it].concat(others));
+    return {kind:"quiz", it, opts, dir};
+  });
+}
+function buildConj(n){
+  const out = [];
+  const vs = shuffle(VERBS);
+  for(let i=0;i<n;i++){
+    const v = vs[i % vs.length];
+    out.push({kind:"conj", v, p: Math.random()*6|0});
+  }
+  return out;
+}
+function buildWhich(n){
+  const all = [];
+  PAIRS.forEach(pr => pr.items.forEach(it => all.push({kind:"which", pr, it})));
+  return sample(all, n);
+}
+function buildCloze(deck,n){
+  const p = pool(deck).filter(x=>x.it.split(" ").length>=4);
+  const words = w => w.replace(/[^A-Za-zÀ-ÿ']/g,"");
+  const bank = [...new Set(p.flatMap(x=>x.it.split(" ").map(words)).filter(w=>w.length>=4))];
+  return sample(p, n).map(it=>{
+    const toks = it.it.split(" ");
+    const cands = toks.map((t,i)=>({t:words(t), i})).filter(o=>o.t.length>=4);
+    const pick = cands.length ? cands[Math.random()*cands.length|0] : {t:words(toks[0]), i:0};
+    const shown = toks.map((t,i)=> i===pick.i ? t.replace(pick.t,"_____") : t).join(" ");
+    const opts = shuffle([pick.t].concat(sample(bank.filter(w=>w.toLowerCase()!==pick.t.toLowerCase()),3)));
+    return {kind:"cloze", it, shown, ans:pick.t, opts};
+  });
+}
+function buildQA(n){
+  return sample(QA, n).map(q=>{
+    const opts = shuffle([q].concat(sample(QA.filter(x=>x[2]!==q[2]),3)));
+    return {kind:"qa", q, opts};
+  });
+}
+function buildBuild(deck,n){
+  const p = pool(deck).filter(x=>{const w=x.it.split(" ").length; return w>=4 && w<=7;});
+  return sample(p, n).map(it=>({kind:"build", it, toks: shuffle(it.it.split(" "))}));
+}
+function startDrill(type, deck){
+  deckSel = deck || deckSel;
+  sess = null; special = null;
+  touchStreak();
+  if(type==="match") return startMatch(deckSel);
+  if(type==="dialog") return startDialog();
+  let steps = [], title = "";
+  switch(type){
+    case "flash":  steps = buildFlash(deckSel,12); title="Flashcards"; break;
+    case "quiz":   steps = buildQuiz(deckSel,10); title="Quick quiz"; break;
+    case "listen": steps = buildQuiz(deckSel,10,"listen"); title="Listen & choose"; break;
+    case "conj":   steps = buildConj(12); title="Conjugation trainer"; break;
+    case "which":  steps = buildWhich(10); title="Which word?"; break;
+    case "cloze":  steps = buildCloze(deckSel,10); title="Fill the gap"; break;
+    case "qa":     steps = buildQA(10); title="Answer them"; break;
+    case "build":  steps = buildBuild(deckSel,8); title="Sentence builder"; break;
+    case "mix":    steps = shuffle(buildFlash(deckSel,4).concat(buildQuiz(deckSel,4), buildConj(3), buildWhich(2), buildQA(2), buildCloze(deckSel,2)));
+                   title="Mixed session"; break;
+  }
+  sess = {type, title, steps, i:0, right:0, wrong:0, state:{}};
+  go("drills");
+}
+function endSess(){ sess = null; special = null; renderDrills(); }
+function nextStep(){ sess.i++; sess.state={}; paintStep(); }
+
+/* --- session shell --- */
+function paintStep(){
+  if(!sess) return renderDrills();
+  if(sess.i >= sess.steps.length) return paintDone();
+  const s = sess.steps[sess.i];
+  const pct = Math.round(sess.i / sess.steps.length * 100);
+  view.innerHTML = `
+    <div class="row" style="align-items:center;margin:14px 0 6px">
+      <div class="grow"><div style="font-weight:700">${sess.title}</div>
+      <div class="small">${sess.i+1} of ${sess.steps.length} · ${sess.right} right</div></div>
+      <button class="btn quiet" id="exit">Stop</button>
+    </div>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+    <div id="stepBody"></div>`;
+  $("#exit").onclick = endSess;
+  ({flash:stepFlash, quiz:stepQuiz, conj:stepConj, which:stepWhich, cloze:stepCloze, qa:stepQA, build:stepBuild})[s.kind](s, $("#stepBody"));
+}
+function paintDone(){
+  const total = sess.right + sess.wrong;
+  const pct = total ? Math.round(sess.right/total*100) : 0;
+  const msg = pct>=90 ? "Bravissimo." : pct>=70 ? "Solid. Same again tomorrow." : "Worth another pass — the ones you missed come back first.";
+  view.innerHTML = `
+    <h1 style="margin-top:26px">${sess.right} / ${total}</h1>
+    <p class="lede">${msg}</p>
+    <button class="btn wide" id="again">Go again</button>
+    <button class="btn ghost wide" id="back" style="margin-top:8px">Back to practice</button>`;
+  addXp(2);
+  const t = sess.type, d = deckSel;
+  $("#again").onclick = ()=> startDrill(t, d);
+  $("#back").onclick = endSess;
+}
+function feedback(host, ok, html){
+  const div = document.createElement("div");
+  div.className = "fb " + (ok?"ok":"no");
+  div.innerHTML = html;
+  host.appendChild(div);
+  const btn = document.createElement("button");
+  btn.className = "btn wide"; btn.style.marginTop = "6px";
+  btn.textContent = sess.i+1 >= sess.steps.length ? "Finish" : "Next";
+  btn.onclick = nextStep;
+  host.appendChild(btn);
+  scrollSafe(btn);
+}
+function score(ok, key){
+  if(key) grade(key, ok);
+  if(ok) sess.right++; else sess.wrong++;
+}
+
+/* --- step: flashcard --- */
+function stepFlash(s, host){
+  const front = Math.random()<.5;
+  host.innerHTML = `
+    <div class="card flash" id="cardFace">
+      <span class="pill">${front?"Italian":"English"}</span>
+      <div class="big">${front ? gloss(s.it.it) : esc(s.it.en)}</div>
+      <div class="small">Tap the card to flip · tap a word for its meaning</div>
+    </div>
+    <div class="row" style="gap:8px">
+      <button class="btn ghost grow" id="again">Not yet</button>
+      <button class="btn grow" id="got">I knew it</button>
+    </div>`;
+  const face = $("#cardFace");
+  let flipped = false;
+  face.onclick = (e)=>{
+    if(e.target.closest("[data-say]") || e.target.closest(".w")) return;
+    flipped = !flipped;
+    face.innerHTML = `<span class="pill">${(front!==flipped)?"Italian":"English"}</span>
+      <div class="big">${(front!==flipped) ? gloss(s.it.it) : esc(s.it.en)}</div>
+      ${(front!==flipped)&&s.it.ph?`<div class="ph">${esc(s.it.ph)}</div>`:""}
+      <button class="speak" data-say="${esc(s.it.it)}">▶</button>`;
+  };
+  $("#got").onclick = ()=>{ score(true, s.it.key); nextStep(); };
+  $("#again").onclick = ()=>{ score(false, s.it.key); nextStep(); };
+}
+
+/* --- step: multiple choice (also listening) --- */
+function stepQuiz(s, host){
+  const listen = s.dir === "listen";
+  const prompt = listen ? "" : (s.dir==="it2en" ? s.it.it : s.it.en);
+  const label  = listen ? "What did you hear?" : (s.dir==="it2en" ? "What does this mean?" : "How do you say this?");
+  host.innerHTML = `
+    <div class="card">
+      <div class="small">${label}</div>
+      ${listen ? `<button class="btn quiet wide" id="playIt" style="margin-top:10px">▶ Play again</button>`
+               : `<div class="big" style="font-family:var(--serif);font-size:24px;font-weight:700;margin-top:4px">${s.dir==="it2en" ? gloss(prompt) : esc(prompt)}</div>`}
+    </div>
+    <div id="opts">${s.opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc((listen||s.dir==="en2it") ? o.it : o.en)}</button>`).join("")}</div>`;
+  if(listen){ speak(s.it.it); $("#playIt").onclick = ()=>speak(s.it.it); }
+  host.querySelectorAll(".opt").forEach(b=> b.onclick = ()=>{
+    const chosen = s.opts[+b.dataset.i];
+    const ok = chosen.key === s.it.key;
+    host.querySelectorAll(".opt").forEach((x,i)=>{
+      x.disabled = true;
+      if(s.opts[i].key===s.it.key) x.classList.add("correct");
+      else if(x===b) x.classList.add("wrong"); else x.classList.add("dim");
+    });
+    score(ok, s.it.key);
+    feedback(host, ok, `<b>${gloss(s.it.it)}</b> — ${esc(s.it.en)}${s.it.ph?`<br><span class="ph">${esc(s.it.ph)}</span>`:""}
+      <button class="speak" style="margin-top:6px" data-say="${esc(s.it.it)}">▶</button>`);
+  });
+}
+
+/* --- step: conjugation --- */
+function stepConj(s, host){
+  const v = s.v, want = v.f[s.p];
+  host.innerHTML = `
+    <div class="card">
+      <span class="pill ${v.irr?"red":"green"}">${famLabel(v)}</span>
+      <div style="font-family:var(--serif);font-size:26px;font-weight:700;margin:8px 0 2px">${PRON[s.p]} …</div>
+      <div class="small">${v.i} — ${esc(v.e)}</div>
+      <input class="answer" id="ans" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="type the form" style="margin-top:12px">
+      <div class="row" style="gap:8px;margin-top:10px">
+        <button class="btn ghost" id="hint">Hint</button>
+        <button class="btn grow" id="check">Check</button>
+      </div>
+      <div class="small" id="hintbox" style="margin-top:8px"></div>
+    </div>`;
+  const inp = $("#ans"); inp.focus();
+  $("#hint").onclick = ()=>{
+    const stem = v.irr ? want.slice(0, Math.ceil(want.length/2)) : v.i.slice(0,-3);
+    $("#hintbox").innerHTML = v.irr
+      ? `Irregular. It starts <b>${esc(stem)}…</b>`
+      : `Stem <b>${esc(stem)}</b> + the ${famLabel(v)} ending for ${PRON[s.p]}.`;
+  };
+  const check = ()=>{
+    const ok = norm(inp.value) === norm(want);
+    inp.disabled = true; $("#check").disabled = true; $("#hint").disabled = true;
+    score(ok, "v:"+v.i);
+    feedback(host, ok,
+      (ok ? `<b>${gloss(want)}</b> — right.` : `It's <b>${gloss(want)}</b>. You wrote “${esc(inp.value||"—")}”.`) +
+      `<br><span class="small">${esc(v.n)}</span>
+       <button class="speak" style="margin-top:6px" data-say="${esc(want)}">▶</button>`);
+  };
+  $("#check").onclick = check;
+  inp.onkeydown = e => { if(e.key==="Enter") check(); };
+}
+
+/* --- step: which word --- */
+function stepWhich(s, host){
+  const [sentence, right, wrong, why] = s.it;
+  const opts = shuffle([right, wrong]);
+  host.innerHTML = `
+    <div class="card">
+      <span class="pill gold">${esc(s.pr.t)}</span>
+      <div style="font-family:var(--serif);font-size:22px;font-weight:700;margin-top:8px">${gloss(sentence)}</div>
+    </div>
+    ${opts.map(o=>`<button class="opt" data-o="${esc(o)}">${esc(o)}</button>`).join("")}`;
+  host.querySelectorAll(".opt").forEach(b=> b.onclick = ()=>{
+    const ok = b.getAttribute("data-o") === right;
+    host.querySelectorAll(".opt").forEach(x=>{
+      x.disabled = true;
+      x.classList.add(x.getAttribute("data-o")===right ? "correct" : "wrong");
+    });
+    score(ok, "w:"+s.pr.t);
+    feedback(host, ok, `<b>${gloss(sentence.replace("___", right))}</b><br>${esc(why)}<br><span class="small">${esc(s.pr.rule)}</span>
+      <button class="speak" style="margin-top:6px" data-say="${esc(sentence.replace("___", right))}">▶</button>`);
+  });
+}
+
+/* --- step: cloze --- */
+function stepCloze(s, host){
+  host.innerHTML = `
+    <div class="card">
+      <div class="small">${esc(s.it.en)}</div>
+      <div style="font-family:var(--serif);font-size:23px;font-weight:700;margin-top:6px">${gloss(s.shown)}</div>
+    </div>
+    ${s.opts.map(o=>`<button class="opt" data-o="${esc(o)}">${esc(o)}</button>`).join("")}`;
+  host.querySelectorAll(".opt").forEach(b=> b.onclick = ()=>{
+    const ok = b.getAttribute("data-o") === s.ans;
+    host.querySelectorAll(".opt").forEach(x=>{ x.disabled=true;
+      if(x.getAttribute("data-o")===s.ans) x.classList.add("correct");
+      else if(x===b) x.classList.add("wrong"); else x.classList.add("dim"); });
+    score(ok, s.it.key);
+    feedback(host, ok, `<b>${gloss(s.it.it)}</b><br>${esc(s.it.en)}
+      <button class="speak" style="margin-top:6px" data-say="${esc(s.it.it)}">▶</button>`);
+  });
+}
+
+/* --- step: they ask, you answer --- */
+function stepQA(s, host){
+  const [q, qEn, a, aEn] = s.q;
+  host.innerHTML = `
+    <div class="card">
+      <div class="small">They say</div>
+      <div class="row" style="margin-top:4px">
+        <button class="speak" data-say="${esc(q)}">▶</button>
+        <div class="grow" style="font-family:var(--serif);font-size:22px;font-weight:700">${gloss(q)}</div>
+      </div>
+      <button class="btn quiet" id="tr" style="margin-top:10px">What does that mean?</button>
+      <div class="small" id="trbox" style="margin-top:6px"></div>
+    </div>
+    <div class="small" style="margin:4px 2px">Pick your reply</div>
+    ${s.opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o[2])}</button>`).join("")}`;
+  speak(q);
+  $("#tr").onclick = ()=> $("#trbox").textContent = qEn;
+  host.querySelectorAll(".opt").forEach(b=> b.onclick = ()=>{
+    const ok = s.opts[+b.dataset.i][2] === a;
+    host.querySelectorAll(".opt").forEach((x,i)=>{ x.disabled=true;
+      if(s.opts[i][2]===a) x.classList.add("correct");
+      else if(x===b) x.classList.add("wrong"); else x.classList.add("dim"); });
+    score(ok, "qa:"+a.slice(0,12));
+    feedback(host, ok, `<b>${gloss(q)}</b> — ${esc(qEn)}<br><b>${gloss(a)}</b> — ${esc(aEn)}
+      <button class="speak" style="margin-top:6px" data-say="${esc(a)}">▶</button>`);
+  });
+}
+
+/* --- step: sentence builder --- */
+function stepBuild(s, host){
+  host.innerHTML = `
+    <div class="card">
+      <div class="small">Put it back together</div>
+      <div style="font-weight:600;margin-top:4px">${esc(s.it.en)}</div>
+      <div class="slot" id="slot" style="margin-top:10px"></div>
+      <div class="tokens" id="bank"></div>
+      <div class="row" style="gap:8px">
+        <button class="btn ghost" id="clear">Clear</button>
+        <button class="btn grow" id="check">Check</button>
+      </div>
+    </div>`;
+  let placed = [], bank = s.toks.slice();
+  const paint = ()=>{
+    $("#slot").innerHTML = placed.map((t,i)=>`<button class="token" data-p="${i}">${esc(t)}</button>`).join(" ") || `<span class="small">Tap the words below</span>`;
+    $("#bank").innerHTML = bank.map((t,i)=>`<button class="token" data-b="${i}">${esc(t)}</button>`).join("");
+    $("#slot").querySelectorAll("[data-p]").forEach(b=> b.onclick = ()=>{ bank.push(placed.splice(+b.dataset.p,1)[0]); paint(); });
+    $("#bank").querySelectorAll("[data-b]").forEach(b=> b.onclick = ()=>{ placed.push(bank.splice(+b.dataset.b,1)[0]); paint(); });
+  };
+  paint();
+  $("#clear").onclick = ()=>{ bank = bank.concat(placed); placed=[]; paint(); };
+  $("#check").onclick = ()=>{
+    const ok = norm(placed.join(" ")) === norm(s.it.it);
+    $("#check").disabled = true; $("#clear").disabled = true;
+    score(ok, s.it.key);
+    feedback(host, ok, `<b>${gloss(s.it.it)}</b><br>${esc(s.it.en)}
+      <button class="speak" style="margin-top:6px" data-say="${esc(s.it.it)}">▶</button>`);
+  };
+}
+
+/* ============================================================
+   Matching game & role-play (full-screen modes)
+   ============================================================ */
+let special = null;
+TABS.drills = function(){ if(special && !sess) return paintSpecial(); return renderDrills(); };
+function paintSpecial(){ special.type==="match" ? paintMatch() : paintDialogList(); }
+function startMatch(deck){ special = {type:"match", deck}; buildMatch(); go("drills"); }
+function startDialog(){ special = {type:"dialog", pick:null}; go("drills"); }
+
+function buildMatch(){
+  let p = pool(special.deck).filter(x=>x.it.length<=26);
+  if(p.length < 6) p = pool(special.deck);
+  const pairs = studyOrder(p, 6);
+  special.pairs = pairs;
+  special.tiles = shuffle(pairs.flatMap((x,i)=>[{k:i,side:"it",t:x.it,key:x.key},{k:i,side:"en",t:x.en,key:x.key}]));
+  special.done = []; special.sel = null; special.moves = 0;
+}
+function paintMatch(){
+  const left = special.tiles.length - special.done.length*2;
+  view.innerHTML = `
+    <div class="row" style="align-items:center;margin:14px 0 6px">
+      <div class="grow"><div style="font-weight:700">Matching</div>
+        <div class="small">${special.done.length} of ${special.pairs.length} pairs · ${special.moves} taps</div></div>
+      <button class="btn quiet" id="exit">Stop</button>
+    </div>
+    <div class="bar"><i style="width:${special.done.length/Math.max(1,special.pairs.length)*100}%"></i></div>
+    <div class="grid2" id="board">
+      ${special.tiles.map((t,i)=>`<button class="match ${special.done.includes(t.k)?"done":""} ${special.sel===i?"sel":""}"
+        data-i="${i}" ${special.done.includes(t.k)?"disabled":""}>${esc(t.t)}</button>`).join("")}
+    </div>
+    ${left===0 ? `<button class="btn wide" id="again" style="margin-top:14px">New round</button>
+                  <button class="btn ghost wide" id="back" style="margin-top:8px">Back to practice</button>` : ""}`;
+  $("#exit").onclick = ()=>{ special=null; renderDrills(); };
+  if($("#again")) $("#again").onclick = ()=>{ buildMatch(); paintMatch(); };
+  if($("#back")) $("#back").onclick = ()=>{ special=null; renderDrills(); };
+  view.querySelectorAll("[data-i]").forEach(b=> b.onclick = ()=>{
+    const i = +b.dataset.i, t = special.tiles[i];
+    special.moves++;
+    if(special.sel === null){ special.sel = i; if(t.side==="it") speak(t.t); return paintMatch(); }
+    if(special.sel === i){ special.sel = null; return paintMatch(); }
+    const prev = special.tiles[special.sel];
+    if(prev.k === t.k){
+      special.done.push(t.k); special.sel = null; grade(t.key, true);
+      const it = special.pairs[t.k].it; speak(it);
+      paintMatch();
+      if(special.done.length===special.pairs.length){ addXp(3); toast("Tutto fatto!"); }
+    } else {
+      grade(t.key, false);
+      b.classList.add("err");
+      special.sel = null;
+      setTimeout(()=>paintMatch(), 420);
+    }
+  });
+}
+
+function paintDialogList(){
+  if(special.pick) return paintDialog();
+  view.innerHTML = `
+    <div class="row" style="align-items:center;margin:14px 0 8px">
+      <div class="grow"><div style="font-weight:700">Role-play</div>
+        <div class="small">Read their line, say yours out loud, then check.</div></div>
+      <button class="btn quiet" id="exit">Stop</button>
+    </div>
+    ${DIALOGHI.map(d=>`<div class="card tight"><div class="row" style="align-items:center">
+      <div class="grow"><div style="font-weight:700">${esc(d.t)}</div><div class="small">${esc(d.s)}</div></div>
+      <button class="btn quiet" data-d="${d.id}">Open</button></div></div>`).join("")}`;
+  $("#exit").onclick = ()=>{ special=null; renderDrills(); };
+  view.querySelectorAll("[data-d]").forEach(b=> b.onclick = ()=>{ special.pick = b.dataset.d; special.shown = {}; paintDialog(); });
+}
+function paintDialog(){
+  const d = DIALOGHI.find(x=>x.id===special.pick);
+  view.innerHTML = `
+    <div class="row" style="align-items:center;margin:14px 0 4px">
+      <div class="grow"><div style="font-weight:700">${esc(d.t)}</div><div class="small">${esc(d.s)}</div></div>
+      <button class="btn quiet" id="back">Back</button>
+    </div>
+    <div id="lines">${d.l.map((l,i)=>{
+      const you = l[0]==="you", open = special.shown[i];
+      if(you && !open) return `<div class="line you"><div class="who">YOU</div>
+        <button class="bubble" data-rev="${i}" style="text-align:left"><span class="small">${esc(l[2])}</span><br><b style="color:var(--blu)">Tap to check your line</b></button></div>`;
+      return `<div class="line ${you?"you":""}"><div class="who">${you?"YOU":"THEM"}</div>
+        <div class="bubble"><div class="row"><button class="speak" data-say="${esc(l[1])}">▶</button>
+        <div class="grow"><div class="it">${gloss(l[1])}</div><div class="en">${esc(l[2])}</div></div></div></div></div>`;
+    }).join("")}</div>
+    <button class="btn wide" id="playAll" style="margin-top:12px">Play the whole conversation</button>
+    <button class="btn ghost wide" id="revAll" style="margin-top:8px">Reveal every line</button>`;
+  $("#back").onclick = ()=>{ special.pick=null; paintDialogList(); };
+  view.querySelectorAll("[data-rev]").forEach(b=> b.onclick = ()=>{ special.shown[+b.dataset.rev]=1; addXp(1); paintDialog(); });
+  $("#revAll").onclick = ()=>{ d.l.forEach((_,i)=>special.shown[i]=1); paintDialog(); };
+  $("#playAll").onclick = ()=>{
+    d.l.forEach((_,i)=>special.shown[i]=1); paintDialog();
+    if(!window.speechSynthesis) return toast("This browser can't speak Italian");
+    speechSynthesis.cancel();
+    d.l.forEach(l=>{
+      const u = new SpeechSynthesisUtterance(l[1]);
+      u.lang="it-IT"; u.rate=S.rate;
+      const v = voices.find(v=>v.name===S.voice) || voices[0]; if(v) u.voice=v;
+      speechSynthesis.speak(u);
+    });
+  };
+}
+
+
+/* ============================================================
+   TAP A WORD: dictionary lookup, word sheet, study list
+   ============================================================ */
+function conjugate(inf, fam){
+  const stem = inf.slice(0,-3);
+  const ends = {are:["o","i","a","iamo","ate","ano"],
+                ere:["o","i","e","iamo","ete","ono"],
+                ire:["o","i","e","iamo","ite","ono"],
+                isc:["isco","isci","isce","iamo","ite","iscono"]}[fam];
+  return ends.map(e=>{
+    let st = stem;
+    if(/(care|gare)$/.test(inf) && /^[ie]/.test(e)) st = st + "h";
+    if(st.endsWith("i") && e.startsWith("i")) st = st.slice(0,-1);
+    return st + e;
+  });
+}
+const EXTRA = EXTRA_VERBS.map(([i,e,fam])=>({i, e, fam, irr:0, f:conjugate(i,fam), n:"", extra:1}));
+const ALLVERBS = VERBS.concat(EXTRA);
+
+const LEX = new Map();
+function addLex(word, entry){
+  const k = norm(word).replace(/[^a-z']/g,"");
+  if(!k) return;
+  if(!LEX.has(k)) LEX.set(k, []);
+  const list = LEX.get(k);
+  if(!list.some(x=>x.kind===entry.kind && x.gloss===entry.gloss && x.v===entry.v && x.p===entry.p)) list.push(entry);
+}
+(function buildLex(){
+  ALLVERBS.forEach(v=>{
+    addLex(v.i, {kind:"inf", v, gloss:v.e});
+    v.f.forEach((f,p)=> addLex(f, {kind:"form", v, p, gloss:v.e}));
+  });
+  NOUNS.forEach(n=>{
+    const [full, en, g] = n;
+    const parts = full.split(" ");
+    const word = parts.length>1 ? parts.slice(1).join(" ") : full.replace(/^l'/,"");
+    const gg = g==="m" ? "masculine" : "feminine";
+    addLex(word, {kind:"noun", gloss:en, note:"a "+gg+" noun — "+full});
+    let pl = null;
+    if(/o$/.test(word)) pl = word.slice(0,-1)+"i";
+    else if(/a$/.test(word)) pl = word.slice(0,-1)+"e";
+    else if(/e$/.test(word)) pl = word.slice(0,-1)+"i";
+    if(/co$/.test(word)) pl = word.slice(0,-2)+"chi";
+    if(/go$/.test(word)) pl = word.slice(0,-2)+"ghi";
+    if(/ca$/.test(word)) pl = word.slice(0,-2)+"che";
+    if(pl) addLex(pl, {kind:"noun", gloss:en+" (plural)", note:"plural of "+full});
+  });
+  ADJ.forEach(([a,en])=>{
+    addLex(a, {kind:"adj", gloss:en, note:"an adjective — it changes ending to match the noun"});
+    if(/o$/.test(a)) ["a","i","e"].forEach(x=> addLex(a.slice(0,-1)+x, {kind:"adj", gloss:en, note:"a form of "+a}));
+    else if(/e$/.test(a)) addLex(a.slice(0,-1)+"i", {kind:"adj", gloss:en, note:"plural of "+a});
+  });
+  FUNC.forEach(([w,en,note])=>{
+    const k = norm(w).replace(/[^a-z']/g,"");
+    const ex = LEX.get(k);
+    /* skip anything the verb, noun and adjective data already covers better */
+    if(ex && ex.some(e => e.kind === "inf" ||
+        String(e.gloss).split(" ")[0].toLowerCase() === String(en).split(" ")[0].toLowerCase())) return;
+    addLex(w, {kind:"word", gloss:en, note:note||""});
+  });
+})();
+
+const CLITICS = ["glielo","gliela","melo","mela","telo","tela","celo","cela","sene","mi","ti","ci","vi","si","lo","la","li","le","ne"];
+const CLIT_EN = {glielo:"it, to him/her/you", gliela:"it, to him/her/you", melo:"it, to me", mela:"it, to me",
+  telo:"it, to you", tela:"it, to you", celo:"it, to us", cela:"it, to us", sene:"of it",
+  mi:"me", ti:"you", ci:"us / there", vi:"you", si:"oneself", lo:"it / him", la:"it / her",
+  li:"them", le:"them / to you", ne:"of it / of them"};
+const PART_IRR = {stato:"essere",stati:"essere",stata:"essere",state:"essere",fatto:"fare",detto:"dire",
+  preso:"prendere",letto:"leggere",perso:"perdere",persa:"perdere",visto:"vedere",aperto:"aprire",
+  chiuso:"chiudere",scelto:"scegliere",bevuto:"bere",piaciuto:"piacere",piaciuta:"piacere",
+  conosciuto:"conoscere",venuto:"venire",rimasto:"rimanere",messo:"mettere",scritto:"scrivere",chiesto:"chiedere"};
+
+function lookup(raw){
+  const w = norm(raw).replace(/[^a-z']/g,"");
+  if(!w) return null;
+  if(LEX.has(w)) return {word:raw, entries:LEX.get(w)};
+  /* attached pronouns: mostrarmelo, spedirlo, andarci */
+  for(const c of CLITICS.slice().sort((a,b)=>b.length-a.length)){
+    if(w.length > c.length+2 && w.endsWith(c)){
+      const base = w.slice(0, -c.length);
+      for(const cand of [base, base+"e"]){
+        if(LEX.has(cand)) return {word:raw, entries:LEX.get(cand),
+          extra:"With <b>"+esc(c)+"</b> stuck on the end — "+esc(CLIT_EN[c]||c)+"."};
+      }
+    }
+  }
+  /* past participles */
+  if(PART_IRR[w] && LEX.has(PART_IRR[w]))
+    return {word:raw, entries:LEX.get(PART_IRR[w]), extra:"This is the past participle — used for the past tense."};
+  const pm = w.match(/^(.*)(at[oaie]|it[oaie]|ut[oaie])$/);
+  if(pm){
+    for(const inf of [pm[1]+"are", pm[1]+"ire", pm[1]+"ere"]){
+      if(LEX.has(inf)) return {word:raw, entries:LEX.get(inf), extra:"Past participle of <b>"+esc(inf)+"</b> — used for the past tense."};
+    }
+  }
+  const gm = w.match(/^(.*)(ando|endo)$/);
+  if(gm){
+    for(const inf of [gm[1]+"are", gm[1]+"ere", gm[1]+"ire"]){
+      if(LEX.has(inf)) return {word:raw, entries:LEX.get(inf), extra:"The <b>-ing</b> form of <b>"+esc(inf)+"</b>. Sto… = I'm doing it right now."};
+    }
+  }
+  /* plural / gender guesses */
+  const guesses = [];
+  if(/i$/.test(w)) guesses.push(w.slice(0,-1)+"o", w.slice(0,-1)+"e");
+  if(/e$/.test(w)) guesses.push(w.slice(0,-1)+"a", w.slice(0,-1)+"o");
+  if(/a$/.test(w)) guesses.push(w.slice(0,-1)+"o");
+  if(/chi$/.test(w)) guesses.push(w.slice(0,-3)+"co");
+  if(/ghi$/.test(w)) guesses.push(w.slice(0,-3)+"go");
+  if(/che$/.test(w)) guesses.push(w.slice(0,-3)+"ca");
+  for(const g of guesses) if(LEX.has(g))
+    return {word:raw, entries:LEX.get(g), extra:"A different ending of <b>"+esc(g)+"</b> — Italian words change ending to match number and gender."};
+  return null;
+}
+
+/* wrap Italian text so each word can be tapped */
+function gloss(text){
+  return String(text).replace(/([A-Za-zÀ-ÿ]+['’])|([A-Za-zÀ-ÿ]+)|([^A-Za-zÀ-ÿ]+)/g, (m,a,b,c)=>{
+    if(c) return esc(c);
+    const w = a||b;
+    return '<span class="w" data-w="'+esc(w)+'">'+esc(w)+'</span>';
+  });
+}
+
+/* ---------- the word sheet ---------- */
+function studyKey(w){ return norm(w).replace(/[^a-z']/g,""); }
+function inStudy(w){ return !!(S.list && S.list[studyKey(w)]); }
+function openWord(raw){
+  const res = lookup(raw);
+  const k = studyKey(raw);
+  let body = "";
+  if(!res){
+    body = `<p style="margin:0 0 10px">No entry for this one yet. Add it to your word list and look it up when you have a minute.</p>`;
+  } else {
+    const seen = new Set();
+    const ents = res.entries.filter(e=>{
+      if(e.kind!=="form" && e.kind!=="inf") return true;
+      const k = e.v.i + ":" + e.kind;
+      if(seen.has(k)) return false;
+      seen.add(k); return true;
+    });
+    body = ents.map(e=>entryHTML(e, raw)).join("<hr style='border:0;border-top:1px solid var(--line);margin:14px 0'>");
+    if(res.extra) body += `<div class="note" style="margin-top:12px">${res.extra}</div>`;
+  }
+  exprFor(raw).forEach(e => body += exprHTML(e));
+  const vf = (res && res.entries.find(e=>e.v)) ? res.entries.find(e=>e.v).v : null;
+  const ex = exampleFor(raw, vf ? vf.f.concat([vf.i]) : null);
+  if(ex) body += `<div style="margin-top:14px">
+      <div class="small">In the app</div>
+      <div class="row" style="margin-top:4px">
+        <button class="speak" data-say="${esc(ex[0])}">▶</button>
+        <div class="grow"><div class="it">${gloss(ex[0])}</div><div class="en">${esc(ex[1])}</div></div>
+      </div></div>`;
+  const sheet = document.createElement("div");
+  sheet.className = "sheetbg";
+  sheet.innerHTML = `
+    <div class="sheet" role="dialog" aria-label="Word meaning">
+      <div class="row" style="align-items:center;margin-bottom:8px">
+        <button class="speak" data-say="${esc(raw)}">▶</button>
+        <div class="grow" style="font-family:var(--serif);font-size:27px;font-weight:700">${esc(raw)}</div>
+        <button class="star" id="addWord" aria-pressed="${inStudy(raw)}" title="Add to word list"
+          style="font-size:22px">${inStudy(raw) ? "★" : "☆"}</button>
+      </div>
+      ${body}
+      <button class="btn wide" id="closeSheet" style="margin-top:14px">Close</button>
+    </div>`;
+  document.body.appendChild(sheet);
+  const close = ()=> sheet.remove();
+  sheet.onclick = e => { if(e.target === sheet) close(); };
+  sheet.querySelector("#closeSheet").onclick = close;
+  sheet.querySelector("#addWord").onclick = (e)=>{
+    S.list = S.list || {};
+    if(S.list[k]){ delete S.list[k]; toast("Removed from your word list"); }
+    else {
+      const g = res ? res.entries.map(x=>x.gloss).join(" / ") : "";
+      S.list[k] = {w:raw, g, d:today()};
+      toast("Added to your word list");
+    }
+    save();
+    const on = inStudy(raw);
+    e.currentTarget.setAttribute("aria-pressed", String(on));
+    e.currentTarget.textContent = on ? "★" : "☆";
+  };
+}
+function entryHTML(e, raw){
+  if(e.kind === "form" || e.kind === "inf"){
+    const v = e.v;
+    const hit = v.f.map((f,i)=> norm(f)===norm(raw) ? i : -1).filter(i=>i>=0);
+    const head = e.kind==="inf"
+      ? `<b>${esc(v.i)}</b> = ${esc(v.e)} — this is the infinitive, the dictionary form.`
+      : `<b>${esc(v.f[e.p])}</b> = ${esc(PRON[e.p])} form of <b>${esc(v.i)}</b> (${esc(v.e)})`;
+    return `
+      <div style="font-size:15.5px">${head}</div>
+      <div style="margin:6px 0"><span class="pill ${v.irr?"red":"green"}">${famLabel(v)}</span></div>
+      <table class="conj">${PRON.map((p,i)=>`
+        <tr${hit.includes(i)?' style="background:#F7ECD2"':''}>
+          <td>${p}</td><td>${hilite(v,i)}</td>
+          <td style="color:var(--muted);font-weight:400">${esc(engPerson(i, v.e))}</td>
+        </tr>`).join("")}</table>
+      ${v.n?`<p class="small" style="margin:6px 0 0">${esc(v.n)}</p>`:""}
+      ${hit.length>1?`<p class="small" style="margin:6px 0 0">Careful: this same form is used for ${hit.map(i=>PRON[i]).join(" and ")}. The rest of the sentence tells you which.</p>`:""}`;
+  }
+  const label = {noun:"noun", adj:"adjective", word:""}[e.kind] || "";
+  return `<div style="font-size:15.5px"><b>${esc(raw)}</b> = ${esc(e.gloss)}</div>
+    ${e.note?`<p class="small" style="margin:5px 0 0">${esc(e.note)}</p>`:""}
+    ${label?`<div style="margin-top:6px"><span class="pill">${label}</span></div>`:""}`;
+}
+function engPerson(i, inf){
+  let base = String(inf).replace(/^to /,"").split(" / ")[0].split(" (")[0].trim();
+  const words = base.split(" ");
+  const first = words[0], rest = words.slice(1).join(" ");
+  const tail = rest ? " " + rest : "";
+  if(first === "be")   return ["I am","you are","he / she is","we are","you are","they are"][i] + tail;
+  if(first === "have") return ["I have","you have","he / she has","we have","you have","they have"][i] + tail;
+  if(["can","must","may","should","will"].includes(first)) return ["I","you","he / she","we","you","they"][i] + " " + base;
+  const third = /([sxz]|ch|sh)$/.test(first) ? first+"es"
+              : /[^aeiou]y$/.test(first) ? first.slice(0,-1)+"ies"
+              : first+"s";
+  return ["I "+base, "you "+base, "he / she "+third+tail, "we "+base, "you "+base, "they "+base][i];
+}
+
+document.addEventListener("click", e=>{
+  const w = e.target.closest(".w");
+  if(w){ e.stopPropagation(); openWord(w.getAttribute("data-w")); }
+});
+
+/* ============================================================
+   VIEW: Saved — word list and notes
+   ============================================================ */
+function renderSaved(){
+  S.list = S.list || {}; S.notes = S.notes || [];
+  const words = Object.entries(S.list).sort((a,b)=> a[1].w.localeCompare(b[1].w));
+  const notes = S.notes.slice().sort((a,b)=> b.id - a.id);
+  view.innerHTML = `
+    <h1>Saved</h1>
+    <p class="lede">Words you tapped and kept, and anything you wrote down while using the app. Both live on this device.</p>
+
+    <h2>Word list <span class="count">${words.length}</span></h2>
+    ${words.length ? `
+      <div class="card">${words.map(([k,v])=>`
+        <div class="phrase">
+          <div class="row">
+            <button class="speak" data-say="${esc(v.w)}">▶</button>
+            <div class="grow"><div class="it"><span class="w" data-w="${esc(v.w)}">${esc(v.w)}</span></div>
+              <div class="en">${esc(v.g||"tap the word for the meaning")}</div></div>
+            <button class="star" aria-pressed="true" data-drop="${esc(k)}" title="Remove">★</button>
+          </div>
+        </div>`).join("")}</div>
+      <button class="btn wide" id="drillWords" style="margin-top:8px">Practise these words</button>
+      <button class="btn ghost wide" id="clearWords" style="margin-top:8px">Empty the word list</button>`
+    : `<div class="card"><p style="margin:0">Empty so far. Tap any Italian word anywhere in the app, then tap the star in the pop-up to keep it here.</p></div>`}
+
+    <h2>Notes <span class="count">${notes.length}</span></h2>
+    <div class="card">
+      <textarea id="newNote" class="notebox" rows="3" placeholder="Something a waiter said, a word you keep forgetting, a place someone recommended…"></textarea>
+      <button class="btn wide" id="saveNote" style="margin-top:8px">Save note</button>
+    </div>
+    ${notes.map(n=>`
+      <div class="card tight" data-note="${n.id}">
+        <div class="row" style="align-items:baseline">
+          <div class="small grow">${esc(n.d)}</div>
+          <button class="btn quiet" data-edit="${n.id}" style="padding:6px 10px;font-size:13px">Edit</button>
+          <button class="btn quiet" data-del="${n.id}" style="padding:6px 10px;font-size:13px;margin-left:6px">Delete</button>
+        </div>
+        <div class="notetext">${esc(n.t).replace(/\n/g,"<br>")}</div>
+      </div>`).join("")}
+    ${notes.length ? `
+      <div class="row" style="gap:8px;margin-top:10px">
+        <button class="btn ghost grow" id="copyNotes">Copy all notes</button>
+        <button class="btn ghost grow" id="dlNotes">Download</button>
+      </div>
+      <p class="small" style="margin-top:8px">Notes are kept in this browser only. Copy or download them now and then so you don't lose them.</p>` : ""}
+  `;
+  view.querySelectorAll("[data-drop]").forEach(b=> b.onclick = ()=>{
+    delete S.list[b.getAttribute("data-drop")]; save(); renderSaved();
+  });
+  if($("#drillWords")) $("#drillWords").onclick = ()=>{
+    if(Object.keys(S.list).length < 3) return toast("Save at least three words first");
+    go("drills"); startDrill("flash","study");
+  };
+  if($("#clearWords")) $("#clearWords").onclick = ()=>{
+    if(confirm("Remove every word from the list?")){ S.list = {}; save(); renderSaved(); }
+  };
+  const box = $("#newNote");
+  if(S.draft) box.value = S.draft;
+  box.oninput = ()=>{ S.draft = box.value; save(); };
+  $("#saveNote").onclick = ()=>{
+    const t = box.value.trim();
+    if(!t) return toast("Nothing to save yet");
+    S.notes.push({id:Date.now(), t, d:new Date().toLocaleDateString()});
+    S.draft = ""; save(); renderSaved(); toast("Note saved");
+  };
+  view.querySelectorAll("[data-del]").forEach(b=> b.onclick = ()=>{
+    if(!confirm("Delete this note?")) return;
+    S.notes = S.notes.filter(n=> n.id !== +b.getAttribute("data-del")); save(); renderSaved();
+  });
+  view.querySelectorAll("[data-edit]").forEach(b=> b.onclick = ()=>{
+    const id = +b.getAttribute("data-edit");
+    const card = view.querySelector(`[data-note="${id}"]`);
+    const n = S.notes.find(x=>x.id===id);
+    card.querySelector(".notetext").innerHTML =
+      `<textarea class="notebox" rows="4">${esc(n.t)}</textarea>
+       <button class="btn wide" style="margin-top:8px">Save changes</button>`;
+    const ta = card.querySelector("textarea");
+    ta.focus();
+    card.querySelector("button.btn.wide").onclick = ()=>{ n.t = ta.value; save(); renderSaved(); toast("Note updated"); };
+  });
+  const asText = ()=> S.notes.slice().sort((a,b)=>a.id-b.id).map(n=>n.d+"\n"+n.t).join("\n\n———\n\n");
+  if($("#copyNotes")) $("#copyNotes").onclick = async ()=>{
+    try{ await navigator.clipboard.writeText(asText()); toast("Copied"); }
+    catch(e){ toast("Select and copy by hand — this browser blocked it"); }
+  };
+  if($("#dlNotes")) $("#dlNotes").onclick = ()=>{
+    try{
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([asText()], {type:"text/plain"}));
+      a.download = "andiamo-notes.txt"; a.click(); URL.revokeObjectURL(a.href);
+    }catch(e){ toast("Download blocked here — use Copy all notes"); }
+  };
+}
+
+
+/* ============================================================
+   DATA: set expressions that need a person in front of them
+   ============================================================ */
+const EXPR = [
+{keys:["fame"], it:"avere fame", en:"to be hungry", v:"avere", tail:" fame",
+ enf:["I'm hungry","you're hungry","he / she is hungry","we're hungry","you're hungry","they're hungry"],
+ n:"Italian HAS hunger. Never sono fame."},
+{keys:["sete"], it:"avere sete", en:"to be thirsty", v:"avere", tail:" sete",
+ enf:["I'm thirsty","you're thirsty","he / she is thirsty","we're thirsty","you're thirsty","they're thirsty"]},
+{keys:["freddo"], it:"avere freddo", en:"to be cold (a person)", v:"avere", tail:" freddo",
+ enf:["I'm cold","you're cold","he / she is cold","we're cold","you're cold","they're cold"],
+ n:"For the weather it's fa freddo instead."},
+{keys:["caldo"], it:"avere caldo", en:"to be hot (a person)", v:"avere", tail:" caldo",
+ enf:["I'm hot","you're hot","he / she is hot","we're hot","you're hot","they're hot"],
+ n:"For the weather it's fa caldo instead."},
+{keys:["sonno"], it:"avere sonno", en:"to be sleepy", v:"avere", tail:" sonno",
+ enf:["I'm sleepy","you're sleepy","he / she is sleepy","we're sleepy","you're sleepy","they're sleepy"]},
+{keys:["paura"], it:"avere paura", en:"to be afraid", v:"avere", tail:" paura",
+ enf:["I'm afraid","you're afraid","he / she is afraid","we're afraid","you're afraid","they're afraid"]},
+{keys:["fretta"], it:"avere fretta", en:"to be in a hurry", v:"avere", tail:" fretta",
+ enf:["I'm in a hurry","you're in a hurry","he / she is in a hurry","we're in a hurry","you're in a hurry","they're in a hurry"]},
+{keys:["ragione"], it:"avere ragione", en:"to be right", v:"avere", tail:" ragione",
+ enf:["I'm right","you're right","he / she is right","we're right","you're right","they're right"]},
+{keys:["bisogno"], it:"avere bisogno di", en:"to need", v:"avere", tail:" bisogno di",
+ enf:["I need","you need","he / she needs","we need","you need","they need"],
+ n:"Ho bisogno di un medico = I need a doctor."},
+{keys:["anni","anno"], it:"avere … anni", en:"to be … years old", v:"avere", tail:" cinquant'anni",
+ enf:["I'm fifty","you're fifty","he / she is fifty","we're fifty","you're fifty","they're fifty"],
+ n:"Age uses avere: Quanti anni ha? = how old are you?"},
+{keys:["bene","stare"], it:"stare bene", en:"to be well", v:"stare", tail:" bene",
+ enf:["I'm well","you're well","he / she is well","we're well","you're well","they're well"],
+ n:"Come sta? — Sto bene, grazie."},
+{keys:["piace","piacciono","piacere"], it:"mi piace / mi piacciono", en:"to like",
+ forms:[["mi piace","I like it"],["ti piace","you like it"],["gli piace / le piace","he likes it / she likes it"],
+        ["ci piace","we like it"],["vi piace","you like it"],["a loro piace","they like it"]],
+ n:"Swap piace for piacciono when the thing liked is plural: mi piacciono i formaggi."},
+{keys:["chiamo","chiamarsi","chiamare"], it:"chiamarsi", en:"to be called",
+ forms:[["mi chiamo","my name is"],["ti chiami","your name is"],["si chiama","his / her name is"],
+        ["ci chiamiamo","our names are"],["vi chiamate","your names are"],["si chiamano","their names are"]],
+ n:"Literally 'I call myself'. Mi chiamo Marco."},
+{keys:["fermiamo","fermarsi"], it:"fermarsi", en:"to stop / to stay",
+ forms:[["mi fermo","I'm staying"],["ti fermi","you're staying"],["si ferma","he / she is staying"],
+        ["ci fermiamo","we're staying"],["vi fermate","you're staying"],["si fermano","they're staying"]],
+ n:"Ci fermiamo tre notti = we're staying three nights."},
+{keys:["scusi","scusa"], it:"scusare", en:"excuse me",
+ forms:[["scusi","excuse me (formal)"],["scusa","sorry (informal)"],["mi scusi","I'm sorry (formal)"],
+        ["scusate","excuse me (to a group)"],["mi dispiace","I'm sorry (regret)"],["permesso","may I come through"]],
+ n:"Six ways to get someone's attention or apologise."}
+];
+function exprFor(word){
+  const k = norm(word).replace(/[^a-z']/g,"");
+  return EXPR.filter(e => e.keys.some(x => norm(x) === k));
+}
+function exprForms(e){
+  if(e.forms) return e.forms;
+  const v = ALLVERBS.find(x => x.i === e.v);
+  return v.f.map((f,i)=> [f + e.tail, e.enf[i]]);
+}
+function exprHTML(e){
+  return `<div class="note gold" style="margin-top:14px">
+    <div style="font-weight:700;margin-bottom:2px">${esc(e.it)} — ${esc(e.en)}</div>
+    <table class="conj">${exprForms(e).map(([it,en])=>`
+      <tr><td style="width:46%;color:var(--ink);font-weight:600">${gloss(it)}</td>
+      <td style="font-weight:400;color:var(--muted)">${esc(en)}</td></tr>`).join("")}</table>
+    ${e.n?`<p class="small" style="margin:6px 0 0">${esc(e.n)}</p>`:""}
+  </div>`;
+}
+
+/* ---------- an example sentence from the app, for any word ---------- */
+const EXAMPLES = (function(){
+  const idx = new Map();
+  const add = (it, en) => {
+    it.split(/([A-Za-zÀ-ÿ]+['’])|([A-Za-zÀ-ÿ]+)/).filter(x=>x && /[A-Za-zÀ-ÿ]/.test(x)).forEach(tok=>{
+      const k = norm(tok).replace(/[^a-z']/g,"");
+      if(k && !idx.has(k)) idx.set(k, [it, en]);
+    });
+  };
+  ALLPHRASES.forEach(p => add(p.it, p.en));
+  QA.forEach(q => { add(q[0], q[1]); add(q[2], q[3]); });
+  DIALOGHI.forEach(d => d.l.forEach(l => add(l[1], l[2])));
+  return idx;
+})();
+function exampleFor(word, forms){
+  const tries = [word].concat(forms||[]);
+  for(const t of tries){
+    const k = norm(t).replace(/[^a-z']/g,"");
+    if(EXAMPLES.has(k)) return EXAMPLES.get(k);
+  }
+  return null;
+}
+
+/* ============================================================
+   VIEW: Words — the dictionary, both directions
+   ============================================================ */
+let dictDir = "it", dictType = "all", dictQ = "";
+function dictEntries(){
+  const out = [];
+  ALLVERBS.forEach(v => out.push({it:v.i, en:v.e, type:"verb", sub:famLabel(v), v}));
+  NOUNS.forEach(([full,en,g]) => out.push({it:full, en, type:"noun", sub:(g==="m"?"masculine":"feminine"), look:full.replace(/^(il|lo|la|i|le|gli|l')\s?/,"")}));
+  ADJ.forEach(([a,en]) => out.push({it:a, en, type:"adj", sub:"adjective"}));
+  const seen = new Set(out.map(o => norm(o.look||o.it)));
+  FUNC.forEach(([w,en,note]) => {
+    const k = norm(w);
+    if(seen.has(k) || /English word in the prompt/.test(en)) return;
+    seen.add(k);
+    out.push({it:w, en, type:"word", sub:note||""});
+  });
+  return out;
+}
+const DICT = null;
+function renderDict(){
+  const all = (renderDict._cache = renderDict._cache || dictEntries());
+  const t = norm(dictQ);
+  let list = all.filter(e => dictType === "all" || e.type === dictType);
+  if(t) list = list.filter(e => norm(e.it).includes(t) || norm(e.en).includes(t));
+  const keyOf = e => dictDir === "it" ? norm(e.look || e.it) : norm(e.en.replace(/^(to|a|the) /,""));
+  list = list.slice().sort((a,b)=> keyOf(a).localeCompare(keyOf(b)));
+  const groups = new Map();
+  list.forEach(e => {
+    const L = (keyOf(e)[0] || "#").toUpperCase();
+    if(!groups.has(L)) groups.set(L, []);
+    groups.get(L).push(e);
+  });
+  view.innerHTML = `
+    <h1>Words</h1>
+    <p class="lede">Everything the app uses, in one list. Tap an entry for the meaning, the verb table, and a sentence it appears in.</p>
+    <div class="row" style="gap:8px;margin:6px 0 4px">
+      <button class="btn ${dictDir==="it"?"":"ghost"} grow" data-dir="it">Italian → English</button>
+      <button class="btn ${dictDir==="en"?"":"ghost"} grow" data-dir="en">English → Italian</button>
+    </div>
+    <div class="searchwrap"><input id="dq" type="search" placeholder="Search either language…" value="${esc(dictQ)}"></div>
+    <div class="chips">
+      ${[["all","All"],["verb","Verbs"],["noun","Nouns"],["adj","Adjectives"],["word","Everything else"]]
+        .map(([k,n])=>`<button class="chip" data-type="${k}" aria-pressed="${dictType===k}">${n}</button>`).join("")}
+    </div>
+    ${dictType==="verb" ? `<div class="note">
+      <b>-are</b> o · i · a · iamo · ate · ano &nbsp; <b>-ere</b> o · i · e · iamo · ete · ono &nbsp; <b>-ire</b> o · i · e · iamo · ite · ono<br>
+      Some -ire verbs add <b>-isc-</b>: capisco, capisci, capisce, capiamo, capite, capiscono.
+      </div>
+      <button class="btn wide" id="drillVerbs" style="margin:8px 0">Practise conjugations</button>` : ""}
+    <p class="small" style="margin:2px 0 6px">${list.length} entries</p>
+    <div class="azrow">${[...groups.keys()].map(L=>`<button class="az" data-jump="${L}">${L}</button>`).join("")}</div>
+    ${[...groups.entries()].map(([L,items])=>`
+      <h3 id="L-${L}" style="font-family:var(--serif);font-size:19px;color:var(--blu);border-bottom:1px solid var(--line);padding-bottom:4px;scroll-margin-top:60px">${L}</h3>
+      <div class="card" style="padding:2px 12px">
+        ${items.map(e=>`
+          <div class="phrase">
+            <div class="row" style="align-items:center">
+              <button class="speak" data-say="${esc(e.it)}">▶</button>
+              <button class="grow" data-open="${esc(e.look||e.it)}" style="background:none;border:0;text-align:left;padding:0">
+                <div class="it">${esc(dictDir==="it" ? e.it : e.en)}</div>
+                <div class="en">${esc(dictDir==="it" ? e.en : e.it)}</div>
+              </button>
+              <span class="pill ${e.type==="verb"?"gold":""}" style="font-size:10.5px">${esc(e.type==="verb"?e.sub:e.type==="noun"?e.sub[0]:e.type==="adj"?"adj":"")}</span>
+            </div>
+          </div>`).join("")}
+      </div>`).join("") || `<div class="card"><p style="margin:0">Nothing matched “${esc(dictQ)}”.</p></div>`}
+  `;
+  view.querySelectorAll("[data-jump]").forEach(b=> b.onclick = ()=> scrollSafe(view.querySelector("#L-"+b.dataset.jump)));
+  view.querySelectorAll("[data-dir]").forEach(b=> b.onclick = ()=>{ dictDir = b.dataset.dir; renderDict(); });
+  view.querySelectorAll("[data-type]").forEach(b=> b.onclick = ()=>{ dictType = b.dataset.type; renderDict(); });
+  view.querySelectorAll("[data-open]").forEach(b=> b.onclick = ()=> openWord(b.getAttribute("data-open")));
+  if($("#drillVerbs")) $("#drillVerbs").onclick = ()=>{ go("drills"); startDrill("conj","all"); };
+  const q = $("#dq");
+  q.oninput = ()=>{
+    dictQ = q.value;
+    const pos = q.selectionStart;
+    renderDict();
+    const nq = $("#dq"); nq.focus(); nq.setSelectionRange(pos,pos);
+  };
+}
+function openVerb(inf){ go("words"); dictType = "verb"; dictQ = inf; renderDict(); openWord(inf); }
+
+/* ---------- keep the app up to date, and working offline ---------- */
+let swReg = null, reloading = false;
+
+function showUpdateBar(){
+  if(document.getElementById("updbar")) return;
+  const bar = document.createElement("div");
+  bar.id = "updbar"; bar.className = "updbar";
+  bar.innerHTML = `<span>A newer build is ready.</span><button class="btn" id="updNow">Load it</button>`;
+  document.body.appendChild(bar);
+  bar.querySelector("#updNow").onclick = ()=>{
+    const wtg = swReg && (swReg.waiting || swReg.installing);
+    if(wtg) wtg.postMessage("SKIP_WAITING");
+    setTimeout(()=>location.reload(), 300);
+  };
+}
+
+async function checkForUpdate(loud){
+  if(!swReg){ if(loud) toast(navigator.onLine ? "Reloading the newest build…" : "You're offline — running the cached build"); if(loud && navigator.onLine) setTimeout(()=>location.reload(true), 600); return; }
+  if(!navigator.onLine){ if(loud) toast("You're offline — running the cached build"); return; }
+  if(loud) toast("Checking GitHub…");
+  try{
+    await swReg.update();
+    setTimeout(()=>{
+      if(swReg.waiting || swReg.installing) showUpdateBar();
+      else if(loud) toast("You're on the newest build (" + BUILD + ")");
+    }, 1200);
+  }catch(e){ if(loud) toast("Couldn't reach GitHub just now"); }
+}
+
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+  window.addEventListener("load", async ()=>{
+    try{
+      swReg = await navigator.serviceWorker.register("sw.js");
+      if(navigator.serviceWorker.controller){
+        swReg.addEventListener("updatefound", ()=>{
+          const nw = swReg.installing;
+          if(!nw) return;
+          nw.addEventListener("statechange", ()=>{ if(nw.state === "installed") showUpdateBar(); });
+        });
+      }
+      checkForUpdate(false);
+    }catch(e){}
+  });
+  navigator.serviceWorker.addEventListener("controllerchange", ()=>{
+    if(reloading) return;
+    reloading = true;
+    location.reload();
+  });
+  /* check again whenever you come back to the app */
+  document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) checkForUpdate(false); });
+}
+
+/* ---------- go ---------- */
+touchStreak();
+paintHeader();
+go("home");
+</script>
+</body>
+</html>
