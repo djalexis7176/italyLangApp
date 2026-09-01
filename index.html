@@ -322,6 +322,7 @@ const CATS = [
  {id:"orari", name:"Opening times & tickets", blurb:"When to go, when to skip, how to book."},
  {id:"consigli", name:"Recommendations", blurb:"Ask a local where to find the good version of anything."},
  {id:"viaggi", name:"Where we've been & where we're going", blurb:"Past trips and today's plan."},
+ {id:"misure", name:"Sizes, strength & what's in it", blurb:"Sizes, alcohol content, calories, allergens."},
  {id:"soldi", name:"Numbers, prices & paying", blurb:"How much, card or cash, splitting."},
  {id:"aiuto", name:"Useful problems", blurb:"Pharmacy, wifi, toilets, lost things."}
 ];
@@ -648,6 +649,29 @@ P.viaggi = [
 ["Ci è piaciuta molto la costiera.","We really liked the coast.","chee eh pya-CHOO-ta MOL-to"]
 ];
 
+P.misure = [
+["Che misure avete?","What sizes do you have?","keh mee-ZOO-reh a-VEH-teh"],
+["Che taglia è?","What size is it? (clothing)","keh TA-lya eh"],
+["Avete una taglia più grande?","Do you have a bigger size?","OO-na TA-lya pyoo GRAN-deh"],
+["Avete una taglia più piccola?","Do you have a smaller size?","OO-na TA-lya pyoo PEEK-ko-la"],
+["Posso provarla?","Can I try it on?","POS-so pro-VAR-la"],
+["In che formati avete questa birra?","What sizes do you have this beer in?","in keh for-MA-tee"],
+["Piccola, media o grande?","Small, medium or large?","PEEK-ko-la MEH-dya o GRAN-deh"],
+["Mezzo litro, per favore.","Half a litre, please.","MED-dzo LEE-tro"],
+["Una bottiglia da settantacinque centilitri.","A 75cl bottle.","da set-tan-ta-CHEEN-kweh chen-tee-LEE-tree"],
+["Quanti gradi ha questa birra?","What's the alcohol content of this beer?","KWAN-tee GRA-dee a"],
+["Qual è la percentuale di alcol?","What's the alcohol percentage?","la per-chen-TWA-leh dee AL-kol"],
+["Questo vino è molto alcolico?","Is this wine high in alcohol?","al-KO-lee-ko"],
+["La grappa quanti gradi ha?","How strong is the grappa?","la GRAP-pa KWAN-tee GRA-dee a"],
+["Quante calorie ha questo piatto?","How many calories does this dish have?","KWAN-teh ka-lo-REE-eh"],
+["Quanti grassi ci sono?","How much fat is in it?","KWAN-tee GRAS-see chee SO-no"],
+["È molto calorico?","Is it very calorific?","eh MOL-to ka-LO-ree-ko"],
+["Quanto zucchero c'è?","How much sugar is in it?","KWAN-to DZOOK-keh-ro cheh"],
+["Contiene lattosio?","Does it contain lactose?","kon-TYEH-neh lat-TO-zyo"],
+["Quanto pesa?","How much does it weigh?","KWAN-to PEH-za"],
+["Una porzione grande o piccola?","A large or small portion?","OO-na por-TSYO-neh"]
+];
+
 P.soldi = [
 ["Quanto costa?","How much does it cost?","KWAN-to KOS-ta"],
 ["Quanto costano?","How much do they cost?","KWAN-to KOS-ta-no"],
@@ -728,6 +752,7 @@ const VERBS = [
 {i:"rimanere",e:"to stay / remain",fam:"ere",irr:1,f:["rimango","rimani","rimane","rimaniamo","rimanete","rimangono"],n:"Rimaniamo tre notti."},
 {i:"leggere",e:"to read",fam:"ere",irr:0,f:["leggo","leggi","legge","leggiamo","leggete","leggono"],n:"Sto leggendo un giallo."},
 {i:"chiudere",e:"to close",fam:"ere",irr:0,f:["chiudo","chiudi","chiude","chiudiamo","chiudete","chiudono"],n:"A che ora chiudete?"},
+{i:"tenere",e:"to hold / to keep",fam:"ere",irr:1,f:["tengo","tieni","tiene","teniamo","tenete","tengono"],n:"Tieni! = here, take it."},
 {i:"piacere",e:"to be pleasing (to like)",fam:"ere",irr:1,f:["piaccio","piaci","piace","piacciamo","piacete","piacciono"],n:"In practice you only need piace (one thing) and piacciono (several)."}
 ];
 const PRON = ["io","tu","lui / lei","noi","voi","loro"];
@@ -1068,7 +1093,7 @@ const PLAN = [
 {d:"Day 13",t:"Art, books and films",do:"Enough to hold an opinion: mi colpisce, mi trasmette, preferisco. Say why, not just what.",
  cats:["arte","storie"],verbs:["vedere","leggere","preferire"],drill:"Sentence builder"},
 {d:"Day 14",t:"Past and future, the cheap way",do:"Siamo stati a Roma (been), abbiamo visitato (did), domani andiamo (going). Present tense covers the future — no extra grammar needed.",
- cats:["viaggi"],verbs:["essere","avere","andare"],drill:"Everything: mixed review"}
+ cats:["viaggi"],verbs:["essere","avere","andare"],drill:"The story lessons, then a mixed review"}
 ];
 
 const GRAMMAR = [
@@ -1144,7 +1169,11 @@ const EXTRA_VERBS = [
 ["ripetere","to repeat","ere"],["vivere","to live","ere"],["vendere","to sell","ere"],
 ["offrire","to offer","ire"],["seguire","to follow","ire"],["servire","to need / to serve","ire"],
 ["spedire","to ship / to send","isc"],["colpire","to strike","isc"],["pulire","to clean","isc"],
-["suggerire","to suggest","isc"]
+["suggerire","to suggest","isc"],
+["sorridere","to smile","ere"],["rispondere","to answer","ere"],["ridere","to laugh","ere"],
+["continuare","to carry on","are"],["ritornare","to return","are"],["raccontare","to tell (a story)","are"],
+["guidare","to drive","are"],["tagliare","to cut","are"],["pranzare","to have lunch","are"],
+["ordinare","to order","are"],["esercitarsi","to practise","are"]
 ];
 
 /* single words: [word, meaning, note?] */
@@ -1378,6 +1407,58 @@ const FUNC = [
 ["d'italiano","of Italian"],["dell'italia","of Italy"],["all'amatriciana","amatriciana style"],
 ["un'ora","an hour"],["un'acqua","a water"],["l'italiano","Italian (the language)"],
 ["particolare","particular"],["visite","visits / tours"],["cornetto","croissant"],
+["taglia","size (clothing and shoes)","Che taglia è? = what size is it?"],
+["taglie","sizes (clothing)"],["misura","size / measurement"],["misure","sizes"],
+["formato","size / format (of a bottle, tin, portion)"],["formati","sizes"],
+["grado","degree","Gradi = the alcohol content of a drink."],
+["gradi","degrees / alcohol content","Quanti gradi ha? = how strong is it?"],
+["percentuale","percentage"],["alcol","alcohol"],["alcolico","alcoholic / high in alcohol"],
+["analcolico","alcohol-free"],["calorie","calories"],["calorico","calorific / fattening"],
+["grassi","fat / fats"],["grasso","fat"],["zucchero","sugar"],["zuccheri","sugars"],
+["proteine","protein"],["carboidrati","carbohydrates"],["lattosio","lactose"],
+["contiene","it contains","From contenere."],["contenere","to contain"],
+["pesa","it weighs"],["pesare","to weigh"],["peso","weight"],
+["centilitri","centilitres","Una bottiglia da 75 cl."],["millilitri","millilitres"],
+["lattina","can"],["provarla","to try it on","provare + la."],
+["settantacinque","seventy-five"],["settanta","seventy"],["ingredienti","ingredients"],
+["etichetta","label"],["valori","values","Valori nutrizionali = nutritional information."],
+["nutrizionali","nutritional"],["leggera","light / low in alcohol (f)"],["forte","strong"],
+["tovagliolo","napkin"],["bocca","mouth"],["sorride","he / she smiles"],["seduti","seated (m pl)"],
+["sedute","seated (f pl)"],["seduto","seated"],["vuoto","empty"],["vuota","empty (f)"],["vuoti","empty (m pl)"],
+["appena","just / only just","Hanno appena finito = they've just finished."],
+["davanti","in front","Davanti a loro = in front of them."],
+["piena","full (f)","Sono piena = I'm full (a woman speaking)."],["pieno","full (m)"],
+["sazia","full up (f)"],["sazio","full up (m)"],["dieta","diet","Sono a dieta = I'm on a diet."],
+["pezzettino","a little piece"],["pezzetto","small piece"],["fettina","thin slice"],["fetta","slice"],
+["sorso","sip"],["goccio","drop / splash"],["cucchiaino","teaspoon / spoonful"],
+["ostrica","oyster"],["ostriche","oysters"],["dozzina","dozen"],["frutti di mare","seafood"],
+["cannolo","cannolo"],["cannoli","cannoli"],["vassoio","tray"],["pasticceria","pastry shop"],
+["bicchierino","small glass (for spirits)"],["superalcolici","spirits"],["alcolici","alcoholic drinks"],
+["affogato","affogato — ice cream with hot espresso poured over"],["gelato","ice cream"],["coppa","bowl / cup"],
+["miele","honey"],["tagliere","board"],["osteria","osteria, a simple restaurant"],["trattoria","trattoria"],
+["tavolino","little table"],["montagna","mountain"],["porto","harbour"],["piazza","square"],
+["matto","crazy (m)"],["matta","crazy (f)"],["fidanzati","a couple, boyfriend and girlfriend"],
+["fidanzato","boyfriend"],["fidanzata","girlfriend"],["colleghi","colleagues"],["collega","colleague"],
+["fratello","brother"],["sorella","sister"],["padre","father"],["madre","mother"],["figlia","daughter"],
+["figlio","son"],["papà","dad"],["amiche","friends (f)"],["amica","friend (f)"],["ragazzo","young man"],
+["ragazza","young woman"],["uomo","man"],["donna","woman"],["cameriera","waitress"],["cameriere","waiter"],
+["colazione","breakfast","Fare colazione = to have breakfast."],["insieme","together"],
+["terzo","third"],["dodici","twelve"],["qualcos'altro","something else"],["altre","other / more (f pl)"],
+["altri","other / more (m pl)"],["altra","another (f)"],["storia","story"],["significato","meaning"],
+["generale","general"],["pausa","pause"],["frase","sentence"],["frasi","sentences"],
+["pronuncia","pronunciation"],["ascoltare","to listen"],["ripetere","to repeat"],
+["mangialo","eat it all up","Command mangia + lo."],["mangiali","eat them all","mangia + li."],
+["mangiale","eat them all (f)","mangia + le."],["bevila","drink it all","bevi + la."],
+["tieni","here, take it","tu form of tenere, used as a command."],
+["ordinerò","I'll order","Future of ordinare."],["guidare","to drive"],["suoi","his / her (m pl)"],
+["sue","his / her (f pl)"],["piatti","plates / dishes"],
+["tuoi","your (m pl)"],["tue","your (f pl)"],["nostri","our (m pl)"],["nostre","our (f pl)"],
+["c'è","there is"],["ci","us / to us / there"],["sazi","full up (m pl)"],["sazie","full up (f pl)"],
+["qualcos'","something","Qualcos'altro = something else."],["mare","sea","Frutti di mare = seafood."],
+["vecchio","old"],["vecchi","old (m pl)"],["tiramisù","tiramisu"],["grappa","grappa"],
+["ordinerei","I would order","Conditional of ordinare."],["ordinerà","he / she will order"],
+["palermo","Palermo"],["anna","Anna (a name)"],["giulia","Giulia (a name)"],["piero","Piero (a name)"],
+["marco","Marco (a name)"],
 ["c'","there / it","C'è = there is. Ci sono = there are."],["dov'","where","Dov'è = where is."],
 ["d'","of","d'acqua = of water."],["quant'","how much","Quant'è? = how much is it?"],
 ["cinquant'","fifty"],["nell'","in the"],["sull'","on the"],["dall'","from the"],["l'ho","I have it"],
@@ -1395,9 +1476,401 @@ const FUNC = [
 ];
 
 /* ============================================================
+   DATA: story lessons
+   One classic restaurant joke, told seven ways. Same skeleton,
+   different people, different thing being shared — so the
+   structure sticks while the details keep changing.
+   ============================================================ */
+const STORIES = [
+{
+ id:"tiramisu", t:"Il tiramisù", en:"The tiramisu",
+ lv:"Original", who:"Marito e moglie · cameriere",
+ blurb:"A husband and wife at the end of dinner, and one dessert between them.",
+ l:[
+ ["Un uomo e una donna sono seduti al ristorante.","A man and a woman are sitting in a restaurant."],
+ ["Sono marito e moglie e hanno appena finito di cenare.","They're husband and wife and they've just finished dinner."],
+ ["Davanti a loro c'è un piatto vuoto.","In front of them there's an empty plate."],
+ ["L'uomo guarda il suo piatto vuoto.","The man looks at his empty plate."],
+ ["Poi si pulisce la bocca con il tovagliolo.","Then he wipes his mouth with the napkin."],
+ ["«Era tutto buonissimo», dice al cameriere.","'It was all delicious,' he says to the waiter."],
+ ["Il cameriere sorride e porta via i piatti.","The waiter smiles and takes the plates away."],
+ ["Poi chiede: «Posso portarvi un dolce?»","Then he asks: 'Can I bring you a dessert?'"],
+ ["La donna risponde: «No, grazie, sono piena.»","The woman answers: 'No thanks, I'm full.'"],
+ ["L'uomo invece dice: «Sì, grazie, vorrei un tiramisù.»","The man, on the other hand, says: 'Yes please, I'd like a tiramisu.'"],
+ ["Dopo qualche minuto il cameriere torna con il tiramisù.","After a few minutes the waiter comes back with the tiramisu."],
+ ["La donna guarda suo marito e gli chiede: «Posso assaggiarlo?»","The woman looks at her husband and asks him: 'Can I taste it?'"],
+ ["«Certo», risponde lui.","'Of course,' he answers."],
+ ["Allora la donna ne mangia un pezzettino.","So the woman eats a little piece of it."],
+ ["Poi gli chiede: «Ti dispiace se ne prendo ancora?»","Then she asks him: 'Do you mind if I have some more?'"],
+ ["«Va bene», dice il marito, e lei mangia un altro pezzettino.","'All right,' says the husband, and she eats another little piece."],
+ ["«Posso prenderne ancora un po'?», chiede lei.","'Can I have a bit more?' she asks."],
+ ["Allora il marito mette il piatto al centro del tavolo.","So the husband puts the plate in the middle of the table."],
+ ["La moglie continua a mangiare il tiramisù.","The wife carries on eating the tiramisu."],
+ ["Il marito la guarda e le dice: «Tieni, mangialo tutto. Io ne ordinerò un altro.»","The husband looks at her and says to her: 'Here, eat it all. I'll order another one.'"],
+ ["E la moglie risponde: «Ma sei matto? Io non mangio i dolci!»","And the wife answers: 'Are you crazy? I don't eat desserts!'"]
+ ],
+ q:[
+ {s:"L'uomo guarda ___ piatto vuoto.", a:"il suo",
+  o:[{w:"il suo",ok:1,why:"suo = his. It matches the plate (piatto, masculine singular), not the man."},
+     {w:"il tuo",why:"tuo = your. It would be right if you were speaking straight to him: «Guarda il tuo piatto!»"},
+     {w:"la sua",why:"The ending has to match piatto, which is masculine. La sua would fit a feminine word — la sua bocca."},
+     {w:"il loro",why:"loro = their. It would be right if the plate belonged to both of them, or to other people."}]},
+ {s:"Poi ___ pulisce la bocca con il tovagliolo.", a:"si",
+  o:[{w:"si",ok:1,why:"si = himself. He's wiping his own mouth, so the verb turns back on him: pulirsi."},
+     {w:"mi",why:"mi = myself. Right only if you were telling the story about yourself: «Mi pulisco la bocca»."},
+     {w:"ti",why:"ti = yourself. It would need the tu form of the verb too: «Ti pulisci la bocca»."},
+     {w:"lo",why:"lo = it. That would mean he's cleaning something else, and la bocca is already the object."}]},
+ {s:"Il cameriere chiede: «Posso ___ un dolce?»", a:"portarvi",
+  o:[{w:"portarvi",ok:1,why:"portare + vi = bring to you two. The waiter is speaking to both of them."},
+     {w:"portarti",why:"ti = to you, one person. Right if only one of them were at the table."},
+     {w:"portarmi",why:"mi = to me. That would have the waiter asking to bring something to himself."},
+     {w:"portarle",why:"le = to her, or to you (formal, one person). It would work if he were addressing the woman alone."}]},
+ {s:"La donna risponde: «No, grazie, sono ___.»", a:"piena",
+  o:[{w:"piena",ok:1,why:"The woman is speaking about herself, so the adjective takes the feminine -a."},
+     {w:"pieno",why:"pieno is the masculine form. The husband would say sono pieno."},
+     {w:"piene",why:"piene is feminine plural — for two or more women: siamo piene."},
+     {w:"pieni",why:"pieni is masculine plural, or a mixed group: siamo pieni."}]},
+ {s:"La donna guarda suo marito e ___ chiede: «Posso assaggiarlo?»", a:"gli",
+  o:[{w:"gli",ok:1,why:"gli = to him. She's asking him, so it's the indirect 'to him'."},
+     {w:"le",why:"le = to her. It would be right if she were asking another woman."},
+     {w:"lo",why:"lo is the direct 'him'. Right in lo guarda (she looks at him), but chiedere asks TO someone."},
+     {w:"ci",why:"ci = to us. That would mean she's asking the pair of them."}]},
+ {s:"Allora la donna ___ mangia un pezzettino.", a:"ne",
+  o:[{w:"ne",ok:1,why:"ne = of it. Italian says 'she eats a little piece OF IT' and can't leave the ne out."},
+     {w:"lo",why:"lo = it, the whole thing. Ne mangia un pezzettino is a part; lo mangia would be the lot."},
+     {w:"la",why:"la = it (feminine). The tiramisù is masculine anyway, and a portion still needs ne."},
+     {w:"ci",why:"ci = there, or us. It has nothing to do with quantity."}]},
+ {s:"Il marito ___ guarda e le dice: «Tieni, mangialo tutto.»", a:"la",
+  o:[{w:"la",ok:1,why:"la = her, the direct object. Guardare takes it directly: he looks at her."},
+     {w:"le",why:"le = to her. That's why the second half is le dice — but guardare doesn't need 'to'."},
+     {w:"lo",why:"lo = him or it. It would be right if he were looking at his friend, or at the dessert."},
+     {w:"si",why:"si = himself. Si guarda would mean he's looking at himself."}]},
+ {s:"Il marito le dice: «Io ___ un altro tiramisù.»", a:"ne ordinerò",
+  o:[{w:"ne ordinerò",ok:1,why:"Future of ordinare, with ne = another one OF THEM."},
+     {w:"ne ordino",why:"That's the present, 'I'm ordering another one' — right now, not in a moment."},
+     {w:"ne ordinerei",why:"That's the conditional, 'I would order another one' — a wish, not a decision."},
+     {w:"ne ho ordinato",why:"That's the past, 'I've ordered another one' — but he hasn't yet."}]}
+ ]
+},
+{
+ id:"birra", t:"La birra artigianale", en:"The craft beer",
+ lv:"Variation", who:"Due fidanzati · cameriera",
+ blurb:"Same story, but he orders an IPA and she says she doesn't drink.",
+ l:[
+ ["Un ragazzo e una ragazza sono seduti in una trattoria.","A young man and a young woman are sitting in a trattoria."],
+ ["Sono fidanzati e hanno appena finito di cenare.","They're a couple and they've just finished dinner."],
+ ["Davanti a loro c'è un bicchiere vuoto.","In front of them there's an empty glass."],
+ ["Il ragazzo guarda il suo bicchiere vuoto.","The young man looks at his empty glass."],
+ ["Poi si pulisce la bocca con il tovagliolo.","Then he wipes his mouth with the napkin."],
+ ["«Era tutto buonissimo», dice alla cameriera.","'It was all delicious,' he says to the waitress."],
+ ["La cameriera sorride e porta via i piatti.","The waitress smiles and takes the plates away."],
+ ["Poi chiede: «Posso portarvi qualcos'altro?»","Then she asks: 'Can I bring you anything else?'"],
+ ["La ragazza risponde: «No, grazie, io non bevo.»","The young woman answers: 'No thanks, I don't drink.'"],
+ ["Il ragazzo invece dice: «Sì, grazie, vorrei una birra artigianale.»","The young man says: 'Yes please, I'd like a craft beer.'"],
+ ["Dopo qualche minuto la cameriera torna con una IPA alla spina.","After a few minutes the waitress comes back with an IPA on tap."],
+ ["La ragazza guarda il suo fidanzato e gli chiede: «Posso assaggiarla?»","The young woman looks at her boyfriend and asks him: 'Can I taste it?'"],
+ ["«Certo», risponde lui.","'Of course,' he answers."],
+ ["Allora la ragazza ne beve un sorso.","So the young woman takes a sip of it."],
+ ["Poi gli chiede: «Ti dispiace se ne bevo ancora?»","Then she asks him: 'Do you mind if I drink some more?'"],
+ ["«Va bene», dice lui, e lei beve un altro sorso.","'All right,' he says, and she takes another sip."],
+ ["«Posso berne ancora un po'?», chiede lei.","'Can I drink a bit more?' she asks."],
+ ["Allora il ragazzo mette il bicchiere al centro del tavolo.","So the young man puts the glass in the middle of the table."],
+ ["La ragazza continua a bere la birra.","The young woman carries on drinking the beer."],
+ ["Il ragazzo la guarda e le dice: «Tieni, bevila tutta. Io ne ordinerò un'altra.»","He looks at her and says: 'Here, drink it all. I'll order another one.'"],
+ ["E la ragazza risponde: «Ma sei matto? Io non bevo alcolici!»","And she answers: 'Are you crazy? I don't drink alcohol!'"]
+ ],
+ q:[
+ {s:"«Era tutto buonissimo», dice ___ cameriera.", a:"alla",
+  o:[{w:"alla",ok:1,why:"a + la = alla, because cameriera is feminine. He speaks TO the waitress."},
+     {w:"al",why:"al is a + il, for a masculine word: dice al cameriere."},
+     {w:"la",why:"That would make her the thing he's saying, not the person he's saying it to."},
+     {w:"dalla",why:"dalla = from the. It would be right for where something comes from, not who you speak to."}]},
+ {s:"La ragazza guarda il suo fidanzato e ___ chiede: «Posso assaggiarla?»", a:"gli",
+  o:[{w:"gli",ok:1,why:"gli = to him. Chiedere always asks TO someone."},
+     {w:"le",why:"le = to her — right if she were asking the waitress."},
+     {w:"lo",why:"lo is the direct 'him', as in lo guarda. Chiedere needs the indirect form."},
+     {w:"vi",why:"vi = to you two. That would be her asking both of them at once."}]},
+ {s:"Posso ___? (taste the beer)", a:"assaggiarla",
+  o:[{w:"assaggiarla",ok:1,why:"la = it, standing for la birra, which is feminine."},
+     {w:"assaggiarlo",why:"lo would be right for a masculine drink — il vino: posso assaggiarlo?"},
+     {w:"assaggiarne",why:"ne = some of it. Fine with a quantity: posso assaggiarne un po'?"},
+     {w:"assaggiarli",why:"li = them, masculine plural — right for i vini, not one beer."}]},
+ {s:"Allora la ragazza ne ___ un sorso.", a:"beve",
+  o:[{w:"beve",ok:1,why:"lei form of bere: she drinks. The stem changes to bev-."},
+     {w:"bevo",why:"bevo is the io form — right only if you were telling the story about yourself."},
+     {w:"bevi",why:"bevi is the tu form, for speaking to her directly."},
+     {w:"bevono",why:"bevono is the loro form, for two or more people drinking."}]},
+ {s:"«Tieni, ___ tutta. Io ne ordinerò un'altra.»", a:"bevila",
+  o:[{w:"bevila",ok:1,why:"Command form bevi + la (the beer, feminine) stuck on the end."},
+     {w:"bevilo",why:"lo would be right for a masculine drink: bevilo tutto, il vino."},
+     {w:"bevela",why:"The tu command is bevi, not beve, so the pronoun attaches to bevi."},
+     {w:"la bevi",why:"That's a statement or a question, 'you drink it', not an instruction."}]}
+ ]
+},
+{
+ id:"ostriche", t:"Le ostriche", en:"The oysters",
+ lv:"Variation", who:"Due colleghi · cameriere",
+ blurb:"A dozen oysters, one at a time — and a colleague who doesn't eat seafood.",
+ l:[
+ ["Due colleghi sono seduti al ristorante, vicino al porto.","Two colleagues are sitting in a restaurant, near the harbour."],
+ ["Hanno appena finito di pranzare.","They've just finished lunch."],
+ ["Davanti a loro c'è un piatto vuoto.","In front of them there's an empty plate."],
+ ["Marco guarda il suo piatto vuoto.","Marco looks at his empty plate."],
+ ["Poi si pulisce la bocca con il tovagliolo.","Then he wipes his mouth with the napkin."],
+ ["«Era tutto ottimo», dice al cameriere.","'It was all excellent,' he says to the waiter."],
+ ["Il cameriere sorride e porta via i piatti.","The waiter smiles and takes the plates away."],
+ ["Poi chiede: «Posso portarvi altro?»","Then he asks: 'Can I bring you anything else?'"],
+ ["La collega risponde: «No, grazie, sono sazia.»","His colleague answers: 'No thanks, I've had enough.'"],
+ ["Marco invece dice: «Sì, grazie, vorrei una dozzina di ostriche.»","Marco says: 'Yes please, I'd like a dozen oysters.'"],
+ ["Dopo qualche minuto il cameriere torna con le ostriche e mezzo limone.","After a few minutes the waiter comes back with the oysters and half a lemon."],
+ ["La collega guarda Marco e gli chiede: «Posso assaggiarne una?»","She looks at Marco and asks him: 'Can I try one of them?'"],
+ ["«Certo», risponde lui.","'Of course,' he answers."],
+ ["Allora lei ne mangia una.","So she eats one of them."],
+ ["Poi gli chiede: «Ti dispiace se ne prendo un'altra?»","Then she asks him: 'Do you mind if I have another one?'"],
+ ["«Va bene», dice Marco, e lei ne mangia un'altra.","'All right,' says Marco, and she eats another one."],
+ ["«Posso prenderne ancora due?», chiede lei.","'Can I take two more?' she asks."],
+ ["Allora Marco mette il piatto al centro del tavolo.","So Marco puts the plate in the middle of the table."],
+ ["La collega continua a mangiare le ostriche.","She carries on eating the oysters."],
+ ["Marco la guarda e le dice: «Tieni, mangiale tutte. Io ne ordinerò altre dodici.»","Marco looks at her and says: 'Here, eat them all. I'll order another twelve.'"],
+ ["E lei risponde: «Ma sei matto? Io non mangio i frutti di mare!»","And she answers: 'Are you crazy? I don't eat seafood!'"]
+ ],
+ q:[
+ {s:"La collega risponde: «No, grazie, sono ___.»", a:"sazia",
+  o:[{w:"sazia",ok:1,why:"She's talking about herself, so the adjective ends in -a."},
+     {w:"sazio",why:"sazio is the masculine form — Marco would say sono sazio."},
+     {w:"sazie",why:"sazie is feminine plural, for two or more women."},
+     {w:"sazi",why:"sazi is masculine or mixed plural: siamo sazi."}]},
+ {s:"Posso ___ una? (one of the oysters)", a:"assaggiarne",
+  o:[{w:"assaggiarne",ok:1,why:"ne = of them. With a number or quantity, Italian needs ne: assaggiarne una."},
+     {w:"assaggiarla",why:"la = it, the whole thing. Right for one named item, not one out of twelve."},
+     {w:"assaggiarle",why:"le = them all, the whole dozen — more than she's asking for."},
+     {w:"assaggiarlo",why:"lo is masculine 'it'. Le ostriche are feminine, and a portion still needs ne."}]},
+ {s:"Allora lei ___ mangia una.", a:"ne",
+  o:[{w:"ne",ok:1,why:"ne = of them, standing for the twelve oysters."},
+     {w:"le",why:"le = them all. Le mangia would mean she eats the lot in one go."},
+     {w:"la",why:"la = it. Without ne, 'una' has nothing to be one of."},
+     {w:"ci",why:"ci = there or us. Nothing to do with quantity."}]},
+ {s:"«Tieni, ___ tutte. Io ne ordinerò altre dodici.»", a:"mangiale",
+  o:[{w:"mangiale",ok:1,why:"Command mangia + le (le ostriche, feminine plural)."},
+     {w:"mangiali",why:"li is masculine plural — right for i cannoli, not le ostriche."},
+     {w:"mangialo",why:"lo is masculine singular, for one thing like il tiramisù."},
+     {w:"mangiala",why:"la is feminine singular — one oyster, not all twelve."}]},
+ {s:"Io ne ordinerò ___ dodici.", a:"altre",
+  o:[{w:"altre",ok:1,why:"altre matches ostriche: feminine plural."},
+     {w:"altri",why:"altri is masculine plural — altri dodici cannoli."},
+     {w:"altro",why:"altro is masculine singular: un altro tiramisù."},
+     {w:"altra",why:"altra is feminine singular: un'altra birra."}]}
+ ]
+}
+];
+
+STORIES.push(
+{
+ id:"formaggi", t:"Il tagliere di formaggi", en:"The cheese board",
+ lv:"Variation", who:"Fratello e sorella · cameriera",
+ blurb:"A brother, a sister, and a board of cheeses that keeps shrinking.",
+ l:[
+ ["Un fratello e una sorella sono seduti in un'osteria.","A brother and a sister are sitting in an osteria."],
+ ["Hanno appena finito di cenare insieme.","They've just finished having dinner together."],
+ ["Davanti a loro c'è un piatto vuoto.","In front of them there's an empty plate."],
+ ["Il fratello guarda il suo piatto vuoto.","The brother looks at his empty plate."],
+ ["Poi si pulisce la bocca con il tovagliolo.","Then he wipes his mouth with the napkin."],
+ ["«Era tutto buonissimo», dice alla cameriera.","'It was all delicious,' he says to the waitress."],
+ ["La cameriera sorride e porta via i piatti.","The waitress smiles and takes the plates away."],
+ ["Poi chiede: «Posso portarvi un dolce o un formaggio?»","Then she asks: 'Can I bring you a dessert or some cheese?'"],
+ ["La sorella risponde: «No, grazie, sono piena.»","The sister answers: 'No thanks, I'm full.'"],
+ ["Il fratello invece dice: «Sì, grazie, vorrei un tagliere di formaggi.»","The brother says: 'Yes please, I'd like a cheese board.'"],
+ ["Dopo qualche minuto la cameriera torna con quattro formaggi e un po' di miele.","After a few minutes the waitress comes back with four cheeses and a little honey."],
+ ["La sorella guarda suo fratello e gli chiede: «Posso assaggiarne un pezzo?»","The sister looks at her brother and asks him: 'Can I try a piece of it?'"],
+ ["«Certo», risponde lui.","'Of course,' he answers."],
+ ["Allora lei ne taglia una fettina.","So she cuts a thin slice of it."],
+ ["Poi gli chiede: «Ti dispiace se ne prendo ancora?»","Then she asks him: 'Do you mind if I have some more?'"],
+ ["«Va bene», dice il fratello, e lei taglia un'altra fettina.","'All right,' says the brother, and she cuts another slice."],
+ ["«Posso prenderne ancora un po'?», chiede lei.","'Can I have a bit more?' she asks."],
+ ["Allora il fratello mette il tagliere al centro del tavolo.","So the brother puts the board in the middle of the table."],
+ ["La sorella continua a mangiare il pecorino.","The sister carries on eating the pecorino."],
+ ["Il fratello la guarda e le dice: «Tieni, mangialo tutto. Io ne ordinerò un altro.»","The brother looks at her and says: 'Here, eat it all. I'll order another one.'"],
+ ["E la sorella risponde: «Ma sei matto? Io non mangio formaggi la sera!»","And the sister answers: 'Are you crazy? I don't eat cheese in the evening!'"]
+ ],
+ q:[
+ {s:"La sorella guarda ___ fratello.", a:"suo",
+  o:[{w:"suo",ok:1,why:"suo = her. With close family in the singular, Italian drops the article: suo fratello, sua sorella."},
+     {w:"il suo",why:"The article comes back with anything else — il suo tagliere — but not with a single brother."},
+     {w:"tuo",why:"tuo = your. Right only if you were speaking to her: «Guarda tuo fratello!»"},
+     {w:"sua",why:"sua is feminine. It matches sorella, not fratello."}]},
+ {s:"Allora lei ne ___ una fettina.", a:"taglia",
+  o:[{w:"taglia",ok:1,why:"lei form of tagliare: she cuts."},
+     {w:"taglio",why:"taglio is the io form — 'I cut'."},
+     {w:"tagli",why:"tagli is the tu form, for speaking to her."},
+     {w:"tagliano",why:"tagliano is the loro form, for several people cutting."}]},
+ {s:"Hanno appena ___ di cenare insieme.", a:"finito",
+  o:[{w:"finito",ok:1,why:"The past: hanno + finito. Avere + past participle is how you say 'they have finished'."},
+     {w:"finiscono",why:"That's the present, 'they finish', which loses appena — 'just now'."},
+     {w:"finire",why:"The bare infinitive can't follow hanno; you need the participle finito."},
+     {w:"finiti",why:"The participle only changes ending when the verb takes essere: sono finiti."}]},
+ {s:"Il fratello ___ dice: «Tieni, mangialo tutto.»", a:"le",
+  o:[{w:"le",ok:1,why:"le = to her. He's speaking to his sister."},
+     {w:"gli",why:"gli = to him. It would be right if he were speaking to his brother."},
+     {w:"la",why:"la is the direct 'her' — right in la guarda, wrong with dire, which goes TO someone."},
+     {w:"ti",why:"ti = to you. It would be right if the story were told to the sister herself."}]}
+ ]
+},
+{
+ id:"affogato", t:"L'affogato al caffè", en:"The affogato",
+ lv:"Variation", who:"Due amiche · cameriere",
+ blurb:"Two friends, one ice cream, and a spoon that keeps coming back.",
+ l:[
+ ["Anna e Giulia sono sedute a un tavolino in piazza.","Anna and Giulia are sitting at a little table in the square."],
+ ["Sono due amiche e hanno appena finito di pranzare.","They're two friends and they've just finished lunch."],
+ ["Davanti a loro ci sono due piatti vuoti.","In front of them there are two empty plates."],
+ ["Anna guarda i suoi piatti vuoti.","Anna looks at her empty plates."],
+ ["Poi si pulisce la bocca con il tovagliolo.","Then she wipes her mouth with the napkin."],
+ ["«Era tutto buonissimo», dice al cameriere.","'It was all delicious,' she says to the waiter."],
+ ["Il cameriere sorride e porta via i piatti.","The waiter smiles and takes the plates away."],
+ ["Poi chiede: «Posso portarvi un dolce?»","Then he asks: 'Can I bring you a dessert?'"],
+ ["Giulia risponde: «No, grazie, sono a dieta.»","Giulia answers: 'No thanks, I'm on a diet.'"],
+ ["Anna invece dice: «Sì, grazie, vorrei un affogato al caffè.»","Anna says: 'Yes please, I'd like an affogato.'"],
+ ["Dopo qualche minuto il cameriere torna con il gelato e il caffè caldo.","After a few minutes the waiter comes back with the ice cream and the hot coffee."],
+ ["Giulia guarda la sua amica e le chiede: «Posso assaggiarlo?»","Giulia looks at her friend and asks her: 'Can I taste it?'"],
+ ["«Certo», risponde Anna.","'Of course,' Anna answers."],
+ ["Allora Giulia ne prende un cucchiaino.","So Giulia takes a spoonful of it."],
+ ["Poi le chiede: «Ti dispiace se ne prendo ancora?»","Then she asks her: 'Do you mind if I have some more?'"],
+ ["«Va bene», dice Anna, e Giulia prende un altro cucchiaino.","'All right,' says Anna, and Giulia takes another spoonful."],
+ ["«Posso prenderne ancora un po'?», chiede Giulia.","'Can I have a bit more?' Giulia asks."],
+ ["Allora Anna mette la coppa al centro del tavolino.","So Anna puts the bowl in the middle of the little table."],
+ ["Giulia continua a mangiare il gelato.","Giulia carries on eating the ice cream."],
+ ["Anna la guarda e le dice: «Tieni, mangialo tutto. Io ne ordinerò un altro.»","Anna looks at her and says: 'Here, eat it all. I'll order another one.'"],
+ ["E Giulia risponde: «Ma sei matta? Io sono a dieta!»","And Giulia answers: 'Are you crazy? I'm on a diet!'"]
+ ],
+ q:[
+ {s:"Giulia guarda la sua amica e ___ chiede: «Posso assaggiarlo?»", a:"le",
+  o:[{w:"le",ok:1,why:"le = to her. Both friends are women, so it's 'to her', never gli."},
+     {w:"gli",why:"gli = to him. It would be right if she were asking a man."},
+     {w:"la",why:"la is the direct 'her', as in la guarda. Chiedere asks TO someone."},
+     {w:"lo",why:"lo = him or it. Wrong person and wrong kind of pronoun here."}]},
+ {s:"E Giulia risponde: «Ma sei ___?»", a:"matta",
+  o:[{w:"matta",ok:1,why:"She's speaking to Anna, a woman, so the adjective takes the feminine -a."},
+     {w:"matto",why:"matto is masculine — right when the person you're talking to is a man."},
+     {w:"matte",why:"matte is feminine plural, for two or more women: siete matte?"},
+     {w:"matti",why:"matti is masculine or mixed plural: siete matti?"}]},
+ {s:"Anna guarda ___ piatti vuoti.", a:"i suoi",
+  o:[{w:"i suoi",ok:1,why:"Two plates, masculine plural, so both the article and the possessive go plural."},
+     {w:"il suo",why:"That's for one masculine thing: il suo piatto."},
+     {w:"le sue",why:"le sue is feminine plural: le sue amiche."},
+     {w:"i tuoi",why:"tuoi = your. Right only if you were speaking straight to Anna."}]},
+ {s:"Davanti a loro ___ due piatti vuoti.", a:"ci sono",
+  o:[{w:"ci sono",ok:1,why:"Two plates is plural, so 'there are'."},
+     {w:"c'è",why:"c'è is 'there is', for one thing: c'è un piatto vuoto."},
+     {w:"sono",why:"Without ci it means 'they are', and the sentence loses its 'there'."},
+     {w:"ci è",why:"c'è is always written with the apostrophe; ci è isn't used here."}]}
+ ]
+},
+{
+ id:"cannoli", t:"I cannoli", en:"The cannoli",
+ lv:"Variation", who:"Padre e figlia · cameriera",
+ blurb:"Three cannoli on a tray, a father, and a daughter who doesn't eat sweets.",
+ l:[
+ ["Un padre e sua figlia sono seduti in una pasticceria a Palermo.","A father and his daughter are sitting in a pastry shop in Palermo."],
+ ["Hanno appena finito di fare colazione.","They've just finished having breakfast."],
+ ["Davanti a loro c'è un piatto vuoto.","In front of them there's an empty plate."],
+ ["Il padre guarda il suo piatto vuoto.","The father looks at his empty plate."],
+ ["Poi si pulisce la bocca con il tovagliolo.","Then he wipes his mouth with the napkin."],
+ ["«Era tutto buonissimo», dice alla cameriera.","'It was all delicious,' he says to the waitress."],
+ ["La cameriera sorride e porta via i piatti.","The waitress smiles and takes the plates away."],
+ ["Poi chiede: «Posso portarvi qualcos'altro?»","Then she asks: 'Can I bring you anything else?'"],
+ ["La figlia risponde: «No, grazie, ho già mangiato troppo.»","The daughter answers: 'No thanks, I've eaten too much already.'"],
+ ["Il padre invece dice: «Sì, grazie, vorrei tre cannoli.»","The father says: 'Yes please, I'd like three cannoli.'"],
+ ["Dopo qualche minuto la cameriera torna con un vassoio di cannoli.","After a few minutes the waitress comes back with a tray of cannoli."],
+ ["La figlia guarda suo padre e gli chiede: «Posso assaggiarne uno?»","The daughter looks at her father and asks him: 'Can I try one of them?'"],
+ ["«Certo», risponde lui.","'Of course,' he answers."],
+ ["Allora lei ne mangia uno.","So she eats one of them."],
+ ["Poi gli chiede: «Ti dispiace se ne prendo un altro?»","Then she asks him: 'Do you mind if I take another one?'"],
+ ["«Va bene», dice il padre, e lei ne mangia un altro.","'All right,' says the father, and she eats another one."],
+ ["«Posso prendere anche il terzo?», chiede lei.","'Can I have the third one too?' she asks."],
+ ["Allora il padre mette il vassoio al centro del tavolo.","So the father puts the tray in the middle of the table."],
+ ["La figlia continua a mangiare i cannoli.","The daughter carries on eating the cannoli."],
+ ["Il padre la guarda e le dice: «Tieni, mangiali tutti. Io ne ordinerò altri tre.»","The father looks at her and says: 'Here, eat them all. I'll order another three.'"],
+ ["E la figlia risponde: «Ma sei matto, papà? Io non mangio i dolci!»","And the daughter answers: 'Are you crazy, dad? I don't eat sweets!'"]
+ ],
+ q:[
+ {s:"La figlia guarda ___ padre.", a:"suo",
+  o:[{w:"suo",ok:1,why:"One close relative in the singular takes no article: suo padre, sua madre."},
+     {w:"il suo",why:"The article returns for anything else — il suo cannolo — and for plurals: i suoi fratelli."},
+     {w:"sua",why:"sua is feminine; padre is masculine."},
+     {w:"tuo",why:"tuo = your. Right only if you were speaking to the daughter herself."}]},
+ {s:"La figlia risponde: «No, grazie, ho già ___ troppo.»", a:"mangiato",
+  o:[{w:"mangiato",ok:1,why:"ho + mangiato = I have eaten. The participle stays put after avere."},
+     {w:"mangiata",why:"The participle only agrees when there's a feminine object pronoun in front: l'ho mangiata."},
+     {w:"mangio",why:"That's the present, 'I eat', which clashes with già — 'already'."},
+     {w:"mangiare",why:"The infinitive can't follow ho on its own."}]},
+ {s:"«Tieni, ___ tutti. Io ne ordinerò altri tre.»", a:"mangiali",
+  o:[{w:"mangiali",ok:1,why:"Command mangia + li, standing for i cannoli: masculine plural."},
+     {w:"mangiale",why:"le is feminine plural — right for le ostriche."},
+     {w:"mangialo",why:"lo is one masculine thing: mangialo tutto, il cannolo."},
+     {w:"mangiane",why:"ne = some of them, so it needs a quantity: mangiane due."}]},
+ {s:"Allora lei ___ mangia uno.", a:"ne",
+  o:[{w:"ne",ok:1,why:"ne = of them. With uno, due, un po', Italian always wants ne."},
+     {w:"li",why:"li = them all, the whole tray."},
+     {w:"lo",why:"lo = it. Then uno would have nothing to be one of."},
+     {w:"gli",why:"gli = to him, an indirect pronoun. Wrong job entirely."}]}
+ ]
+},
+{
+ id:"grappa", t:"La grappa", en:"The grappa",
+ lv:"Variation", who:"Due vecchi amici · cameriere",
+ blurb:"After dinner, one glass of grappa and a friend who doesn't touch spirits.",
+ l:[
+ ["Due vecchi amici sono seduti in una trattoria di montagna.","Two old friends are sitting in a mountain trattoria."],
+ ["Hanno appena finito di cenare.","They've just finished dinner."],
+ ["Davanti a loro c'è una bottiglia di vino vuota.","In front of them there's an empty wine bottle."],
+ ["Piero guarda la bottiglia vuota.","Piero looks at the empty bottle."],
+ ["Poi si pulisce la bocca con il tovagliolo.","Then he wipes his mouth with the napkin."],
+ ["«Era tutto buonissimo», dice al cameriere.","'It was all delicious,' he says to the waiter."],
+ ["Il cameriere sorride e porta via i piatti.","The waiter smiles and takes the plates away."],
+ ["Poi chiede: «Posso portarvi un amaro o un caffè?»","Then he asks: 'Can I bring you an amaro or a coffee?'"],
+ ["Il suo amico risponde: «No, grazie, devo guidare.»","His friend answers: 'No thanks, I have to drive.'"],
+ ["Piero invece dice: «Sì, grazie, vorrei un bicchierino di grappa.»","Piero says: 'Yes please, I'd like a small glass of grappa.'"],
+ ["Dopo qualche minuto il cameriere torna con la grappa.","After a few minutes the waiter comes back with the grappa."],
+ ["L'amico guarda Piero e gli chiede: «Posso assaggiarla?»","The friend looks at Piero and asks him: 'Can I taste it?'"],
+ ["«Certo», risponde Piero.","'Of course,' Piero answers."],
+ ["Allora l'amico ne beve un sorso.","So the friend takes a sip of it."],
+ ["Poi gli chiede: «Ti dispiace se ne bevo ancora?»","Then he asks him: 'Do you mind if I drink some more?'"],
+ ["«Va bene», dice Piero, e l'amico beve un altro sorso.","'All right,' says Piero, and the friend takes another sip."],
+ ["«Posso berne ancora un goccio?», chiede l'amico.","'Can I have another drop?' the friend asks."],
+ ["Allora Piero mette il bicchierino al centro del tavolo.","So Piero puts the little glass in the middle of the table."],
+ ["L'amico continua a bere la grappa.","The friend carries on drinking the grappa."],
+ ["Piero lo guarda e gli dice: «Tieni, bevila tutta. Io ne ordinerò un'altra.»","Piero looks at him and says to him: 'Here, drink it all. I'll order another one.'"],
+ ["E l'amico risponde: «Ma sei matto? Io non bevo superalcolici, devo guidare!»","And the friend answers: 'Are you crazy? I don't drink spirits, I have to drive!'"]
+ ],
+ q:[
+ {s:"Piero ___ guarda e gli dice: «Tieni, bevila tutta.»", a:"lo",
+  o:[{w:"lo",ok:1,why:"lo = him, direct object. This time the friend is a man."},
+     {w:"la",why:"la = her. It would be right if the friend were a woman."},
+     {w:"gli",why:"gli = to him. That's why the sentence carries on with gli dice — but guardare doesn't need 'to'."},
+     {w:"si",why:"si = himself. Si guarda would mean Piero is looking at himself."}]},
+ {s:"Il suo amico risponde: «No, grazie, ___ guidare.»", a:"devo",
+  o:[{w:"devo",ok:1,why:"io form of dovere: I have to. He's talking about himself."},
+     {w:"deve",why:"deve is the lui/lei form — 'he has to' — or a polite 'you have to'."},
+     {w:"devi",why:"devi is the tu form, used when telling someone else they must."},
+     {w:"dobbiamo",why:"dobbiamo is the noi form: we have to."}]},
+ {s:"Allora l'amico ne ___ un sorso.", a:"beve",
+  o:[{w:"beve",ok:1,why:"lui form of bere. The stem changes to bev-."},
+     {w:"bere",why:"That's the infinitive — it can't stand as the main verb here."},
+     {w:"bevi",why:"bevi is the tu form, for speaking to him."},
+     {w:"beviamo",why:"beviamo is the noi form: we drink."}]},
+ {s:"Io ne ordinerò ___ altra.", a:"un'",
+  o:[{w:"un'",ok:1,why:"Feminine word starting with a vowel: un' with the apostrophe — un'altra grappa."},
+     {w:"un",why:"un is masculine: un altro bicchierino, with no apostrophe."},
+     {w:"una",why:"una becomes un' before a vowel, so una altra isn't written."},
+     {w:"uno",why:"uno is only used before s+consonant, z, gn: uno spumante."}]}
+ ]
+}
+);
+
+/* ============================================================
    ENGINE
    ============================================================ */
-const BUILD = "3.1.0";
+const BUILD = "3.3.0";
 const BUILT = "2026-08-31";
 const VERSTAMP = (function(){
   const [y,m,d] = BUILT.split("-");
@@ -1405,6 +1878,8 @@ const VERSTAMP = (function(){
 })();
 let UPD = {state:"unknown", at:0};
 const CHANGES = [
+  ["3.3.0","2026-08-31","Story lessons: one restaurant story told seven ways, with listen, read and translate modes and a fill-the-gaps quiz that explains why each wrong answer is wrong and when it would be right. All the story vocabulary added to the dictionary and the practice decks."],
+  ["3.2.0","2026-08-31","Focus practice: tap any word and drill it 10, 20, 30 or 50 times across different sentences. New words and phrases for sizes, alcohol strength, calories, fat and allergens."],
   ["3.1.0","2026-08-31","Version stamp under the wordmark, showing whether this is the newest build on GitHub. Tap it to check."],
   ["3.0.0","2026-08-31","Words tab: two-way dictionary, 860 entries, A–Z jump, set expressions like avere fame conjugated in full. Tap any Italian word anywhere for its meaning and verb table. Saved tab: word list and notepad. Verbs tab folded into Words."],
   ["2.0.0","2026-08-31","Icons, web manifest, offline cache, add-to-home-screen support."],
@@ -1501,8 +1976,9 @@ const ADJITEMS  = ADJ.map((a,i)=>({it:a[0], en:a[1], ph:"", cat:"agg", key:"a:"+
 const catName = id => (CATS.find(c=>c.id===id)||{name:id}).name;
 
 function deckItems(deck){
+  if(deck === "stories") return STORIES.flatMap((st,si)=> st.l.map((l,li)=>({it:l[0], en:l[1], ph:"", cat:"stories", key:"st:"+si+":"+li})));
   if(deck === "study") return Object.entries(S.list||{}).map(([k,v])=>({it:v.w, en:v.g||"(no meaning saved)", ph:"", cat:"study", key:"s:"+k}));
-  if(deck === "all") return ALLPHRASES.concat(NOUNITEMS, ADJITEMS);
+  if(deck === "all") return ALLPHRASES.concat(NOUNITEMS, ADJITEMS, deckItems("stories"));
   if(deck === "starred") return ALLPHRASES.concat(NOUNITEMS, ADJITEMS).filter(x=>S.star[x.key]);
   if(deck === "vocab") return NOUNITEMS.concat(ADJITEMS);
   return ALLPHRASES.filter(x=>x.cat===deck).concat(NOUNITEMS.filter(x=>x.cat===deck));
@@ -1568,7 +2044,8 @@ function renderHome(){
   <h2>Practice</h2>
   <div class="grid2">
     ${[["flash","Flashcards"],["quiz","Quick quiz"],["listen","Listen &amp; choose"],["match","Matching"],
-       ["conj","Conjugation"],["which","Which word?"],["qa","Answer them"],["dialog","Role-play"]]
+       ["conj","Conjugation"],["which","Which word?"],["qa","Answer them"],["dialog","Role-play"],
+       ["story","Stories"]]
       .map(([k,n])=>`<button class="match" data-drill="${k}">${n}</button>`).join("")}
   </div>
 
@@ -1733,17 +2210,18 @@ const DRILLS = [
  ["cloze","Fill the gap","A phrase with one word missing. Rebuild it from memory."],
  ["qa","Answer them","They ask, you answer. Choose the reply that actually works."],
  ["build","Sentence builder","Words in the wrong order. Put them back."],
- ["dialog","Role-play","Whole conversations. Your lines stay hidden until you've tried them out loud."]
+ ["dialog","Role-play","Whole conversations. Your lines stay hidden until you've tried them out loud."],
+ ["story","Stories","A restaurant story told seven ways. Listen, read, translate, then fill the gaps."]
 ];
 let sess = null, deckSel = "all";
 
 function renderDrills(){
   if(sess) return paintStep();
-  const decks = [["all","Everything"],["starred","Saved phrases ★"],["study","My word list"],["vocab","Single words"]].concat(CATS.map(c=>[c.id,c.name]));
+  const decks = [["all","Everything"],["starred","Saved phrases ★"],["study","My word list"],["vocab","Single words"],["stories","Story lines"]].concat(CATS.map(c=>[c.id,c.name]));
   view.innerHTML = `
     <h1>Practice</h1>
     <p class="lede">Pick a set, then pick a way to drill it.</p>
-    <p class="hint">Stuck on a word mid-drill? Tap it. The meaning pops up without ending the question.</p>
+    <p class="hint">Stuck on a word mid-drill? Tap it — the meaning pops up without ending the question, and the bottom of that pop-up drills that one word 10, 20, 30 or 50 times.</p>
     <div class="chips">${decks.map(([k,n])=>`<button class="chip" data-deck="${k}" aria-pressed="${deckSel===k}">${esc(n)}</button>`).join("")}</div>
     <div id="drillList">${DRILLS.map(([k,n,b])=>`
       <div class="card tight"><div class="row" style="align-items:center">
@@ -1817,6 +2295,7 @@ function startDrill(type, deck){
   touchStreak();
   if(type==="match") return startMatch(deckSel);
   if(type==="dialog") return startDialog();
+  if(type==="story")  return startStory();
   let steps = [], title = "";
   switch(type){
     case "flash":  steps = buildFlash(deckSel,12); title="Flashcards"; break;
@@ -1863,8 +2342,8 @@ function paintDone(){
     <button class="btn wide" id="again">Go again</button>
     <button class="btn ghost wide" id="back" style="margin-top:8px">Back to practice</button>`;
   addXp(2);
-  const t = sess.type, d = deckSel;
-  $("#again").onclick = ()=> startDrill(t, d);
+  const t = sess.type, d = deckSel, fw = sess.focusWord, fn = sess.steps.length;
+  $("#again").onclick = ()=> t === "focus" ? startFocus(fw, fn) : startDrill(t, d);
   $("#back").onclick = endSess;
 }
 function feedback(host, ok, html){
@@ -2078,7 +2557,11 @@ function stepBuild(s, host){
    ============================================================ */
 let special = null;
 TABS.drills = function(){ if(special && !sess) return paintSpecial(); return renderDrills(); };
-function paintSpecial(){ special.type==="match" ? paintMatch() : paintDialogList(); }
+function paintSpecial(){
+  if(special.type === "match") return paintMatch();
+  if(special.type === "story") return special.pick ? paintStory() : paintStoryList();
+  return paintDialogList();
+}
 function startMatch(deck){ special = {type:"match", deck}; buildMatch(); go("drills"); }
 function startDialog(){ special = {type:"dialog", pick:null}; go("drills"); }
 
@@ -2328,6 +2811,13 @@ function openWord(raw){
         <button class="speak" data-say="${esc(ex[0])}">▶</button>
         <div class="grow"><div class="it">${gloss(ex[0])}</div><div class="en">${esc(ex[1])}</div></div>
       </div></div>`;
+  body += `<div style="margin-top:16px;border-top:1px solid var(--line);padding-top:12px">
+      <div style="font-weight:700;font-size:14px">Practise this word</div>
+      <p class="small" style="margin:2px 0 8px">Drill it in different sentences until it sticks.</p>
+      <div class="row" style="gap:6px">
+        ${[10,20,30,50].map(n=>`<button class="btn quiet grow" data-focus="${n}" style="padding:10px 0">${n}</button>`).join("")}
+      </div>
+    </div>`;
   const sheet = document.createElement("div");
   sheet.className = "sheetbg";
   sheet.innerHTML = `
@@ -2345,6 +2835,10 @@ function openWord(raw){
   const close = ()=> sheet.remove();
   sheet.onclick = e => { if(e.target === sheet) close(); };
   sheet.querySelector("#closeSheet").onclick = close;
+  sheet.querySelectorAll("[data-focus]").forEach(b=> b.onclick = ()=>{
+    close();
+    startFocus(raw, +b.getAttribute("data-focus"));
+  });
   sheet.querySelector("#addWord").onclick = (e)=>{
     S.list = S.list || {};
     if(S.list[k]){ delete S.list[k]; toast("Removed from your word list"); }
@@ -2446,6 +2940,7 @@ function renderSaved(){
         <button class="btn ghost grow" id="copyNotes">Copy all notes</button>
         <button class="btn ghost grow" id="dlNotes">Download</button>
       </div>
+      <p class="small" style="margin-top:6px">Tap any word above to see it again, or to drill just that word.</p>
       <p class="small" style="margin-top:8px">Notes are kept in this browser only. Copy or download them now and then so you don't lose them.</p>` : ""}
   `;
   view.querySelectorAll("[data-drop]").forEach(b=> b.onclick = ()=>{
@@ -2577,6 +3072,7 @@ const EXAMPLES = (function(){
   ALLPHRASES.forEach(p => add(p.it, p.en));
   QA.forEach(q => { add(q[0], q[1]); add(q[2], q[3]); });
   DIALOGHI.forEach(d => d.l.forEach(l => add(l[1], l[2])));
+  STORIES.forEach(st => st.l.forEach(l => add(l[0], l[1])));
   return idx;
 })();
 function exampleFor(word, forms){
@@ -2669,6 +3165,418 @@ function renderDict(){
   };
 }
 function openVerb(inf){ go("words"); dictType = "verb"; dictQ = inf; renderDict(); openWord(inf); }
+
+
+/* ============================================================
+   DATA: sentence patterns for focused practice on one word
+   Slots are filled at random, so one word gives you dozens of sentences.
+   ============================================================ */
+const SLOT = {
+  mezzo:    [["autobus","bus"],["treno","train"],["traghetto","ferry"],["taxi","taxi"],["pullman","coach"]],
+  dest:     [["in centro","to the centre"],["all'aeroporto","to the airport"],["alla stazione","to the station"],
+             ["al museo","to the museum"],["al porto","to the port"],["a Siena","to Siena"]],
+  bevanda:  [["birra","beer"],["grappa","grappa"],["acqua","water"],["pizza","pizza"]],
+  bevandaM: [["vino","wine"],["caffè","coffee"],["formaggio","cheese"],["salame","salami"]],
+  piatto:   [["piatto","dish"],["formaggio","cheese"],["salame","salami"],["dolce","dessert"],["antipasto","starter"]],
+  piattoDef:[["questo piatto","this dish"],["il formaggio","the cheese"],["il salame","the salami"],
+             ["il dolce","the dessert"],["l'antipasto","the starter"]],
+  luogo:    [["la stazione","the station"],["il museo","the museum"],["il mercato","the market"],
+             ["la farmacia","the pharmacy"],["il bagno","the toilet"],["l'enoteca","the wine bar"]],
+  postoInd: [["un bancomat","an ATM"],["una farmacia","a pharmacy"],["un buon bar","a good bar"],
+             ["un mercato","a market"],["un birrificio","a brewery"]],
+  plurale:  [["birre","beers"],["vini","wines"],["formaggi","cheeses"],["salumi","cured meats"],["biglietti","tickets"]],
+  cosa:     [["un tavolo per due","a table for two"],["il conto","the bill"],["un bicchiere di rosso","a glass of red"],
+             ["due biglietti","two tickets"],["un caffè","a coffee"],["una bottiglia d'acqua","a bottle of water"]],
+  azione:   [["assaggiare","taste"],["pagare con la carta","pay by card"],["vedere il menù","see the menu"],
+             ["fare una foto","take a photo"],["sedermi qui","sit here"]],
+  evento:   [["parte il treno","does the train leave"],["aprite","do you open"],["chiude il museo","does the museum close"],
+             ["arriva il traghetto","does the ferry arrive"],["comincia la visita","does the tour start"]],
+  piaceS:   [["il vino rosso","red wine"],["la birra scura","dark beer"],["questo formaggio","this cheese"],
+             ["l'arte moderna","modern art"],["il caffè macchiato","coffee with a drop of milk"]],
+  piaceP:   [["i formaggi stagionati","aged cheeses"],["le birre acide","sour beers"],["i film polizieschi","crime films"],
+             ["gli spaghetti alle vongole","spaghetti with clams"],["i musei piccoli","small museums"]],
+  bevutaF:  [["questa birra","this beer"],["questa grappa","this grappa"],["questa bottiglia","this bottle"]],
+  bevutaM:  [["questo vino","this wine"],["questo amaro","this amaro"],["questo spumante","this sparkling wine"]]
+};
+const FOCUS = {
+  quale: [["Quale {mezzo} va {dest}?","Which {mezzo} goes {dest}?"],
+          ["Quale {bevanda} mi consiglia?","Which {bevanda} do you recommend?"],
+          ["Quale {piatto} è più piccante?","Which {piatto} is spicier?"],
+          ["Quale {mezzo} devo prendere per andare {dest}?","Which {mezzo} should I take to go {dest}?"],
+          ["Non so quale {bevanda} scegliere.","I don't know which {bevanda} to choose."],
+          ["Quale {bevandaM} è locale?","Which {bevandaM} is local?"]],
+  quali: [["Quali {plurale} avete oggi?","Which {plurale} do you have today?"],
+          ["Quali {plurale} mi consiglia?","Which {plurale} do you recommend?"],
+          ["Quali {plurale} sono della zona?","Which {plurale} are from around here?"]],
+  quanto:[["Quanto costa {cosa}?","How much is {cosa}?"],
+          ["Quanto tempo ci vuole per andare {dest}?","How long does it take to go {dest}?"],
+          ["Quanto dura la visita?","How long does the visit take?"],
+          ["Quanto ci mette il {mezzo}?","How long does the {mezzo} take?"]],
+  quanti:[["Quanti gradi ha {bevutaF}?","What's the alcohol content of {bevutaF}?"],
+          ["Quanti anni ha {bevutaM}?","How old is {bevutaM}?"],
+          ["Quanti minuti a piedi?","How many minutes on foot?"],
+          ["Quanti {plurale} avete alla spina?","How many {plurale} do you have on tap?"]],
+  dove:  [["Dove posso comprare {cosa}?","Where can I buy {cosa}?"],
+          ["Dove si mangia bene qui?","Where do you eat well here?"],
+          ["Dove prendo il {mezzo} per andare {dest}?","Where do I get the {mezzo} to go {dest}?"]],
+  "dov'":[["Dov'è {luogo}?","Where is {luogo}?"],
+          ["Dov'è {luogo}, per favore?","Where is {luogo}, please?"],
+          ["Scusi, dov'è {luogo}?","Excuse me, where is {luogo}?"]],
+  "c'":  [["C'è {postoInd} qui vicino?","Is there {postoInd} nearby?"],
+          ["C'è {postoInd} in centro?","Is there {postoInd} in the centre?"],
+          ["Non c'è {postoInd} da queste parti?","Isn't there {postoInd} around here?"]],
+  vorrei:[["Vorrei {cosa}, per favore.","I'd like {cosa}, please."],
+          ["Vorrei {azione}, è possibile?","I'd like to {azione}, is that possible?"],
+          ["Vorrei sapere dov'è {luogo}.","I'd like to know where {luogo} is."]],
+  posso: [["Posso {azione}?","Can I {azione}?"],
+          ["Posso {azione}, per favore?","Can I {azione}, please?"],
+          ["Scusi, posso {azione}?","Excuse me, can I {azione}?"]],
+  ora:   [["A che ora {evento}?","What time {evento}?"],
+          ["Sa a che ora {evento}?","Do you know what time {evento}?"]],
+  piace: [["Mi piace {piaceS}.","I like {piaceS}."],
+          ["Non mi piace {piaceS}.","I don't like {piaceS}."],
+          ["A mia moglie piace {piaceS}.","My wife likes {piaceS}."],
+          ["Le piace {piaceS}?","Do you like {piaceS}?"]],
+  piacciono:[["Mi piacciono {piaceP}.","I like {piaceP}."],
+          ["Non mi piacciono {piaceP}.","I don't like {piaceP}."],
+          ["A mio marito piacciono {piaceP}.","My husband likes {piaceP}."]],
+  gradi: [["Quanti gradi ha {bevutaF}?","What's the alcohol content of {bevutaF}?"],
+          ["{bevutaM} quanti gradi ha?","What's the alcohol content of {bevutaM}?"],
+          ["Ha pochi gradi, si beve bene.","It's low in alcohol, easy to drink."]],
+  percentuale:[["Qual è la percentuale di alcol?","What's the alcohol percentage?"],
+          ["Che percentuale di alcol ha {bevutaF}?","What alcohol percentage does {bevutaF} have?"]],
+  calorie:[["Quante calorie ha {piattoDef}?","How many calories does {piattoDef} have?"],
+          ["Sa quante calorie ha?","Do you know how many calories it has?"]],
+  taglia:[["Che taglia è?","What size is it?"],
+          ["Avete una taglia più grande?","Do you have a bigger size?"],
+          ["Avete una taglia più piccola?","Do you have a smaller size?"]],
+  misura:[["Che misure avete?","What sizes do you have?"],
+          ["Avete una misura più grande?","Do you have a larger size?"]],
+  formato:[["In che formati avete {bevanda}?","What sizes do you have {bevanda} in?"],
+          ["Avete un formato più grande?","Do you have a bigger size?"]],
+  molto: [["È molto piccante?","Is it very spicy?"],
+          ["Mi piace molto {piaceS}.","I like {piaceS} a lot."],
+          ["Non è molto lontano.","It's not very far."]],
+  troppo:[["È troppo caro per me.","It's too expensive for me."],
+          ["{bevutaF} è troppo amara.","{bevutaF} is too bitter."],
+          ["Non troppo piccante, per favore.","Not too spicy, please."]],
+  costa: [["Quanto costa {cosa}?","How much is {cosa}?"],
+          ["Costa troppo, grazie lo stesso.","It costs too much, thanks anyway."]],
+  bene:  [["Si mangia bene qui?","Do you eat well here?"],
+          ["Sto bene, grazie.","I'm well, thanks."],
+          ["Va bene così, grazie.","That's fine as it is, thanks."]],
+  buono: [["Questo {bevandaM} è molto buono.","This {bevandaM} is very good."],
+          ["È buono, ma un po' caro.","It's good, but a bit expensive."]]
+};
+
+function fillTemplate(itT, enT){
+  const picks = {};
+  const it = itT.replace(/\{(\w+)\}/g, (m,k)=>{
+    if(!SLOT[k]) return m;
+    if(!picks[k]) picks[k] = SLOT[k][Math.random()*SLOT[k].length|0];
+    return picks[k][0];
+  });
+  const en = enT.replace(/\{(\w+)\}/g, (m,k)=> picks[k] ? picks[k][1] : m);
+  return {it, en};
+}
+
+/* every app sentence that contains the word */
+const SENTENCES = (function(){
+  const out = [];
+  ALLPHRASES.forEach(p => out.push([p.it, p.en]));
+  QA.forEach(q => { out.push([q[0], q[1]]); out.push([q[2], q[3]]); });
+  DIALOGHI.forEach(d => d.l.forEach(l => out.push([l[1], l[2]])));
+  STORIES.forEach(st => st.l.forEach(l => out.push([l[0], l[1]])));
+  PAIRS.forEach(pr => pr.items.forEach(i => out.push([i[0].replace("___", i[1]), ""])));
+  return out;
+})();
+function sentencesWith(forms){
+  const keys = forms.map(f => norm(f).replace(/[^a-z']/g,""));
+  return SENTENCES.filter(([it]) =>
+    it.split(/([A-Za-zÀ-ÿ]+['’])|([A-Za-zÀ-ÿ]+)/).filter(x=>x&&/[A-Za-zÀ-ÿ]/.test(x))
+      .some(tok => keys.includes(norm(tok).replace(/[^a-z']/g,"")))
+  ).map(([it,en]) => ({it, en:en||""}));
+}
+
+/* build a pool of sentences for one word */
+function focusPool(word, n){
+  const k = norm(word).replace(/[^a-z']/g,"");
+  const res = lookup(word);
+  const v = res && res.entries.find(e=>e.v) ? res.entries.find(e=>e.v).v : null;
+  const forms = v ? v.f.concat([v.i]) : [word];
+  const pool = [], seen = new Set();
+  const push = o => { const key = norm(o.it); if(o.en && !seen.has(key)){ seen.add(key); pool.push(o); } };
+
+  sentencesWith(forms).forEach(push);
+  const tpl = FOCUS[k] || (v ? FOCUS[norm(v.i)] : null);
+  if(tpl){
+    let guard = 0;
+    while(pool.length < n*1.5 && guard++ < n*12){
+      const t = tpl[Math.random()*tpl.length|0];
+      push(fillTemplate(t[0], t[1]));
+    }
+  }
+  /* nouns and adjectives get sentences built from their own entry */
+  if(!tpl && res){
+    const noun = NOUNS.find(x => norm(x[0].replace(/^(il|lo|la|i|le|gli|l')\s?/,"")) === k);
+    if(noun){
+      const full = noun[0], en = noun[1], g = noun[2];
+      const bare = full.replace(/^(il|lo|la|l')\s?/,"");
+      const indef = g==="m" ? (/^(s[^aeiou]|z|gn|ps|x)/i.test(bare) ? "uno " : "un ")
+                            : (/^[aeiou]/i.test(bare) ? "un'" : "una ");
+      const theme = noun[3];
+      const buyable = ["caffe","ristorante","vino","birra","salumi","soldi","misure"].includes(theme);
+      const place   = ["strada","arte","trasporti","orari","aiuto","consigli"].includes(theme);
+      const lines = [[`Mi piace molto ${full}.`, `I really like the ${en}.`],
+                     [`Scusi, cerco ${full}.`, `Excuse me, I'm looking for the ${en}.`],
+                     [`Com'è ${full} qui?`, `What's the ${en} like here?`]];
+      if(buyable) lines.push([`Vorrei ${indef}${bare}, grazie.`, `I'd like a ${en}, thanks.`],
+                             [`Quanto costa ${full}?`, `How much is the ${en}?`],
+                             [`Avete ${indef}${bare}?`, `Do you have a ${en}?`]);
+      if(place)   lines.push([`Dov'è ${full}, per favore?`, `Where is the ${en}, please?`],
+                             [`C'è ${indef}${bare} qui vicino?`, `Is there a ${en} nearby?`],
+                             [`Quanto è lontano ${full}?`, `How far is the ${en}?`]);
+      lines.forEach(([it,en2])=>push({it,en:en2}));
+    }
+    const adj = ADJ.find(a => norm(a[0]) === k || (a[0].endsWith("o") && [ "a","i","e" ].some(x=>norm(a[0].slice(0,-1)+x)===k)));
+    if(adj){
+      const [base, en] = adj;
+      const m = base, f = base.endsWith("o") ? base.slice(0,-1)+"a" : base;
+      const mp = base.endsWith("o") ? base.slice(0,-1)+"i" : base.slice(0,-1)+"i";
+      [[`Questo vino è molto ${m}.`, `This wine is very ${en}.`],
+       [`Questa birra è troppo ${f}.`, `This beer is too ${en}.`],
+       [`Cerco qualcosa di ${m}.`, `I'm looking for something ${en}.`],
+       [`Non è ${m}, è il contrario.`, `It isn't ${en}, it's the opposite.`],
+       [`Avete dei formaggi ${mp}?`, `Do you have any ${en} cheeses?`]].forEach(([it,en2])=>push({it,en:en2}));
+    }
+  }
+  return {pool, verb:v};
+}
+
+/* build and start the session */
+function startFocus(word, n){
+  const {pool, verb} = focusPool(word, n);
+  if(!pool.length && !verb){ toast("Not enough material for that word yet"); return; }
+  const steps = [];
+  const key = i => "f:" + norm(word) + ":" + i;
+  const kinds = ["cloze","quiz","listen","build"];
+  let i = 0, guard = 0;
+  const bag = shuffle(pool);
+  while(steps.length < n && guard++ < n*6){
+    if(verb && steps.length % 4 === 3){
+      steps.push({kind:"conj", v:verb, p:Math.random()*6|0});
+      continue;
+    }
+    if(!bag.length){ if(!pool.length) break; bag.push(...shuffle(pool)); }
+    const s = bag.pop();
+    const item = {it:s.it, en:s.en, ph:"", key:key(i++)};
+    const kind = kinds[steps.length % kinds.length];
+    if(kind === "cloze"){
+      const toks = item.it.split(" ");
+      const wordsIn = toks.map((t,ix)=>({t, ix})).filter(o => {
+        const c = norm(o.t).replace(/[^a-z']/g,"");
+        const target = norm(word).replace(/[^a-z']/g,"");
+        return c === target || (verb && verb.f.concat([verb.i]).some(f=>norm(f)===c));
+      });
+      const pick = wordsIn.length ? wordsIn[0] : {t:toks[0], ix:0};
+      const bare = pick.t.replace(/[^A-Za-zÀ-ÿ']/g,"");
+      const shown = toks.map((t,ix)=> ix===pick.ix ? t.replace(bare,"_____") : t).join(" ");
+      const others = verb ? verb.f.filter(f=>norm(f)!==norm(bare))
+                          : [...new Set(pool.flatMap(p=>p.it.split(" ").map(x=>x.replace(/[^A-Za-zÀ-ÿ']/g,""))))]
+                              .filter(x=>x.length>2 && norm(x)!==norm(bare));
+      steps.push({kind:"cloze", it:item, shown, ans:bare, opts:shuffle([bare].concat(sample(others,3)))});
+    } else if(kind === "build" && item.it.split(" ").length >= 4 && item.it.split(" ").length <= 8){
+      steps.push({kind:"build", it:item, toks:shuffle(item.it.split(" "))});
+    } else {
+      const distract = sample(pool.filter(p=>p.it!==item.it).concat(ALLPHRASES), 3)
+        .map(p=>({it:p.it, en:p.en, key:"d:"+norm(p.it).slice(0,10)}));
+      steps.push({kind:"quiz", it:item, opts:shuffle([item].concat(distract)),
+                  dir: kind === "listen" ? "listen" : (Math.random()<.5 ? "it2en" : "en2it")});
+    }
+  }
+  sess = {type:"focus", focusWord:word, title:"Focus: " + word, steps:shuffle(steps), i:0, right:0, wrong:0, state:{}};
+  special = null;
+  go("drills");
+}
+
+
+/* ============================================================
+   Stories: listen, read, translate, then fill the gaps
+   ============================================================ */
+function startStory(){ special = {type:"story", pick:null, mode:"read", i:0}; sess = null; go("drills"); }
+
+function storyLines(st){ return st.l; }
+function paintStoryList(){
+  view.innerHTML = `
+    <div class="row" style="align-items:center;margin:14px 0 8px">
+      <div class="grow"><div style="font-weight:700">Stories</div>
+        <div class="small">One story, seven ways. Listen first, then read, then fill the gaps.</div></div>
+      <button class="btn quiet" id="exit">Stop</button>
+    </div>
+    <p class="hint">Same shape every time — a restaurant, a waiter, and someone who says they don't want any. Only the details move, so the words settle in without feeling like a drill.</p>
+    ${STORIES.map(s=>`<div class="card tight"><div class="row" style="align-items:center">
+      <div class="grow">
+        <div style="font-weight:700">${esc(s.t)} <span class="pill ${s.lv==="Original"?"gold":""}" style="font-size:10.5px">${esc(s.lv)}</span></div>
+        <div class="small">${esc(s.who)} · ${esc(s.blurb)}</div>
+      </div>
+      <button class="btn quiet" data-story="${s.id}">Open</button>
+    </div></div>`).join("")}`;
+  $("#exit").onclick = ()=>{ special = null; renderDrills(); };
+  view.querySelectorAll("[data-story]").forEach(b=> b.onclick = ()=>{
+    special.pick = b.dataset.story; special.mode = "read"; special.shown = {}; special.i = 0; paintStory();
+  });
+}
+
+function paintStory(){
+  const st = STORIES.find(s=>s.id===special.pick);
+  const m = special.mode;
+  view.innerHTML = `
+    <div class="row" style="align-items:center;margin:14px 0 4px">
+      <div class="grow"><div style="font-weight:700">${esc(st.t)}</div><div class="small">${esc(st.who)}</div></div>
+      <button class="btn quiet" id="back">Back</button>
+    </div>
+    <div class="chips">
+      ${[["read","Read"],["listen","Listen"],["translate","Translate"],["quiz","Fill the gaps"]]
+        .map(([k,n])=>`<button class="chip" data-mode="${k}" aria-pressed="${m===k}">${n}</button>`).join("")}
+    </div>
+    <div id="storyBody"></div>`;
+  $("#back").onclick = ()=>{ special.pick = null; paintStoryList(); };
+  view.querySelectorAll("[data-mode]").forEach(b=> b.onclick = ()=>{
+    special.mode = b.dataset.mode; special.i = 0; special.shown = {}; special.score = null; paintStory();
+  });
+  ({read:storyRead, listen:storyListen, translate:storyTranslate, quiz:storyQuiz})[m](st, $("#storyBody"));
+}
+
+function storyRead(st, host){
+  host.innerHTML = `
+    <p class="hint">Tap any word for its meaning. Tap ▶ on a line to hear just that line.</p>
+    <div class="card">${st.l.map((l,i)=>`
+      <div class="phrase">
+        <div class="row">
+          <button class="speak" data-say="${esc(l[0])}">▶</button>
+          <div class="grow"><div class="it">${gloss(l[0])}</div>
+            <div class="en" ${special.shown.en?"":'style="display:none"'}>${esc(l[1])}</div></div>
+        </div>
+      </div>`).join("")}</div>
+    <button class="btn wide" id="toggleEn" style="margin-top:10px">${special.shown.en?"Hide the English":"Show the English"}</button>
+    <button class="btn ghost wide" id="playAll" style="margin-top:8px">Play the whole story</button>`;
+  $("#toggleEn").onclick = ()=>{ special.shown.en = !special.shown.en; paintStory(); };
+  $("#playAll").onclick = ()=> speakLines(st.l.map(l=>l[0]));
+}
+
+function speakLines(lines){
+  if(!window.speechSynthesis) return toast("This browser can't speak Italian");
+  speechSynthesis.cancel();
+  lines.forEach(t=>{
+    const u = new SpeechSynthesisUtterance(t.replace(/[«»]/g,""));
+    u.lang = "it-IT"; u.rate = S.rate;
+    const v = voices.find(v=>v.name===S.voice) || voices[0]; if(v) u.voice = v;
+    speechSynthesis.speak(u);
+  });
+}
+
+function storyListen(st, host){
+  const i = special.i, l = st.l[i], last = i >= st.l.length-1;
+  host.innerHTML = `
+    <p class="hint">Listen first with the text hidden. Play it as many times as you like, then reveal.</p>
+    <div class="bar"><i style="width:${(i)/st.l.length*100}%"></i></div>
+    <div class="card flash" style="min-height:190px">
+      <span class="pill">Line ${i+1} of ${st.l.length}</span>
+      <button class="btn quiet" id="play" style="margin:6px 0">▶ Play this line</button>
+      ${special.shown[i] ? `<div class="it" style="font-size:19px;text-align:center">${gloss(l[0])}</div>
+                            <div class="en" style="margin-top:6px">${esc(l[1])}</div>`
+                         : `<button class="btn ghost" id="reveal">Show me the words</button>`}
+    </div>
+    <div class="row" style="gap:8px">
+      <button class="btn ghost" id="prev" ${i?"":"disabled"}>Back</button>
+      <button class="btn grow" id="next">${last?"Finish":"Next line"}</button>
+    </div>`;
+  const say = ()=> speak(l[0].replace(/[«»]/g,""));
+  say();
+  $("#play").onclick = say;
+  if($("#reveal")) $("#reveal").onclick = ()=>{ special.shown[i] = 1; paintStory(); };
+  $("#prev").onclick = ()=>{ special.i = Math.max(0, i-1); paintStory(); };
+  $("#next").onclick = ()=>{
+    if(last){ addXp(3); special.mode = "quiz"; special.i = 0; special.shown = {}; toast("Now try the gaps"); }
+    else special.i = i+1;
+    paintStory();
+  };
+}
+
+function storyTranslate(st, host){
+  const i = special.i, l = st.l[i], last = i >= st.l.length-1;
+  host.innerHTML = `
+    <p class="hint">Say it in Italian out loud, then check yourself.</p>
+    <div class="bar"><i style="width:${i/st.l.length*100}%"></i></div>
+    <div class="card">
+      <span class="pill">Line ${i+1} of ${st.l.length}</span>
+      <div style="font-size:18px;font-weight:600;margin:8px 0">${esc(l[1])}</div>
+      ${special.shown[i]
+        ? `<div class="row" style="margin-top:10px"><button class="speak" data-say="${esc(l[0])}">▶</button>
+             <div class="grow it" style="font-size:18px">${gloss(l[0])}</div></div>`
+        : `<button class="btn wide" id="reveal">Show the Italian</button>`}
+    </div>
+    <div class="row" style="gap:8px">
+      <button class="btn ghost" id="prev" ${i?"":"disabled"}>Back</button>
+      <button class="btn grow" id="next">${last?"Finish":"Next line"}</button>
+    </div>`;
+  if($("#reveal")) $("#reveal").onclick = ()=>{ special.shown[i] = 1; speak(l[0].replace(/[«»]/g,"")); paintStory(); };
+  $("#prev").onclick = ()=>{ special.i = Math.max(0, i-1); paintStory(); };
+  $("#next").onclick = ()=>{
+    if(last){ addXp(3); special.mode = "quiz"; special.i = 0; special.shown = {}; }
+    else special.i = i+1;
+    paintStory();
+  };
+}
+
+function storyQuiz(st, host){
+  const i = special.i, q = st.q[i];
+  if(i >= st.q.length){
+    const got = special.score || 0;
+    host.innerHTML = `
+      <h1 style="margin-top:20px">${got} / ${st.q.length}</h1>
+      <p class="lede">${got === st.q.length ? "Every one." : "Read the explanations again — that's where the grammar sits."}</p>
+      <button class="btn wide" id="againQ">Try the gaps again</button>
+      <button class="btn ghost wide" id="other" style="margin-top:8px">Another version of the story</button>`;
+    $("#againQ").onclick = ()=>{ special.i = 0; special.score = 0; special.shown = {}; paintStory(); };
+    $("#other").onclick = ()=>{ special.pick = null; paintStoryList(); };
+    return;
+  }
+  const opts = shuffle(q.o);
+  host.innerHTML = `
+    <div class="bar"><i style="width:${i/st.q.length*100}%"></i></div>
+    <div class="card">
+      <div class="small">Fill the gap — question ${i+1} of ${st.q.length}</div>
+      <div style="font-family:var(--serif);font-size:21px;font-weight:700;margin-top:6px">${gloss(q.s)}</div>
+    </div>
+    ${opts.map((o,ix)=>`<button class="opt" data-ix="${ix}">${esc(o.w)}</button>`).join("")}`;
+  host.querySelectorAll(".opt").forEach(b=> b.onclick = ()=>{
+    const chosen = opts[+b.dataset.ix];
+    const ok = !!chosen.ok;
+    host.querySelectorAll(".opt").forEach((x,ix)=>{
+      x.disabled = true;
+      if(opts[ix].ok) x.classList.add("correct");
+      else if(x===b) x.classList.add("wrong"); else x.classList.add("dim");
+    });
+    special.score = (special.score||0) + (ok?1:0);
+    grade("sq:"+st.id+":"+i, ok);
+    const right = q.o.find(o=>o.ok);
+    const full = q.s.replace("___", right.w);
+    let html = `<b>${gloss(full)}</b><br><b>${esc(right.w)}</b> — ${esc(right.why)}`;
+    if(!ok) html += `<br><br>You chose <b>${esc(chosen.w)}</b>. ${esc(chosen.why)}`;
+    html += `<button class="speak" style="margin-top:8px" data-say="${esc(full.replace(/[«»]/g,""))}">▶</button>`;
+    const fb = document.createElement("div");
+    fb.className = "fb " + (ok?"ok":"no");
+    fb.innerHTML = html;
+    host.appendChild(fb);
+    const btn = document.createElement("button");
+    btn.className = "btn wide"; btn.style.marginTop = "6px";
+    btn.textContent = i+1 >= st.q.length ? "See the score" : "Next gap";
+    btn.onclick = ()=>{ special.i = i+1; paintStory(); };
+    host.appendChild(btn);
+    scrollSafe(btn);
+  });
+}
 
 /* ---------- keep the app up to date, and working offline ---------- */
 let swReg = null, reloading = false;

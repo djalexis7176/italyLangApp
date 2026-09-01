@@ -8,7 +8,7 @@ A single-page web app: phrases, verb conjugation, flashcards, matching, and role
 
 ## Version
 
-This build is **3.1.0**. The file is named `index-v3.1.0-version-stamp.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits under the **Andiamo.** wordmark at the top of every screen — `v3.1 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
+This build is **3.3.0**. The file is named `index-v3.3.0-story-lessons.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits under the **Andiamo.** wordmark at the top of every screen — `v3.3 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
 
 ## How updating works
 
@@ -16,8 +16,8 @@ This build is **3.1.0**. The file is named `index-v3.1.0-version-stamp.html` —
 
 When you upload a new build, change two numbers so phones know something moved:
 
-1. In `index.html`, near the top of the script: `const BUILD = "3.1.0";` — and add a line to the `CHANGES` list describing what you did.
-2. In `sw.js`, line 5: `const BUILD = "3.1.0";`
+1. In `index.html`, near the top of the script: `const BUILD = "3.3.0";` — and add a line to the `CHANGES` list describing what you did.
+2. In `sw.js`, line 5: `const BUILD = "3.3.0";`
 
 Keep them the same. If you forget, the app still updates (HTML is network-first), but the icons and manifest may stay on the old cached copies.
 
@@ -68,6 +68,27 @@ A full dictionary of everything the app uses — verbs, nouns, adjectives and th
 
 Tap any entry and you get the same panel as tapping a word anywhere else: the meaning, the full verb table if it's a verb, and a real sentence from the app showing it in use. Expressions that need a person in front of them are conjugated out in full — look up **hunger** and you get *avere fame*, then ho fame / hai fame / ha fame / abbiamo fame / avete fame / hanno fame with the English beside each.
 
+## Story lessons
+
+**Practice → Stories** holds one restaurant story told seven ways: a couple sharing a tiramisu, then the same story with a craft beer, a dozen oysters, a cheese board, an affogato, a tray of cannoli, and a glass of grappa — swapping husband and wife for a brother and sister, two friends, two colleagues, a father and daughter. The skeleton never changes, so by the third telling you're reading rather than decoding, and the verbs change with the thing being shared: *ne mangia un pezzettino*, *ne beve un sorso*, *ne taglia una fettina*, *ne mangia una*.
+
+Four ways through each one:
+
+- **Read** — the whole story, English hidden until you ask for it, every word tappable
+- **Listen** — line by line with the text hidden, replay as often as you like, reveal when you're ready
+- **Translate** — the English line, you say the Italian, then check
+- **Fill the gaps** — four to eight questions per story
+
+The gap questions target what actually trips people up: *suo* vs *tuo* vs *il suo*, *gli* vs *le* vs *lo* vs *la*, *ne* vs *lo*, *piena* vs *pieno*, *mangialo* vs *mangiali* vs *mangiale*, *ordinerò* vs *ordino* vs *ordinerei*. Every option carries an explanation — not just why the right one is right, but what the sentence would have to be for your wrong answer to become the right one. Choose *tua* and it tells you *tua* would fit if you were speaking to the wife herself.
+
+Story lines also feed the rest of the app: they're a deck in Practice, they show up as example sentences when you tap a word, and they're available to focused practice.
+
+## Drilling one word
+
+Every word pop-up ends with **Practise this word** and four buttons: 10, 20, 30, 50. Pick a length and you get a session built entirely around that word — every sentence in the app that uses it, plus fresh ones generated from patterns, mixed across gap-fills, multiple choice, listening and word order. Tap `quale` and you'll work through *Quale autobus va in centro? · Quale birra mi consiglia? · Quale formaggio è più piccante? · Da quale binario parte?* and so on. If the word is a verb, conjugation questions get folded in too.
+
+Nouns and adjectives generate their own sentences from their entry, so even a word with only one appearance in the app gives you a full session.
+
 ## Tapping a word
 
 Every Italian word in the app is underlined and tappable — in phrase lists, flashcards, quiz feedback, gap-fills and role-play conversations. Tap one and a panel slides up with the meaning. If it's a verb, you also get the full present-tense table with the form you tapped highlighted, so `sono` shows: *the io form of essere (to be), irregular* — and the whole table underneath. Words that change ending (plurals, feminine forms, past participles like `visitato`) are traced back to the base word automatically.
@@ -80,14 +101,16 @@ Tap the star in that panel and the word goes to your word list under **Saved**, 
 
 ## What's in it
 
-- 300 phrases across 18 travel situations, with pronunciation and audio
+- 320 phrases across 19 travel situations, with pronunciation and audio
 - 93 verbs conjugated in the present tense, stem and ending colour-coded
 - 100 nouns with their articles, 30 adjectives
 - 52 question-and-answer pairs (they ask, you answer)
 - 10 full role-play conversations
 - 19 confusable word pairs — sapere/conoscere, piace/piacciono, vorrei/voglio and the rest
-- 10 drill types and a 14-day plan
-- A two-way dictionary of 860 entries, plus a word list and notepad you fill as you go
+- 11 drill types and a 14-day plan
+- 7 story lessons with listening, translation and gap-fill quizzes
+- Focus practice on any single word, 10 to 50 questions
+- A two-way dictionary of about 1,000 entries, plus a word list and notepad you fill as you go
 
 **Plan → Clear all progress** wipes everything on that device.
 
