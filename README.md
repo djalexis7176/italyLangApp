@@ -8,7 +8,7 @@ A single-page web app: phrases, verb conjugation, flashcards, matching, and role
 
 ## Version
 
-This build is **3.3.0**. The file is named `index-v3.3.0-story-lessons.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits under the **Andiamo.** wordmark at the top of every screen — `v3.3 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
+This build is **3.4.0**. The file is named `index-v3.4.0-verb-examples.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits under the **Andiamo.** wordmark at the top of every screen — `v3.4 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
 
 ## How updating works
 
@@ -16,8 +16,8 @@ This build is **3.3.0**. The file is named `index-v3.3.0-story-lessons.html` —
 
 When you upload a new build, change two numbers so phones know something moved:
 
-1. In `index.html`, near the top of the script: `const BUILD = "3.3.0";` — and add a line to the `CHANGES` list describing what you did.
-2. In `sw.js`, line 5: `const BUILD = "3.3.0";`
+1. In `index.html`, near the top of the script: `const BUILD = "3.4.0";` — and add a line to the `CHANGES` list describing what you did.
+2. In `sw.js`, line 5: `const BUILD = "3.4.0";`
 
 Keep them the same. If you forget, the app still updates (HTML is network-first), but the icons and manifest may stay on the old cached copies.
 
@@ -67,6 +67,19 @@ The **Voice** button in the top bar cycles through the Italian voices installed 
 A full dictionary of everything the app uses — verbs, nouns, adjectives and the small words that hold sentences together. One button flips it between **Italian → English** and **English → Italian**, there's a search box that looks in both languages, filters for each word type, and an A–Z strip to jump down the list.
 
 Tap any entry and you get the same panel as tapping a word anywhere else: the meaning, the full verb table if it's a verb, and a real sentence from the app showing it in use. Expressions that need a person in front of them are conjugated out in full — look up **hunger** and you get *avere fame*, then ho fame / hai fame / ha fame / abbiamo fame / avete fame / hanno fame with the English beside each.
+
+## Verb tables
+
+Tap any verb — in the Words list, or any conjugated form anywhere in the app — and each of the six persons shows three things: the Italian form, what it means in English, and a worked example with its translation. The example is spoken, and its words are tappable like everything else.
+
+```
+io    sono  = I am
+      ▶ Io sono di San Diego.   I'm from San Diego.
+tu    sei   = you are
+      ▶ Tu sei di Sydney.       You're from Sydney.
+```
+
+Verbs that don't work in every person — costare, durare, servire, interessare, colpire — show examples only where a real sentence exists (*Quanto costa il caffè? · Mi colpiscono i colori*).
 
 ## Story lessons
 

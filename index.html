@@ -254,6 +254,16 @@ ol.plan li b{display:block;font-size:15px}
   background:var(--blu-dark);color:#fff;border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:10px;
   font-size:14px;box-shadow:0 8px 24px rgba(14,34,48,.35)}
 .updbar .btn{padding:8px 12px;font-size:14px;background:var(--oro);color:#12222c;margin-left:auto}
+.conjlist{margin:8px 0 4px}
+.crow{border-bottom:1px solid var(--line);padding:9px 0}
+.crow:last-child{border-bottom:0}
+.crow.hit{background:#F9F1DE;border-radius:8px;padding:9px 8px;border-bottom:0;margin:2px 0}
+.crow .pron{color:var(--muted);font-size:13px;min-width:56px;display:inline-block}
+.crow .form{font-weight:700;font-size:16px}
+.crow .eng{color:var(--blu);font-size:14px}
+.crow .ex{display:flex;gap:8px;align-items:flex-start;margin:6px 0 0 0;font-size:14px}
+.crow .ex .speak{width:30px;height:30px;flex:0 0 30px;font-size:12px}
+.crow .exen{color:var(--muted);font-size:13.5px}
 .azrow{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 12px}
 .az{border:1px solid var(--line);background:#fff;border-radius:8px;min-width:28px;padding:5px 0;
   font-size:12.5px;font-weight:700;color:var(--blu)}
@@ -1172,8 +1182,7 @@ const EXTRA_VERBS = [
 ["suggerire","to suggest","isc"],
 ["sorridere","to smile","ere"],["rispondere","to answer","ere"],["ridere","to laugh","ere"],
 ["continuare","to carry on","are"],["ritornare","to return","are"],["raccontare","to tell (a story)","are"],
-["guidare","to drive","are"],["tagliare","to cut","are"],["pranzare","to have lunch","are"],
-["ordinare","to order","are"],["esercitarsi","to practise","are"]
+["guidare","to drive","are"],["tagliare","to cut","are"],["pranzare","to have lunch","are"]
 ];
 
 /* single words: [word, meaning, note?] */
@@ -1870,7 +1879,7 @@ STORIES.push(
 /* ============================================================
    ENGINE
    ============================================================ */
-const BUILD = "3.3.0";
+const BUILD = "3.4.0";
 const BUILT = "2026-08-31";
 const VERSTAMP = (function(){
   const [y,m,d] = BUILT.split("-");
@@ -1878,6 +1887,7 @@ const VERSTAMP = (function(){
 })();
 let UPD = {state:"unknown", at:0};
 const CHANGES = [
+  ["3.4.0","2026-08-31","Every verb form now shows its English meaning and a worked example — io sono = I am, Io sono di San Diego. Examples are spoken and their words are tappable."],
   ["3.3.0","2026-08-31","Story lessons: one restaurant story told seven ways, with listen, read and translate modes and a fill-the-gaps quiz that explains why each wrong answer is wrong and when it would be right. All the story vocabulary added to the dictionary and the practice decks."],
   ["3.2.0","2026-08-31","Focus practice: tap any word and drill it 10, 20, 30 or 50 times across different sentences. New words and phrases for sizes, alcohol strength, calories, fat and allergens."],
   ["3.1.0","2026-08-31","Version stamp under the wordmark, showing whether this is the newest build on GitHub. Tap it to check."],
@@ -2863,11 +2873,19 @@ function entryHTML(e, raw){
     return `
       <div style="font-size:15.5px">${head}</div>
       <div style="margin:6px 0"><span class="pill ${v.irr?"red":"green"}">${famLabel(v)}</span></div>
-      <table class="conj">${PRON.map((p,i)=>`
-        <tr${hit.includes(i)?' style="background:#F7ECD2"':''}>
-          <td>${p}</td><td>${hilite(v,i)}</td>
-          <td style="color:var(--muted);font-weight:400">${esc(engPerson(i, v.e))}</td>
-        </tr>`).join("")}</table>
+      <div class="conjlist">${PRON.map((p,i)=>{
+        const ex = verbExample(v,i);
+        return `<div class="crow${hit.includes(i)?" hit":""}">
+          <div class="row" style="align-items:baseline;gap:8px">
+            <span class="pron">${p}</span>
+            <span class="form">${hilite(v,i)}</span>
+            <span class="eng">= ${esc(engPerson(i, v.e))}</span>
+          </div>
+          ${ex?`<div class="ex">
+            <button class="speak" data-say="${esc(ex.it)}">▶</button>
+            <div class="grow"><div>${gloss(ex.it)}</div><div class="exen">${esc(ex.en)}</div></div>
+          </div>`:""}
+        </div>`;}).join("")}</div>
       ${v.n?`<p class="small" style="margin:6px 0 0">${esc(v.n)}</p>`:""}
       ${hit.length>1?`<p class="small" style="margin:6px 0 0">Careful: this same form is used for ${hit.map(i=>PRON[i]).join(" and ")}. The rest of the sentence tells you which.</p>`:""}`;
   }
@@ -2888,6 +2906,100 @@ function engPerson(i, inf){
               : /[^aeiou]y$/.test(first) ? first.slice(0,-1)+"ies"
               : first+"s";
   return ["I "+base, "you "+base, "he / she "+third+tail, "we "+base, "you "+base, "they "+base][i];
+}
+
+
+/* ============================================================
+   DATA: an example for every person of every verb
+   VEX = [italian tail, english tail, english verb override]
+   The six examples are built from the conjugated form + the tail.
+   ============================================================ */
+const VEX = {
+fare:["una passeggiata","a walk","take"], andare:["a Roma domani","to Rome tomorrow"],
+dire:["la verità","the truth","tell"], potere:["pagare con la carta","pay by card","can"],
+volere:["un caffè","a coffee","want"], dovere:["prenotare","book","must"],
+sapere:["dov'è la stazione","where the station is","know"], conoscere:["questa città","this city","know"],
+vedere:["il mare da qui","the sea from here"], venire:["domani mattina","tomorrow morning"],
+bere:["un bicchiere di rosso","a glass of red"], mangiare:["la pizza","pizza"],
+parlare:["un po' d'italiano","a little Italian"], prendere:["il treno delle otto","the eight o'clock train","take"],
+partire:["alle nove","at nine","leave"], capire:["l'italiano","Italian"],
+finire:["alle sei","at six"], preferire:["il vino rosso","red wine"],
+pagare:["il conto","the bill"], cercare:["la stazione","the station","look for"],
+assaggiare:["il pecorino","the pecorino","taste"], ordinare:["un dolce","a dessert","order"],
+prenotare:["un tavolo","a table","book"], visitare:["il museo","the museum"],
+abitare:["a San Diego","in San Diego","live"], comprare:["il pane","the bread","buy"],
+aspettare:["un tavolo","a table","wait for"], arrivare:["alle dieci","at ten"],
+portare:["il conto","the bill","bring"], trovare:["il ristorante","the restaurant","find"],
+consigliare:["questo vino","this wine","recommend"], scusare:["il ritardo","the delay","excuse"],
+dormire:["bene qui","well here"], sentire:["profumo di caffè","coffee","smell"],
+aprire:["alle otto","at eight"], uscire:["stasera","this evening","go out"],
+scegliere:["il vino","the wine","choose"], rimanere:["tre notti","three nights","stay"],
+leggere:["un giallo","a crime novel"], chiudere:["alle undici","at eleven","close"],
+tenere:["il biglietto","the ticket","keep"], aiutare:["mia moglie","my wife","help"],
+provare:["la 'nduja","the 'nduja","try"], guardare:["il menù","the menu","look at"],
+ascoltare:["la musica italiana","Italian music","listen to"], imparare:["l'italiano","Italian","learn"],
+studiare:["l'italiano","Italian","study"], cucinare:["la pasta","pasta","cook"],
+camminare:["in centro","in the centre","walk"], tornare:["domani","tomorrow","come back"],
+restare:["a casa","at home","stay"], fermare:["il taxi","the taxi","stop"],
+affittare:["una macchina","a car","rent"], accettare:["la carta","cards","accept"],
+chiamare:["un taxi","a taxi","call"], invecchiare:["in botte","in barrel","age"],
+cominciare:["alle nove","at nine","start"], spiegare:["la ricetta","the recipe","explain"],
+cenare:["alle otto","at eight","have dinner"], evitare:["il centro","the centre","avoid"],
+lasciare:["i bagagli qui","the luggage here","leave"], desiderare:["un tavolo fuori","a table outside","want"],
+cambiare:["treno a Firenze","trains at Florence","change"], mostrare:["la mappa","the map","show"],
+convalidare:["il biglietto","the ticket","validate"], amare:["l'Italia","Italy","love"],
+mettere:["il piatto sul tavolo","the plate on the table","put"], scrivere:["una cartolina","a postcard"],
+perdere:["il treno","the train","miss"], dividere:["il conto","the bill","split"],
+condividere:["un antipasto","a starter","share"], chiedere:["il conto","the bill","ask for"],
+aggiungere:["il peperoncino","chilli","add"], scendere:["alla prossima fermata","at the next stop","get off"],
+ripetere:["più lentamente","more slowly","repeat"], vivere:["a Roma","in Rome","live"],
+vendere:["vino locale","local wine","sell"], offrire:["un caffè","a coffee","offer"],
+seguire:["la guida","the guide","follow"], spedire:["due bottiglie","two bottles","ship"],
+pulire:["il tavolo","the table","clean"], suggerire:["un ristorante","a restaurant","suggest"],
+sorridere:["spesso","a lot","smile"], rispondere:["al cameriere","the waiter","answer"],
+ridere:["di gusto","heartily","laugh"], continuare:["a mangiare","eating","carry on"],
+ritornare:["domani","tomorrow","come back"], raccontare:["una storia","a story","tell"],
+guidare:["stasera","this evening","drive"], tagliare:["una fettina","a thin slice","cut"],
+pranzare:["all'una","at one","have lunch"], trasmettere:["calma","a sense of calm","give off"]
+};
+
+/* verbs where a one-size example doesn't work, written out person by person */
+const VEXF = {
+essere:[["Io sono di San Diego.","I'm from San Diego."],["Tu sei di Sydney.","You're from Sydney."],
+        ["Lui è italiano.","He's Italian."],["Noi siamo in vacanza.","We're on holiday."],
+        ["Voi siete americani?","Are you American?"],["Loro sono al ristorante.","They're at the restaurant."]],
+avere:[["Io ho fame.","I'm hungry."],["Tu hai il biglietto?","Have you got the ticket?"],
+       ["Lui ha cinquant'anni.","He's fifty."],["Noi abbiamo prenotato.","We've booked."],
+       ["Voi avete sete?","Are you thirsty?"],["Loro hanno due figli.","They have two children."]],
+stare:[["Io sto bene, grazie.","I'm well, thanks."],["Tu come stai?","How are you?"],
+       ["Lei sta male oggi.","She's unwell today."],["Noi stiamo qui tre notti.","We're staying here three nights."],
+       ["Voi state bene?","Are you all right?"],["Loro stanno arrivando.","They're arriving."]],
+piacere:[["Io piaccio ai bambini.","Children like me."],["Tu piaci a tutti.","Everyone likes you."],
+       ["Mi piace il vino rosso.","I like red wine."],["Noi piacciamo ai clienti.","The customers like us."],
+       ["Voi piacete al pubblico.","The audience likes you."],["Mi piacciono i formaggi.","I like the cheeses."]],
+interessare:[null,null,["Mi interessa l'arte moderna.","I'm interested in modern art."],null,null,
+       ["Mi interessano i musei piccoli.","I'm interested in small museums."]],
+costare:[null,null,["Quanto costa il caffè?","How much is the coffee?"],null,null,
+       ["Quanto costano i biglietti?","How much are the tickets?"]],
+durare:[null,null,["La visita dura un'ora.","The visit lasts an hour."],null,null,
+       ["Le degustazioni durano poco.","The tastings don't last long."]],
+funzionare:[null,null,["Il bancomat non funziona.","The ATM isn't working."],null,null,
+       ["Le luci non funzionano.","The lights aren't working."]],
+servire:[null,null,["Mi serve un tavolo per due.","I need a table for two."],null,null,
+       ["Mi servono due biglietti.","I need two tickets."]],
+colpire:[null,null,["Mi colpisce questo quadro.","This painting strikes me."],null,null,
+       ["Mi colpiscono i colori.","The colours strike me."]],
+rappresentare:[null,null,["Che cosa rappresenta?","What does it represent?"],null,null,
+       ["Che cosa rappresentano?","What do they represent?"]]
+};
+const SUBJ = ["Io","Tu","Lui","Noi","Voi","Loro"];
+function verbExample(v, i){
+  if(VEXF[v.i]) return VEXF[v.i][i] ? {it:VEXF[v.i][i][0], en:VEXF[v.i][i][1]} : null;
+  const e = VEX[v.i];
+  if(!e) return null;
+  let en = engPerson(i, e[2] ? "to " + e[2] : v.e).replace(/^he \/ she /, "He ") + " " + e[1] + ".";
+  en = en[0].toUpperCase() + en.slice(1);
+  return {it: SUBJ[i] + " " + v.f[i] + " " + e[0] + ".", en};
 }
 
 document.addEventListener("click", e=>{
