@@ -2,7 +2,7 @@
    HTML is fetched from the network first, so opening the app with any signal
    always gets the newest build off GitHub. Everything else is served from
    cache and refreshed in the background. Cache still covers you offline. */
-const BUILD = "15";
+const BUILD = "16";
 const V = "andiamo-" + BUILD;
 const SHELL = [
   "./", "./index.html", "./manifest.webmanifest",

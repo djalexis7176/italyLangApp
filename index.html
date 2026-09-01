@@ -250,6 +250,8 @@ ol.plan li b{display:block;font-size:15px}
 .notebox:focus{outline:2px solid var(--blu);outline-offset:1px}
 .notetext{white-space:pre-wrap;margin-top:6px;font-size:15px}
 .hint{font-size:12.5px;color:var(--muted);margin:2px 0 10px}
+.linkbtn{background:none;border:0;padding:2px 0;font:inherit;font-size:12.5px;color:var(--blu);
+  border-bottom:1px solid var(--blu);cursor:pointer}
 .updbar{position:fixed;left:12px;right:12px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:70;
   background:var(--blu-dark);color:#fff;border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:10px;
   font-size:14px;box-shadow:0 8px 24px rgba(14,34,48,.35)}
@@ -2292,7 +2294,7 @@ STORIES.push(
 /* ============================================================
    ENGINE
    ============================================================ */
-const BUILD = "15";
+const BUILD = "16";
 const BUILT = "2026-08-31";
 const VERSTAMP = (function(){
   const [y,m,d] = BUILT.split("-");
@@ -2300,6 +2302,7 @@ const VERSTAMP = (function(){
 })();
 let UPD = {state:"unknown", at:0};
 const CHANGES = [
+  ["16","2026-08-31","My phrases now opens on your phrases, with editing as a small link. People are described by chaining relationships — daughter, of my brother-in-law, of his brother — with a live preview and a Chi è…? card for each. Added jobs, interests, music, drinks and plans; named favourites; and favourite books kept separate from what you're reading now."],
   ["15","2026-08-31","English works in the dictionary search: type what, where, how much and get the Italian. The sheet now takes no children, people linked through other people (my cousin's girlfriend), several jobs and situations at once, second reasons for the trip, and optional detailed food and drink lists where you mark each item love / like / not keen / can't stand / allergic / not right now."],
   ["14","2026-08-31","My phrases: fill in a short sheet about yourself and the app writes your own phrasebook — the questions people will ask, with your answers in Italian. Formal or informal, editable, drillable, and exportable to another device. Nothing leaves the phone."],
   ["13","2026-08-31","Quick reference: 18 situation pages — restaurant, hotel check-in, hotel room, train, plane, bus, bar, grocery, nightclub, winery, family dinner, wedding, meeting someone, customs, police, hospital, doctor, pharmacy. 280 phrases, all searchable, each set drillable. Version numbers are now a plain count: this is the 13th build."],
@@ -3537,8 +3540,6 @@ function renderSaved(){
     <h1>Saved</h1>
     <p class="lede">Words you tapped and kept, and anything you wrote down while using the app. Both live on this device.</p>
 
-    <h2>My phrases</h2>
-    <p class="small" style="margin:0 0 8px">A phrasebook written from your own answers — who you are, who you're with, what you like.</p>
     <div id="mineBox"></div>
 
     <h2>Word list <span class="count">${words.length}</span></h2>
@@ -4820,7 +4821,15 @@ const JOBS = [
 ["giardiniere","giardiniere","giardiniera","gardener"],
 ["falegname","falegname","falegname","carpenter"],
 ["studente_legge","studente di legge","studentessa di legge","law student"],
-["studente_med","studente di medicina","studentessa di medicina","medical student"]
+["studente_med","studente di medicina","studentessa di medicina","medical student"],
+["pastore","pastore","pastora","pastor"],
+["vescovo","vescovo","vescova","bishop"],
+["consulente_v","consulente commerciale","consulente commerciale","sales consultant"],
+["responsabile_v","responsabile vendite","responsabile vendite","sales manager"],
+["produttore_tv","produttore televisivo","produttrice televisiva","TV producer"],
+["casting","direttore del casting","direttrice del casting","casting director"],
+["capo","capo reparto","capa reparto","head of department"],
+["direttore","direttore","direttrice","director"]
 ];
 const NAZ = [
 ["usa","americano","americana","dagli Stati Uniti","the United States"],
@@ -4861,8 +4870,26 @@ const RELAZIONI = [
 ["nonna","mia nonna","my grandmother","f","la nonna"],["nonno","mio nonno","my grandfather","m","il nonno"],
 ["amica","la mia amica","my friend (f)","f","l'amica"],["amico","il mio amico","my friend (m)","m","l'amico"],
 ["collega","il mio collega","my colleague","m","il collega"],
-["vicina","la mia vicina","my neighbour (f)","f","la vicina"],["vicino_p","il mio vicino","my neighbour (m)","m","il vicino"]
+["vicina","la mia vicina","my neighbour (f)","f","la vicina"],["vicino_p","il mio vicino","my neighbour (m)","m","il vicino"],
+["genitori","i miei genitori","my parents","m","i genitori"],["figli_p","i miei figli","my children","m","i figli"]
 ];
+/* people a chain of possessives can't describe */
+const SPECIALI = [
+["amico_fam","un amico di famiglia","un'amica di famiglia","a friend of the family"],
+["amico_genitori","un amico dei miei genitori","un'amica dei miei genitori","a friend of my parents"],
+["compagno_viaggio","un compagno di viaggio","una compagna di viaggio","a travelling companion"],
+["collega_lavoro","un collega di lavoro","una collega di lavoro","someone from work"],
+["suoceri_figlio","i suoceri di mio figlio","i suoceri di mia figlia","my child's in-laws"],
+["amico_semplice","un amico","un'amica","just a friend"],
+["vicino_casa","un vicino di casa","una vicina di casa","a neighbour"]
+];
+/* di + article */
+function diOf(art){
+  return String(art)
+    .replace(/^il /,"del ").replace(/^lo /,"dello ").replace(/^la /,"della ")
+    .replace(/^l'/,"dell'").replace(/^i /,"dei ").replace(/^gli /,"degli ").replace(/^le /,"delle ");
+}
+const bareEn = t => String(t).replace(/\s*\([^)]*\)/g,"").replace(/^my /,"");
 const INTERESSI = [
 ["cibo","la buona cucina","good food"],["vino","il vino","wine"],["birra","la birra artigianale","craft beer"],
 ["caffe","il caffè","coffee"],["arte","l'arte","art"],["storia","la storia","history"],
@@ -4873,13 +4900,19 @@ const INTERESSI = [
 ["cucinare","cucinare","cooking"],["giardinaggio","il giardinaggio","gardening"],
 ["viaggiare","viaggiare","travelling"],["moda","la moda","fashion"],["tecnologia","la tecnologia","technology"],
 ["auto","le auto d'epoca","classic cars"],["barca","la barca","boating"],["pesca","la pesca","fishing"],
-["golf","il golf","golf"],["yoga","lo yoga","yoga"],["teatro","il teatro","theatre"],["opera","l'opera","opera"]
+["golf","il golf","golf"],["yoga","lo yoga","yoga"],["teatro","il teatro","theatre"],["opera","l'opera","opera"],
+["tv","la televisione","TV"],["turismo_i","il turismo","sightseeing"],["ballare","ballare","dancing"],
+["recitare","recitare","acting"],["palcoscenico","il palcoscenico","performing"],["scrivere_i","scrivere","writing"],
+["diario","tenere un diario","journalling"],["birdwatching","il birdwatching","birdwatching"],
+["antiquariato","l'antiquariato","antiques"],["volontariato","il volontariato","volunteering"]
 ];
 const GENERI_MUS = [["rock","il rock","rock"],["jazz","il jazz","jazz"],["classica","la musica classica","classical"],
 ["pop","il pop","pop"],["blues","il blues","blues"],["metal","il metal","metal"],["punk","il punk","punk"],
 ["folk","il folk","folk"],["elettronica","la musica elettronica","electronic"],["hiphop","l'hip hop","hip hop"],
 ["country","il country","country"],["reggae","il reggae","reggae"],["soul","il soul","soul"],
-["opera","l'opera","opera"],["indie","l'indie","indie"]];
+["opera","l'opera","opera"],["indie","l'indie","indie"],
+["musical","i musical","musicals"],["showtunes","le canzoni dei musical","show tunes"],
+["rnb","l'R&B","R&B"],["cantautori","i cantautori","singer-songwriters"],["gospel","il gospel","gospel"]];
 const GENERI_LIB = [["fantascienza","la fantascienza","science fiction"],["giallo","i gialli","crime"],
 ["thriller","i thriller","thrillers"],["storico","i romanzi storici","historical novels"],
 ["fantasy","il fantasy","fantasy"],["biografie","le biografie","biographies"],
@@ -4927,7 +4960,16 @@ const PIANI = [["musei","visitare i musei","visiting museums"],["cantine","visit
 ["camminare","camminare in città","walking round the towns"],["mare","andare al mare","going to the coast"],
 ["escursioni","fare escursioni","hiking"],["corso","fare un corso di cucina","doing a cooking class"],
 ["mercati","girare i mercati","browsing the markets"],["concerto","andare a un concerto","going to a concert"],
-["partita","vedere una partita","seeing a match"],["riposo","riposarci","resting"]];
+["partita","vedere una partita","seeing a match"],["riposo","riposarci","resting"],
+["corso_i","fare un corso","taking a class"],["tour","fare un tour guidato","taking a tour"],
+["nuotare","nuotare","swimming"],["sole","prendere il sole","sunbathing"],
+["rilassarsi","rilassarci","relaxing"],["leggere_p","leggere","reading"],
+["festival","andare a un festival","going to a festival"],["fiere","girare le fiere e i mercatini","street markets and fairs"],
+["locali_p","passare tempo con la gente del posto","spending time with locals"],
+["paesi","vedere i paesi piccoli","seeing small towns"],
+["evitare_t","evitare i posti troppo turistici","avoiding tourist traps"],
+["evitare_f","evitare la folla","avoiding crowds"],
+["cultura","conoscere la cultura locale","learning about the local culture"]];
 const MOBILITA = [["scale","Faccio fatica con le scale.","I struggle with stairs."],
 ["camminare","Non posso camminare a lungo.","I can't walk for long."],
 ["ascensore","Ho bisogno di una camera con ascensore.","I need a room with a lift."],
@@ -5014,7 +5056,24 @@ const BEVANDE_X = [
 ["whisky","il whisky","al whisky","whisky","s"],
 ["caffe_b","il caffè","al caffè","coffee","s"],
 ["te","il tè","al tè","tea","s"],
-["frizzante","l'acqua frizzante","all'acqua frizzante","sparkling water","s"]
+["frizzante","l'acqua frizzante","all'acqua frizzante","sparkling water","s"],
+["pinotnero","il Pinot nero","al Pinot nero","Pinot Noir","s"],
+["cabernet","il Cabernet Sauvignon","al Cabernet Sauvignon","Cabernet Sauvignon","s"],
+["zinfandel","lo Zinfandel","allo Zinfandel","Zinfandel","s"],
+["riesling","il Riesling","al Riesling","Riesling","s"],
+["vinofrancese","il vino francese","al vino francese","French wine","s"],
+["vinoitaliano","il vino italiano","al vino italiano","Italian wine","s"],
+["vinocalifornia","il vino californiano","al vino californiano","Californian wine","s"],
+["vinoamericano","il vino americano","al vino americano","American wine","s"],
+["vinosudamericano","il vino sudamericano","al vino sudamericano","South American wine","s"],
+["paleale","le pale ale","alle pale ale","pale ale","p"],
+["leggera_b","le birre leggere","alle birre leggere","light beer","p"],
+["scura_b","le birre scure","alle birre scure","dark beer","p"],
+["martini","il Martini","al Martini","a Martini","s"],
+["bourbon","il bourbon","al bourbon","bourbon","s"],
+["scotch","lo Scotch","allo Scotch","Scotch","s"],
+["rum","il rum","al rum","rum","s"],
+["vodka","la vodka","alla vodka","vodka","s"]
 ];
 const TIERS = [
 ["love","♥","Love"],["like","+","Like"],["no","–","Not keen"],
@@ -5053,7 +5112,7 @@ const SHEET = [
   o:[["no","I have no children"],["noi","We have no children"],["si","I have children — let me add them"]]},
  {k:"figli", type:"people", q:"Your children", hint:"Add one row each. Ages are optional."},
  {k:"congiunti", type:"people", q:"Who you're travelling with",
-  hint:"Or who else is in Italy at the same time. Use the second box to link them to someone else — girlfriend of my cousin, friend of my sister."},
+  hint:"Name first, then who they are. Leave the 'of' box on 'mine, directly' for your own sister or son. Set it to link them to someone else — girlfriend, of my brother. A third box appears if you need it: daughter, of my brother-in-law, of his brother. For people no chain fits, pick from 'No link needed' at the bottom of the first list."},
  {k:"gruppo", type:"number", q:"How many of you are travelling in total", ph:"18"},
  {k:"emerg_nome", type:"text", q:"Emergency contact — name", ph:"Leanne"},
  {k:"emerg_rel", type:"select", q:"Emergency contact — who they are", o:RELAZIONI.map(r=>[r[0], r[2]])},
@@ -5079,16 +5138,23 @@ const SHEET = [
  {k:"musica", type:"multi", q:"Music you like", o:GENERI_MUS.map(m=>[m[0], m[2]])},
  {k:"bande", type:"list5", q:"Bands or artists you like", ph:"Pink Floyd"},
  {k:"libri_gen", type:"multi", q:"Books you like", o:GENERI_LIB.map(g=>[g[0], g[2]])},
- {k:"libri", type:"list5", q:"Books or authors you like", ph:"Dune"},
- {k:"film", type:"list5", q:"Films you like", ph:"2001: A Space Odyssey"},
- {k:"serie", type:"list5", q:"TV series you like", ph:"The Wire"},
+ {k:"libri", type:"list5", q:"Favourite books or authors", ph:"Dune"},
+ {k:"film", type:"list5", q:"Favourite films", ph:"2001: A Space Odyssey"},
+ {k:"serie", type:"list5", q:"Favourite TV series", ph:"The Wire"},
+ {k:"libro_ora", type:"text", q:"What you're reading right now", ph:"Il nome della rosa"},
+ {k:"serie_ora", type:"text", q:"What you're watching right now", ph:"The Bear"},
+ {k:"musica_ora", type:"text", q:"What you're listening to a lot right now", ph:"Fontaines D.C."},
  {k:"cibo", type:"multi", q:"Food — the quick version", o:CIBI.map(c=>[c[0], c[2]])},
  {k:"allergie", type:"multi", q:"Allergies", o:ALLERGIE.map(a=>[a[0], a[2]])},
  {k:"bevande", type:"multi", q:"Drinking — the quick version", o:BEVANDE.map(b=>[b[0], b[2]])},
  {k:"cibi_x", type:"tiers", adv:1, q:"Food, in detail", list:"CIBI_X",
   hint:"Tap once for ♥ love, again for + like, again for – not keen, again for ✕ can't stand, again for ! allergic, again for ⏸ not right now. Tap past the end to clear."},
  {k:"bev_x", type:"tiers", adv:1, q:"Drinks, in detail", list:"BEVANDE_X",
-  hint:"Same taps. Everything here is optional — the app writes a phrase for each one you mark."}
+  hint:"Same taps. Everything here is optional — the app writes a phrase for each one you mark."},
+ {k:"fav_vino", type:"text", adv:1, q:"Favourite wine, by name", ph:"Soave"},
+ {k:"fav_birra", type:"text", adv:1, q:"Favourite beer, by name", ph:"Peroni"},
+ {k:"fav_liquore", type:"text", adv:1, q:"Favourite spirit or cocktail, by name", ph:"Jack Daniel's"},
+ {k:"fav_piatto", type:"text", adv:1, q:"Favourite dish, by name", ph:"cacio e pepe"}
 ]},
 {t:"The trip", b:"Dates, how you got here, what you're planning.",
  q:[
@@ -5199,24 +5265,62 @@ function qHTML(q){
   return "";
 }
 function peopleRow(k,i,p){
-  return `<div style="border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:8px" data-prow="${k}:${i}">
+  const bare = r => esc(bareEn(r[2]));
+  const relOpts = (sel) => RELAZIONI.map(r=>`<option value="${r[0]}" ${sel===r[0]?"selected":""}>${bare(r)}</option>`).join("");
+  const possOpts = (sel) => RELAZIONI.map(r=>`<option value="${r[0]}" ${sel===r[0]?"selected":""}>${esc(r[2])}</option>`).join("");
+  const isSpec = SPECIALI.some(x=>x[0]===p.rel);
+  return `<div style="border-bottom:1px solid var(--line);padding-bottom:9px;margin-bottom:9px" data-prow="${k}:${i}">
     <div class="row" style="gap:6px">
-      <select class="answer" style="flex:1.1;padding:10px" data-pk="${k}" data-i="${i}" data-f="rel">
-        ${RELAZIONI.map(r=>`<option value="${r[0]}" ${p.rel===r[0]?"selected":""}>${esc(r[2])}</option>`).join("")}
-      </select>
-      <input class="answer" style="flex:1.1" data-pk="${k}" data-i="${i}" data-f="name" placeholder="name" value="${esc(p.name||"")}">
+      <input class="answer" style="flex:1.2" data-pk="${k}" data-i="${i}" data-f="name" placeholder="name" value="${esc(p.name||"")}">
       <input class="answer" style="flex:.5" data-pk="${k}" data-i="${i}" data-f="age" inputmode="numeric" placeholder="age" value="${esc(p.age||"")}">
       <button class="btn quiet" data-delp="${k}:${i}" style="padding:8px 10px">✕</button>
     </div>
-    <div class="row" style="gap:6px;margin-top:5px;align-items:center">
-      <span class="small" style="flex:0 0 auto">of…</span>
-      <select class="answer" style="flex:1;padding:9px" data-pk="${k}" data-i="${i}" data-f="via">
-        <option value="">— nobody, they're mine —</option>
-        ${RELAZIONI.map(r=>`<option value="${r[0]}" ${p.via===r[0]?"selected":""}>${esc(r[2])}</option>`).join("")}
+    <div class="row" style="gap:6px;margin-top:6px;align-items:center">
+      <span class="small" style="flex:0 0 20px">is</span>
+      <select class="answer" style="flex:1;padding:10px" data-pk="${k}" data-i="${i}" data-f="rel">
+        <optgroup label="Related to you through someone">${relOpts(p.rel)}</optgroup>
+        <optgroup label="No link needed">
+          ${SPECIALI.map(x=>`<option value="${x[0]}" ${p.rel===x[0]?"selected":""}>${esc(x[3])}</option>`).join("")}
+        </optgroup>
       </select>
     </div>
+    ${isSpec ? "" : `
+    <div class="row" style="gap:6px;margin-top:5px;align-items:center">
+      <span class="small" style="flex:0 0 20px">of</span>
+      <select class="answer" style="flex:1;padding:10px" data-pk="${k}" data-i="${i}" data-f="via">
+        <option value="">— mine, directly —</option>
+        ${possOpts(p.via)}
+      </select>
+    </div>
+    ${p.via ? `<div class="row" style="gap:6px;margin-top:5px;align-items:center">
+      <span class="small" style="flex:0 0 20px">of</span>
+      <select class="answer" style="flex:1;padding:10px" data-pk="${k}" data-i="${i}" data-f="via2">
+        <option value="">— stop there —</option>
+        ${possOpts(p.via2)}
+      </select>
+    </div>` : ""}`}
+    <div class="small" style="margin-top:5px;color:var(--blu)">${esc(chainPreview(p))}</div>
   </div>`;
 }
+/* the sentence the row will produce, shown live under it */
+function chainRel(p){
+  const spec = SPECIALI.find(x=>x[0]===p.rel);
+  if(spec) return {it:null, itSpec:spec, en:spec[3]};
+  const r = relOf(p.rel);
+  if(!p.via) return {it:r[1], en:r[2].replace(/\s*\([^)]*\)/g,"")};
+  const v = relOf(p.via);
+  if(!p.via2) return {it:`${r[4]} di ${v[1]}`, en:`${bareEn(v[2])==="parents"?"my parents":v[2].replace(/\s*\([^)]*\)/g,"")}'s ${bareEn(r[2])}`};
+  const v2 = relOf(p.via2);
+  return {it:`${r[4]} ${diOf(v[4])} di ${v2[1]}`,
+          en:`${v2[2].replace(/\s*\([^)]*\)/g,"")}'s ${bareEn(v[2])}'s ${bareEn(r[2])}`};
+}
+function chainPreview(p){
+  const c = chainRel(p);
+  const g = (S.profile||{}).gen === "f";
+  const it = c.itSpec ? (g ? c.itSpec[2] : c.itSpec[1]) : c.it;
+  return (p.name || "…") + " è " + it + "  ·  " + (p.name || "…") + " is " + c.en;
+}
+
 function wireSheet(st){
   view.querySelectorAll("[data-k]").forEach(el => el.oninput = ()=> setP(el.dataset.k, el.value.trim()));
   view.querySelectorAll("[data-sel]").forEach(b => b.onclick = ()=>{
@@ -5261,12 +5365,14 @@ function wireSheet(st){
     const arr = P_(k).slice(); arr.splice(+i,1); setP(k,arr); renderSheet();
   });
   view.querySelectorAll("[data-pk]").forEach(el => {
-    const upd = ()=>{
+    const upd = (redraw)=>{
       const k = el.dataset.pk, arr = P_(k).slice();
       arr[+el.dataset.i] = Object.assign({}, arr[+el.dataset.i], {[el.dataset.f]: el.value.trim()});
       setP(k, arr);
+      if(redraw) renderSheet();
     };
-    el.oninput = upd; el.onchange = upd;
+    el.oninput = ()=>upd(false);
+    el.onchange = ()=>upd(el.tagName === "SELECT");
   });
 }
 
@@ -5313,9 +5419,11 @@ function buildProfile(){
   const G = (m, fm) => f ? fm : m;
   const out = [];
   const sec = (t, b) => { out.push({t, b, c:[]}); return out[out.length-1]; };
+  const dot = t => String(t).replace(/([.!?])\.$/, "$1");
   const add = (s, a_it, a_en, qk) => {
     if(!a_it) return;
-    const q = qk ? askQ(qk, reg) : null;
+    a_it = dot(a_it); a_en = dot(a_en);
+    const q = !qk ? null : (typeof qk === "object" ? qk : askQ(qk, reg));
     s.c.push({id: norm(a_en).replace(/[^a-z ]/g,"").slice(0,28), q, a:[a_it, a_en]});
   };
   const nome = p.nome || "";
@@ -5365,21 +5473,26 @@ function buildProfile(){
   else if(p.nofigli === "noi") add(s2, `Non abbiamo figli.`, `We don't have children.`, "figli");
   const plain = t => String(t).replace(/\s*\([^)]*\)/g,"");
   const nameOf = (x) => {
-    const r = relOf(x.rel);
-    if(x.via){ const v = relOf(x.via); return {it:`${r[4]} di ${v[1]}`, en:`${plain(v[2])}'s ${plain(r[2]).replace(/^my /,"")}`}; }
-    return {it:r[1], en:plain(r[2])};
+    const c = chainRel(x);
+    return {it: c.itSpec ? (f ? c.itSpec[2] : c.itSpec[1]) : c.it, en: c.en, spec: !!c.itSpec};
   };
   const con = (p.congiunti||[]).filter(x=>x.name);
   if(con.length){
     add(s2, `Sono qui con ${joinIt(con.slice(0,3).map(x=>nameOf(x).it + " " + x.name))}.`,
            `I'm here with ${joinEn(con.slice(0,3).map(x=>nameOf(x).en + " " + x.name))}.`);
-    con.filter(x=>x.via).slice(0,4).forEach(x=>{
+    con.slice(0,8).forEach(x=>{
       const n = nameOf(x);
-      add(s2, `${x.name} è ${n.it}.`, `${x.name} is ${n.en}.`);
+      if(!x.via && !n.spec) return;   /* your own sister is already covered above */
+      add(s2, `${x.name} è ${n.it}.`, `${x.name} is ${n.en}.`, {it:`Chi è ${x.name}?`, en:`Who is ${x.name}?`});
     });
-    const kinds = [...new Set(con.filter(x=>!x.via).map(x=>relOf(x.rel)[1]))];
+    con.filter(x=>x.age).slice(0,4).forEach(x=>{
+      const n = nameOf(x);
+      add(s2, `${x.name} ha ${numIt(x.age)} anni.`, `${x.name} is ${x.age}.`,
+          {it:`E ${x.name} quanti anni ha?`, en:`And how old is ${x.name}?`});
+    });
+    const kinds = [...new Set(con.filter(x=>!x.via && !SPECIALI.some(sp=>sp[0]===x.rel)).map(x=>relOf(x.rel)[1]))];
     if(kinds.length > 2) add(s2, `C'è tutta la famiglia: ${joinIt(kinds.slice(0,5))}.`,
-      `The whole family is here: ${joinEn([...new Set(con.filter(x=>!x.via).map(x=>relOf(x.rel)[2]))].slice(0,5))}.`);
+      `The whole family is here: ${joinEn([...new Set(con.filter(x=>!x.via && !SPECIALI.some(sp=>sp[0]===x.rel)).map(x=>plain(relOf(x.rel)[2])))].slice(0,5))}.`);
   }
   if(p.gruppo) add(s2, `Siamo in ${numIt(p.gruppo)}.`, `There are ${p.gruppo} of us.`);
   if(p.emerg_nome && p.emerg_tel){
@@ -5423,8 +5536,15 @@ function buildProfile(){
   const ints = (p.interessi||[]).map(c=>INTERESSI.find(i=>i[0]===c)).filter(Boolean);
   if(ints.length){
     add(s4, `Mi piace molto ${ints[0][1]}.`, `I really like ${ints[0][2]}.`, "piace");
-    if(ints.length > 1) add(s4, `Mi piacciono anche ${joinIt(ints.slice(1,4).map(i=>i[1]))}.`,
-      `I also like ${joinEn(ints.slice(1,4).map(i=>i[2]))}.`);
+    if(ints.length > 1){
+      const rest = ints.slice(1,4);
+      const nouns = rest.filter(i=>/^(il |lo |la |l'|i |le |gli )/.test(i[1]));
+      const verbs = rest.filter(i=>!/^(il |lo |la |l'|i |le |gli )/.test(i[1]));
+      if(nouns.length) add(s4, `${nouns.length>1?"Mi piacciono":"Mi piace"} anche ${joinIt(nouns.map(i=>i[1]))}.`,
+        `I also like ${joinEn(nouns.map(i=>i[2]))}.`);
+      if(verbs.length) add(s4, `Mi piace anche ${joinIt(verbs.map(i=>i[1]))}.`,
+        `I also like ${joinEn(verbs.map(i=>i[2]))}.`);
+    }
   }
   const mus = (p.musica||[]).map(c=>GENERI_MUS.find(m=>m[0]===c)).filter(Boolean);
   if(mus.length) add(s4, mus.length===1 ? `Mi piace ${mus[0][1]}.` : `Mi piacciono ${joinIt(mus.slice(0,3).map(m=>m[1]))}.`,
@@ -5440,10 +5560,16 @@ function buildProfile(){
   if(lg.length) add(s4, `Mi piacciono ${joinIt(lg.slice(0,3).map(g=>g[1]))}.`,
     `I like ${joinEn(lg.slice(0,3).map(g=>g[2]))}.`);
   const libri = (p.libri||[]).filter(Boolean);
-  if(libri.length) add(s4, `Sto leggendo ${libri[0]}.`, `I'm reading ${libri[0]}.`);
+  if(libri.length) add(s4, `Il mio libro preferito è ${libri[0]}.`, `My favourite book is ${libri[0]}.`);
+  if(libri.length > 1) add(s4, `${libri.length>2?"Mi piacciono":"Mi piace"} anche ${joinIt(libri.slice(1,3))}.`,
+    `I also like ${joinEn(libri.slice(1,3))}.`);
+  if(p.libro_ora) add(s4, `In questo periodo sto leggendo ${p.libro_ora}.`, `At the moment I'm reading ${p.libro_ora}.`);
+  if(p.serie_ora) add(s4, `In questo periodo sto guardando ${p.serie_ora}.`, `At the moment I'm watching ${p.serie_ora}.`);
+  if(p.musica_ora) add(s4, `In questo periodo ascolto molto ${p.musica_ora}.`, `At the moment I'm listening to a lot of ${p.musica_ora}.`);
   const film = (p.film||[]).filter(Boolean);
   if(film.length) add(s4, `Il mio film preferito è ${film[0]}.`, `My favourite film is ${film[0]}.`);
-  if(film.length > 1) add(s4, `Mi piacciono anche ${joinIt(film.slice(1,3))}.`, `I also like ${joinEn(film.slice(1,3))}.`);
+  if(film.length > 1) add(s4, `${film.length>2?"Mi piacciono":"Mi piace"} anche ${joinIt(film.slice(1,3))}.`,
+    `I also like ${joinEn(film.slice(1,3))}.`);
   const serie = (p.serie||[]).filter(Boolean);
   if(serie.length) add(s4, `La mia serie preferita è ${serie[0]}.`, `My favourite series is ${serie[0]}.`);
   if(serie.length > 1) add(s4, `Guardo anche ${joinIt(serie.slice(1,3))}.`, `I also watch ${joinEn(serie.slice(1,3))}.`);
@@ -5501,6 +5627,13 @@ function buildProfile(){
     if(byTier.now) add(sec, `In questo periodo non posso prendere ${joinIt(byTier.now.slice(0,3).map(r=>r[1]))}.`,
       `I can't have ${joinEn(byTier.now.slice(0,3).map(r=>r[3]))} at the moment.`);
   };
+  if(p.fav_vino){
+    add(s4, `Il mio vino preferito è il ${p.fav_vino}.`, `My favourite wine is ${p.fav_vino}.`);
+    add(s4, `Avete il ${p.fav_vino}?`, `Do you have ${p.fav_vino}?`);
+  }
+  if(p.fav_birra) add(s4, `La mia birra preferita è la ${p.fav_birra}.`, `My favourite beer is ${p.fav_birra}.`);
+  if(p.fav_liquore) add(s4, `Il mio preferito è il ${p.fav_liquore}.`, `My favourite is ${p.fav_liquore}.`);
+  if(p.fav_piatto) add(s4, `Il mio piatto preferito è ${p.fav_piatto}.`, `My favourite dish is ${p.fav_piatto}.`);
   tierLines(p.cibi_x, CIBI_X, s4, "mangia");
   tierLines(p.bev_x, BEVANDE_X, s4, "beve");
 
@@ -5526,7 +5659,9 @@ function buildProfile(){
   if(p.dopo) add(s5, `Dopo andiamo in ${p.dopo}.`, `After this we're going to ${p.dopo}.`, "dove_va");
   const piani = (p.piani||[]).map(c=>PIANI.find(x=>x[0]===c)).filter(Boolean);
   if(piani.length) add(s5, `Vogliamo ${joinIt(piani.slice(0,3).map(x=>x[1]))}.`,
-    `We want to ${joinEn(piani.slice(0,3).map(x=>x[2].replace(/ing\b/,"")))}.`);
+    `We want to spend our time ${joinEn(piani.slice(0,3).map(x=>x[2]))}.`);
+  if(piani.length > 3) add(s5, `E poi ${joinIt(piani.slice(3,6).map(x=>x[1]))}.`,
+    `And then ${joinEn(piani.slice(3,6).map(x=>x[2]))}.`);
   if(p.biglietti) add(s5, `Abbiamo già i biglietti per ${p.biglietti}.`, `We already have tickets for ${p.biglietti}.`);
   add(s5, `È la nostra prima volta qui.`, `It's our first time here.`, "prima");
 
@@ -5624,20 +5759,18 @@ function renderMyPhrases(host){
   const n = secs.reduce((a,s)=>a+s.c.length,0);
   const reg = S.profileReg || "lei";
   host.innerHTML = `
-    <div class="card tight">
-      <div class="row" style="align-items:center">
-        <div class="grow"><b>${n} phrases, written for you</b>
-          <div class="small">${esc(p.nome||"You")} · rebuilt whenever you change an answer</div></div>
-        <button class="btn quiet" id="editSheet">Edit sheet</button>
-      </div>
-      <div class="chips" style="margin:10px 0 0">
-        <button class="chip" data-reg="lei" aria-pressed="${reg==="lei"}">Formal (lei)</button>
-        <button class="chip" data-reg="tu" aria-pressed="${reg==="tu"}">Informal (tu)</button>
-      </div>
-      <div class="row" style="gap:8px;margin-top:10px">
-        <button class="btn quiet grow" id="drillMine">Practise these</button>
-        <button class="btn quiet grow" id="expMine">Export</button>
-      </div>
+    <div style="font-family:var(--serif);font-size:22px;font-weight:700;line-height:1.15">Your phrases</div>
+    <div class="small" style="margin-top:2px">${n} lines, written from your sheet</div>
+    <div class="small" style="margin:7px 0 12px;color:var(--muted)">
+      Details changed? <button id="editSheet" class="linkbtn">Edit my sheet</button>
+    </div>
+    <div class="chips" style="margin:0 0 7px">
+      <button class="chip" data-reg="lei" aria-pressed="${reg==="lei"}">Formal (lei)</button>
+      <button class="chip" data-reg="tu" aria-pressed="${reg==="tu"}">Informal (tu)</button>
+    </div>
+    <div class="row" style="gap:8px;margin-bottom:14px">
+      <button class="btn quiet grow" id="drillMine">Practise these</button>
+      <button class="btn quiet grow" id="expMine">Export</button>
     </div>
     ${secs.map(s=>`
       <h3 style="font-family:var(--serif);font-size:18px;margin:18px 0 2px">${esc(s.t)}</h3>
@@ -5764,6 +5897,9 @@ if("serviceWorker" in navigator && location.protocol.startsWith("http")){
 
 window.addEventListener("offline", ()=> setUpd("offline"));
 window.addEventListener("online",  ()=> checkForUpdate(false));
+
+S.sheetOpen = false;   /* the sheet only opens when you tap into it */
+save();
 
 /* ---------- go ---------- */
 touchStreak();

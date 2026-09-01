@@ -11,7 +11,7 @@ A single-page web app: phrases, verb conjugation, flashcards, matching, and role
 **Numbering changed at build 13.** Versions are now a plain count of downloads — 13, then 14, then 15 — instead of the old three-part numbers. The build formerly called 3.7.0 is listed in the app's changelog as *12 (was 3.7.0)*; everything before it keeps its original label.
 
 
-This build is **15**. The file is named `index-v15-english-search-and-detail.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits under the **Andiamo.** wordmark at the top of every screen — `v15 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
+This build is **16**. The file is named `index-v16-relationship-chains.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits under the **Andiamo.** wordmark at the top of every screen — `v16 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
 
 ## How updating works
 
@@ -19,8 +19,8 @@ This build is **15**. The file is named `index-v15-english-search-and-detail.htm
 
 When you upload a new build, change two numbers so phones know something moved:
 
-1. In `index.html`, near the top of the script: `const BUILD = "15";` — and add a line to the `CHANGES` list describing what you did.
-2. In `sw.js`, line 5: `const BUILD = "15";`
+1. In `index.html`, near the top of the script: `const BUILD = "16";` — and add a line to the `CHANGES` list describing what you did.
+2. In `sw.js`, line 5: `const BUILD = "16";`
 
 Keep them the same. If you forget, the app still updates (HTML is network-first), but the icons and manifest may stay on the old cached copies.
 
@@ -125,6 +125,19 @@ Sections: Chi sono · La mia famiglia · Il mio lavoro · I miei gusti · Il via
 A toggle switches the whole set between **formal (lei)** and **informal (tu)**. Tap ✎ on any card to reword it — useful for film titles, since *2001: A Space Odyssey* is *2001: Odissea nello spazio* in Italy. Your version is kept. **Practise these** turns your own sentences into a drill deck, which is the part that actually teaches them.
 
 Grammar follows your answers: one question at the start sets whether Italian describes you as masculine or feminine, so you get *sono americano* or *sono americana*, *sposato* or *sposata*, all the way through. Jobs, nationalities, relationships and interests are picklists rather than free text, so they come out as real Italian; names, bands and titles are free text and print as you typed them.
+
+### Describing people
+
+Each person on the travelling-with list is built as a chain: a name, then **is** a bare relationship, then **of** someone, and if you need it, **of** someone again. A line under the row shows what it will say, in both languages, as you build it.
+
+- daughter → *mia figlia* — my daughter
+- daughter · of my cousin → *la figlia di mia cugina* — my cousin's daughter
+- partner · of my brother → *il compagno di mio fratello* — my brother's partner
+- daughter · of my brother-in-law · of his brother → *la figlia del fratello di mio cognato* — my brother-in-law's brother's daughter
+
+For people no chain fits there's a **No link needed** group at the bottom of the first list: a friend of the family, a friend of my parents, a travelling companion, someone from work, my child's in-laws, just a friend, a neighbour.
+
+Every linked person gets their own card with the question attached — *Chi è Dee?* → **Dee è un amico di famiglia.** Anyone with an age gets *E Chiara quanti anni ha?* → **Chiara ha nove anni.**
 
 ### Going into more detail
 
