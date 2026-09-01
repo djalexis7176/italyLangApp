@@ -8,7 +8,7 @@ A single-page web app: phrases, verb conjugation, flashcards, matching, and role
 
 ## Version
 
-This build is **3.4.0**. The file is named `index-v3.4.0-verb-examples.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits under the **Andiamo.** wordmark at the top of every screen — `v3.4 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
+This build is **3.7.0**. The file is named `index-v3.7.0-combined-forms.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits under the **Andiamo.** wordmark at the top of every screen — `v3.7 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
 
 ## How updating works
 
@@ -16,8 +16,8 @@ This build is **3.4.0**. The file is named `index-v3.4.0-verb-examples.html` —
 
 When you upload a new build, change two numbers so phones know something moved:
 
-1. In `index.html`, near the top of the script: `const BUILD = "3.4.0";` — and add a line to the `CHANGES` list describing what you did.
-2. In `sw.js`, line 5: `const BUILD = "3.4.0";`
+1. In `index.html`, near the top of the script: `const BUILD = "3.7.0";` — and add a line to the `CHANGES` list describing what you did.
+2. In `sw.js`, line 5: `const BUILD = "3.7.0";`
 
 Keep them the same. If you forget, the app still updates (HTML is network-first), but the icons and manifest may stay on the old cached copies.
 
@@ -62,6 +62,12 @@ The **Voice** button in the top bar cycles through the Italian voices installed 
 - **iPhone:** Settings → Accessibility → Spoken Content → Voices → Italian.
 - **Android:** Settings → System → Languages & input → Text-to-speech → install the Italian voice.
 
+## Start here
+
+The big gold button at the top of the **Today** page (also on **Plan**, and the first chip in **Words**) opens a short list: the 16 verbs and roughly 80 words that carry most of a trip. The verbs come with a line on why each one earns its place and their six forms on the card. The words are grouped by the job they do — the first ten words, the five request formulas, question words, keeping a conversation alive, at the table, getting around, numbers and time, when something goes wrong.
+
+Two buttons at the top drill the lot: **Drill the 16 verbs** runs a conjugation session across exactly those, and **Flashcards on the words** turns the 81 essentials into a deck. Both are also available as the ★ Essentials deck in Practice.
+
 ## The Words page
 
 A full dictionary of everything the app uses — verbs, nouns, adjectives and the small words that hold sentences together. One button flips it between **Italian → English** and **English → Italian**, there's a search box that looks in both languages, filters for each word type, and an A–Z strip to jump down the list.
@@ -78,6 +84,8 @@ io    sono  = I am
 tu    sei   = you are
       ▶ Tu sei di Sydney.       You're from Sydney.
 ```
+
+Verbs with two meanings show an example for each: `prendo` gives both *Io prendo il treno delle otto — I take the eight o'clock train* and *Io prendo un caffè al banco — I have a coffee at the counter*, and the label reads `= I take / have`. Eighteen verbs carry a second sense this way.
 
 Verbs that don't work in every person — costare, durare, servire, interessare, colpire — show examples only where a real sentence exists (*Quanto costa il caffè? · Mi colpiscono i colori*).
 
@@ -102,11 +110,21 @@ Every word pop-up ends with **Practise this word** and four buttons: 10, 20, 30,
 
 Nouns and adjectives generate their own sentences from their entry, so even a word with only one appearance in the app gives you a full session.
 
+## Searching a phrase
+
+The search box in **Words** takes more than one word. Type `e poi gli chiede` and you get, in order: a word-by-word reading (*and then to him he/she asks*), any sentence in the app containing that phrase with its real translation, and each word listed separately with its meaning and a tap-through to the full entry. Type one word and you get the same panel — so conjugated forms like `posso`, `piacciono` or `visitato` now resolve, where before the A–Z list said nothing matched.
+
+The word-by-word line is labelled as rough on purpose: Italian doesn't line up one word to one word, and the sentence beneath it is the honest translation. Small pronouns get a bit of context — `gli` before a verb reads as *to him*, not *the*.
+
+Words with a pronoun stuck on the end are unpicked: `prenderne` comes back as *prendere — to take / to have*, with a line saying **ne** is on the end meaning *of it*. Same for `assaggiarlo`, `portarvi`, `berne`, `mangialo`, `mostrarmelo`. Misspell one and the did-you-mean list peels the pronoun off too — `prederne` suggests **prendere + ne**.
+
+Accented words are told apart properly: `e` is *and* while `è` is *he/she is*, `si` is *oneself* while `sì` is *yes*, `da` is *from* while `dà` is *he gives*. Typing without the accent still finds the word.
+
 ## Tapping a word
 
 Every Italian word in the app is underlined and tappable — in phrase lists, flashcards, quiz feedback, gap-fills and role-play conversations. Tap one and a panel slides up with the meaning. If it's a verb, you also get the full present-tense table with the form you tapped highlighted, so `sono` shows: *the io form of essere (to be), irregular* — and the whole table underneath. Words that change ending (plurals, feminine forms, past participles like `visitato`) are traced back to the base word automatically.
 
-Tap the star in that panel and the word goes to your word list under **Saved**, where you can practise the collection as flashcards.
+Every definition carries an example sentence with audio — pulled from the app's own text where the word appears there, and written or generated where it doesn't. Tap the star in that panel and the word goes to your word list under **Saved**, where you can practise the collection as flashcards.
 
 ## Notes
 
@@ -120,6 +138,7 @@ Tap the star in that panel and the word goes to your word list under **Saved**, 
 - 52 question-and-answer pairs (they ask, you answer)
 - 10 full role-play conversations
 - 19 confusable word pairs — sapere/conoscere, piace/piacciono, vorrei/voglio and the rest
+- A Start here shortlist: 16 verbs, 81 words
 - 11 drill types and a 14-day plan
 - 7 story lessons with listening, translation and gap-fill quizzes
 - Focus practice on any single word, 10 to 50 questions

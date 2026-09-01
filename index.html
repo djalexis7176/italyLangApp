@@ -264,6 +264,9 @@ ol.plan li b{display:block;font-size:15px}
 .crow .ex{display:flex;gap:8px;align-items:flex-start;margin:6px 0 0 0;font-size:14px}
 .crow .ex .speak{width:30px;height:30px;flex:0 0 30px;font-size:12px}
 .crow .exen{color:var(--muted);font-size:13.5px}
+.ex{display:flex;gap:8px;align-items:flex-start;font-size:14.5px}
+.ex .speak{width:30px;height:30px;flex:0 0 30px;font-size:12px}
+.exen{color:var(--muted);font-size:13.5px}
 .azrow{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 12px}
 .az{border:1px solid var(--line);background:#fff;border-radius:8px;min-width:28px;padding:5px 0;
   font-size:12.5px;font-weight:700;color:var(--blu)}
@@ -1464,7 +1467,9 @@ const FUNC = [
 ["tuoi","your (m pl)"],["tue","your (f pl)"],["nostri","our (m pl)"],["nostre","our (f pl)"],
 ["c'è","there is"],["ci","us / to us / there"],["sazi","full up (m pl)"],["sazie","full up (f pl)"],
 ["qualcos'","something","Qualcos'altro = something else."],["mare","sea","Frutti di mare = seafood."],
-["vecchio","old"],["vecchi","old (m pl)"],["tiramisù","tiramisu"],["grappa","grappa"],
+["vecchio","old"],["vecchi","old (m pl)"],["valigia","suitcase"],["valigie","suitcases"],
+["scale","stairs"],["mano","hand"],["giacca","jacket"],["mancia","tip"],["banca","bank"],
+["morso","bite","Dare un morso = to take a bite."],["hamburger","burger"],["soldi","money"],["tiramisù","tiramisu"],["grappa","grappa"],
 ["ordinerei","I would order","Conditional of ordinare."],["ordinerà","he / she will order"],
 ["palermo","Palermo"],["anna","Anna (a name)"],["giulia","Giulia (a name)"],["piero","Piero (a name)"],
 ["marco","Marco (a name)"],
@@ -1879,7 +1884,7 @@ STORIES.push(
 /* ============================================================
    ENGINE
    ============================================================ */
-const BUILD = "3.4.0";
+const BUILD = "3.7.0";
 const BUILT = "2026-08-31";
 const VERSTAMP = (function(){
   const [y,m,d] = BUILT.split("-");
@@ -1887,6 +1892,9 @@ const VERSTAMP = (function(){
 })();
 let UPD = {state:"unknown", at:0};
 const CHANGES = [
+  ["3.7.0","2026-08-31","Verbs with two meanings now show an example for each — prendo il treno / prendo un caffè. Combined forms like prenderne explain the pronoun stuck on the end, and misspellings get a did-you-mean list that also un-sticks pronouns: prederne suggests prendere + ne."],
+  ["3.6.0","2026-08-31","Search now takes whole phrases: type e poi gli chiede and get a word-by-word reading, any matching sentence from the app, and every word tappable. Conjugated forms like posso are searchable. Every definition carries an example sentence. Accented words (e / è, si / sì, da / dà) are told apart."],
+  ["3.5.0","2026-08-31","Start here: the 16 verbs and 80 words worth learning first, grouped by the job they do, with one-tap drills for both. Reachable from Today, Plan, and the first chip in Words."],
   ["3.4.0","2026-08-31","Every verb form now shows its English meaning and a worked example — io sono = I am, Io sono di San Diego. Examples are spoken and their words are tappable."],
   ["3.3.0","2026-08-31","Story lessons: one restaurant story told seven ways, with listen, read and translate modes and a fill-the-gaps quiz that explains why each wrong answer is wrong and when it would be right. All the story vocabulary added to the dictionary and the practice decks."],
   ["3.2.0","2026-08-31","Focus practice: tap any word and drill it 10, 20, 30 or 50 times across different sentences. New words and phrases for sizes, alcohol strength, calories, fat and allergens."],
@@ -1986,6 +1994,7 @@ const ADJITEMS  = ADJ.map((a,i)=>({it:a[0], en:a[1], ph:"", cat:"agg", key:"a:"+
 const catName = id => (CATS.find(c=>c.id===id)||{name:id}).name;
 
 function deckItems(deck){
+  if(deck === "core") return CORE_WORDS.map((x,i)=>({it:x[0].replace(/…/g,""), en:x[1], ph:"", cat:"core", key:"c:"+i}));
   if(deck === "stories") return STORIES.flatMap((st,si)=> st.l.map((l,li)=>({it:l[0], en:l[1], ph:"", cat:"stories", key:"st:"+si+":"+li})));
   if(deck === "study") return Object.entries(S.list||{}).map(([k,v])=>({it:v.w, en:v.g||"(no meaning saved)", ph:"", cat:"study", key:"s:"+k}));
   if(deck === "all") return ALLPHRASES.concat(NOUNITEMS, ADJITEMS, deckItems("stories"));
@@ -2036,7 +2045,8 @@ function renderHome(){
     </div>
   </section>
 
-  <button class="btn wide" id="quickStart" style="margin:14px 0 4px">Start today's 10-minute session</button>
+  <button class="btn wide" id="startHere" style="margin:14px 0 8px">★ Start here — the 16 verbs and 80 words</button>
+  <button class="btn ghost wide" id="quickStart">Start today's 10-minute session</button>
   <p class="small" style="text-align:center;margin:0 0 8px">Flashcards, then a quiz, then three verbs to conjugate.</p>
 
   <h2>${day.d}: ${esc(day.t)}</h2>
@@ -2072,6 +2082,7 @@ function renderHome(){
   </div>
   <p class="small" style="margin:18px 0 0">Tap <b>Voice</b> at the top to change the Italian voice or slow the speed down.</p>
   `;
+  $("#startHere").onclick = () => { dictType = "core"; go("words"); };
   $("#quickStart").onclick = () => { go("drills"); startDrill("mix","all"); };
   $("#prevDay").onclick = () => { S.day = Math.max(1, S.day-1); save(); renderHome(); };
   $("#nextDay").onclick = () => { S.day = Math.min(PLAN.length, S.day+1); addXp(3); save(); renderHome(); toast("Nice. On to " + PLAN[S.day-1].d); };
@@ -2162,6 +2173,7 @@ function hilite(v,i){
 function renderPlan(){
   view.innerHTML = `
     <h1>The plan</h1>
+    <button class="btn wide" id="planCore" style="margin:8px 0 12px">★ Start here — the 16 verbs and 80 words</button>
     <p class="lede">Built on the 80/20 idea: present tense, the top ten verbs, and the words you'll say out loud on the trip. Everything else can wait.</p>
     <ol class="plan">
       ${PLAN.map((d,i)=>`<li>
@@ -2200,6 +2212,7 @@ function renderPlan(){
     <button class="btn ghost wide" id="reset">Clear all progress</button>
   `;
   $("#checkUpd").onclick = ()=> checkForUpdate(true);
+  $("#planCore").onclick = ()=>{ dictType = "core"; go("words"); };
   view.querySelectorAll("[data-goCat]").forEach(b=> b.onclick = ()=>{ go("phrases"); openCat(b.getAttribute("data-goCat")); });
   view.querySelectorAll("[data-goVerb]").forEach(b=> b.onclick = ()=> openVerb(b.getAttribute("data-goVerb")));
   $("#reset").onclick = ()=>{
@@ -2227,7 +2240,7 @@ let sess = null, deckSel = "all";
 
 function renderDrills(){
   if(sess) return paintStep();
-  const decks = [["all","Everything"],["starred","Saved phrases ★"],["study","My word list"],["vocab","Single words"],["stories","Story lines"]].concat(CATS.map(c=>[c.id,c.name]));
+  const decks = [["all","Everything"],["starred","Saved phrases ★"],["core","★ Essentials"],["study","My word list"],["vocab","Single words"],["stories","Story lines"]].concat(CATS.map(c=>[c.id,c.name]));
   view.innerHTML = `
     <h1>Practice</h1>
     <p class="lede">Pick a set, then pick a way to drill it.</p>
@@ -2262,9 +2275,9 @@ function buildQuiz(deck,n,mode){
     return {kind:"quiz", it, opts, dir};
   });
 }
-function buildConj(n){
+function buildConj(n, list){
   const out = [];
-  const vs = shuffle(VERBS);
+  const vs = shuffle(list || VERBS);
   for(let i=0;i<n;i++){
     const v = vs[i % vs.length];
     out.push({kind:"conj", v, p: Math.random()*6|0});
@@ -2312,6 +2325,8 @@ function startDrill(type, deck){
     case "quiz":   steps = buildQuiz(deckSel,10); title="Quick quiz"; break;
     case "listen": steps = buildQuiz(deckSel,10,"listen"); title="Listen & choose"; break;
     case "conj":   steps = buildConj(12); title="Conjugation trainer"; break;
+    case "coreconj": steps = buildConj(16, CORE_VERBS.map(([v])=>ALLVERBS.find(x=>x.i===v)).filter(Boolean));
+                     title="The sixteen verbs"; break;
     case "which":  steps = buildWhich(10); title="Which word?"; break;
     case "cloze":  steps = buildCloze(deckSel,10); title="Fill the gap"; break;
     case "qa":     steps = buildQA(10); title="Answer them"; break;
@@ -2689,9 +2704,14 @@ const EXTRA = EXTRA_VERBS.map(([i,e,fam])=>({i, e, fam, irr:0, f:conjugate(i,fam
 const ALLVERBS = VERBS.concat(EXTRA);
 
 const LEX = new Map();
+const LEXX = new Map();   /* same words, but keeping their accents */
 function addLex(word, entry){
   const k = norm(word).replace(/[^a-z']/g,"");
   if(!k) return;
+  const kx = String(word).toLowerCase().replace(/[’]/g,"'").trim();
+  if(!LEXX.has(kx)) LEXX.set(kx, []);
+  if(!LEXX.get(kx).some(x=>x.kind===entry.kind && x.gloss===entry.gloss && x.v===entry.v && x.p===entry.p))
+    LEXX.get(kx).push(entry);
   if(!LEX.has(k)) LEX.set(k, []);
   const list = LEX.get(k);
   if(!list.some(x=>x.kind===entry.kind && x.gloss===entry.gloss && x.v===entry.v && x.p===entry.p)) list.push(entry);
@@ -2744,6 +2764,12 @@ const PART_IRR = {stato:"essere",stati:"essere",stata:"essere",state:"essere",fa
 function lookup(raw){
   const w = norm(raw).replace(/[^a-z']/g,"");
   if(!w) return null;
+  /* an exact match including accents wins: e = and, è = he is */
+  const wx = String(raw).toLowerCase().replace(/[’]/g,"'").replace(/[^a-zà-ÿ']/g,"").trim();
+  if(wx && LEXX.has(wx) && /[àèéìòóùÀ-ÿ]/.test(raw + [...LEXX.keys()].join("")) ) {
+    const exact = LEXX.get(wx);
+    if(exact && exact.length) return {word:raw, entries:exact};
+  }
   if(LEX.has(w)) return {word:raw, entries:LEX.get(w)};
   /* attached pronouns: mostrarmelo, spedirlo, andarci */
   for(const c of CLITICS.slice().sort((a,b)=>b.length-a.length)){
@@ -2814,7 +2840,8 @@ function openWord(raw){
   }
   exprFor(raw).forEach(e => body += exprHTML(e));
   const vf = (res && res.entries.find(e=>e.v)) ? res.entries.find(e=>e.v).v : null;
-  const ex = exampleFor(raw, vf ? vf.f.concat([vf.i]) : null);
+  const hasOwn = res && res.entries.some(e=>e.kind!=="form" && e.kind!=="inf");
+  const ex = hasOwn ? null : exampleFor(raw, vf ? vf.f.concat([vf.i]) : null);
   if(ex) body += `<div style="margin-top:14px">
       <div class="small">In the app</div>
       <div class="row" style="margin-top:4px">
@@ -2874,25 +2901,30 @@ function entryHTML(e, raw){
       <div style="font-size:15.5px">${head}</div>
       <div style="margin:6px 0"><span class="pill ${v.irr?"red":"green"}">${famLabel(v)}</span></div>
       <div class="conjlist">${PRON.map((p,i)=>{
-        const ex = verbExample(v,i);
+        const exs = verbExamples(v,i);
         return `<div class="crow${hit.includes(i)?" hit":""}">
           <div class="row" style="align-items:baseline;gap:8px">
             <span class="pron">${p}</span>
             <span class="form">${hilite(v,i)}</span>
-            <span class="eng">= ${esc(engPerson(i, v.e))}</span>
+            <span class="eng">= ${esc(engLabel(v,i))}</span>
           </div>
-          ${ex?`<div class="ex">
+          ${exs.map(ex=>`<div class="ex">
             <button class="speak" data-say="${esc(ex.it)}">▶</button>
             <div class="grow"><div>${gloss(ex.it)}</div><div class="exen">${esc(ex.en)}</div></div>
-          </div>`:""}
+          </div>`).join("")}
         </div>`;}).join("")}</div>
       ${v.n?`<p class="small" style="margin:6px 0 0">${esc(v.n)}</p>`:""}
       ${hit.length>1?`<p class="small" style="margin:6px 0 0">Careful: this same form is used for ${hit.map(i=>PRON[i]).join(" and ")}. The rest of the sentence tells you which.</p>`:""}`;
   }
   const label = {noun:"noun", adj:"adjective", word:""}[e.kind] || "";
+  const ex = exampleFor(raw);
   return `<div style="font-size:15.5px"><b>${esc(raw)}</b> = ${esc(e.gloss)}</div>
     ${e.note?`<p class="small" style="margin:5px 0 0">${esc(e.note)}</p>`:""}
-    ${label?`<div style="margin-top:6px"><span class="pill">${label}</span></div>`:""}`;
+    ${label?`<div style="margin-top:6px"><span class="pill">${label}</span></div>`:""}
+    ${ex?`<div class="ex" style="margin-top:8px">
+        <button class="speak" data-say="${esc(ex[0])}">▶</button>
+        <div class="grow"><div>${gloss(ex[0])}</div><div class="exen">${esc(ex[1])}</div></div>
+      </div>`:""}`;
 }
 function engPerson(i, inf){
   let base = String(inf).replace(/^to /,"").split(" / ")[0].split(" (")[0].trim();
@@ -2992,14 +3024,53 @@ colpire:[null,null,["Mi colpisce questo quadro.","This painting strikes me."],nu
 rappresentare:[null,null,["Che cosa rappresenta?","What does it represent?"],null,null,
        ["Che cosa rappresentano?","What do they represent?"]]
 };
+/* verbs whose meaning splits in two: a second example for the other sense */
+const VEX2 = {
+prendere:["un caffè al banco","a coffee at the counter","have"],
+dire:["che è tutto buonissimo","that it's all delicious","say"],
+fare:["il caffè a casa","coffee at home","make"],
+sapere:["parlare un po' d'italiano","how to speak a little Italian","know"],
+sentire:["la musica dalla piazza","the music from the square","hear"],
+portare:["la valigia","the suitcase","carry"],
+perdere:["il portafoglio","my wallet","lose"],
+guardare:["una serie italiana","an Italian series","watch"],
+scendere:["le scale","the stairs","go down"],
+prenotare:["due posti sul treno","two seats on the train","reserve"],
+tenere:["il bicchiere in mano","the glass in my hand","hold"],
+chiedere:["a che ora apre","what time it opens","ask"],
+cambiare:["dei soldi in banca","some money at the bank","change"],
+provare:["questa giacca","this jacket","try on"],
+lasciare:["una mancia","a tip","leave"],
+partire:["per Bologna domani","for Bologna tomorrow","set off"],
+finire:["il vino","the wine","finish"],
+trovare:["questo formaggio delizioso","this cheese delicious","find"]
+};
 const SUBJ = ["Io","Tu","Lui","Noi","Voi","Loro"];
-function verbExample(v, i){
-  if(VEXF[v.i]) return VEXF[v.i][i] ? {it:VEXF[v.i][i][0], en:VEXF[v.i][i][1]} : null;
-  const e = VEX[v.i];
-  if(!e) return null;
+function buildEx(v, i, e){
   let en = engPerson(i, e[2] ? "to " + e[2] : v.e).replace(/^he \/ she /, "He ") + " " + e[1] + ".";
   en = en[0].toUpperCase() + en.slice(1);
   return {it: SUBJ[i] + " " + v.f[i] + " " + e[0] + ".", en};
+}
+function verbExample(v, i){
+  if(VEXF[v.i]) return VEXF[v.i][i] ? {it:VEXF[v.i][i][0], en:VEXF[v.i][i][1]} : null;
+  return VEX[v.i] ? buildEx(v, i, VEX[v.i]) : null;
+}
+/* one example per sense of the verb */
+function engLabel(v, i){
+  const s1 = VEX[v.i] && VEX[v.i][2] ? "to " + VEX[v.i][2] : v.e;
+  let out = engPerson(i, s1);
+  if(VEX2[v.i] && !VEXF[v.i]){
+    const s2 = engPerson(i, "to " + VEX2[v.i][2]).replace(/^(I|you|he \/ she|we|they)\s+/, "");
+    if(!out.endsWith(s2)) out += " / " + s2;
+  }
+  return out;
+}
+function verbExamples(v, i){
+  const out = [];
+  const first = verbExample(v, i);
+  if(first) out.push(first);
+  if(VEX2[v.i] && !VEXF[v.i]) out.push(buildEx(v, i, VEX2[v.i]));
+  return out;
 }
 
 document.addEventListener("click", e=>{
@@ -3187,13 +3258,352 @@ const EXAMPLES = (function(){
   STORIES.forEach(st => st.l.forEach(l => add(l[0], l[1])));
   return idx;
 })();
+
+/* ============================================================
+   DATA: an example for entries the app's own sentences don't cover
+   ============================================================ */
+const EX_EXTRA = {
+/* prepositions and articles */
+"dello":["Il colore dello spumante è chiaro.","The colour of the sparkling wine is pale."],
+"dei":["Vorrei dei formaggi locali.","I'd like some local cheeses."],
+"degli":["Parliamo degli affreschi.","We're talking about the frescoes."],
+"ad":["Andiamo ad Orvieto domani.","We're going to Orvieto tomorrow."],
+"allo":["Chiedo allo chef se è piccante.","I'll ask the chef if it's spicy."],
+"dal":["Il treno arriva dal binario tre.","The train comes in on platform three."],
+"dalla":["Vengo dalla California.","I come from California."],
+"dall'":["Esce dall'enoteca alle otto.","He leaves the wine bar at eight."],
+"nello":["Che cosa c'è nello zaino?","What's in the rucksack?"],
+"nella":["Siamo nella piazza principale.","We're in the main square."],
+"nelle":["Nelle trattorie si mangia bene.","You eat well in trattorias."],
+"nell'":["Nell'enoteca fanno degustazioni.","They do tastings in the wine bar."],
+"su":["Il conto è su quel tavolo.","The bill is on that table."],
+"sul":["Il menù è sul tavolo.","The menu is on the table."],
+"sui":["Ci sono informazioni sui vini locali?","Is there information about the local wines?"],
+"sull'":["Un libro sull'arte moderna.","A book about modern art."],
+"tra":["Il treno parte tra dieci minuti.","The train leaves in ten minutes."],
+"sopra":["La chiesa è sopra la collina.","The church is up on the hill."],
+"oltre":["Il museo è oltre il ponte.","The museum is beyond the bridge."],
+"ed":["Vorrei pane ed olio.","I'd like bread and oil."],
+"d'oliva":["Un buon olio d'oliva locale.","A good local olive oil."],
+"d'acqua":["Una bottiglia d'acqua naturale.","A bottle of still water."],
+"d'orzo":["Un caffè d'orzo, per favore.","A barley coffee, please."],
+"d'italiano":["Parlo un po' d'italiano.","I speak a little Italian."],
+"dell'italia":["Il sud dell'Italia è caldo.","The south of Italy is hot."],
+"all'amatriciana":["Prendo la pasta all'amatriciana.","I'll have the amatriciana."],
+"un'ora":["La visita dura un'ora.","The visit lasts an hour."],
+"un'acqua":["Un'acqua frizzante, grazie.","A sparkling water, thanks."],
+"l'italiano":["Sto imparando l'italiano.","I'm learning Italian."],
+"l'ho":["L'ho già assaggiato.","I've already tasted it."],
+/* question words and adverbs */
+"perché":["Perché il museo è chiuso?","Why is the museum closed?"],
+"dov'è":["Dov'è la stazione, per favore?","Where's the station, please?"],
+"quanta":["Quanta acqua vuole?","How much water would you like?"],
+"quant'è":["Quant'è in tutto?","How much is it altogether?"],
+"quali":["Quali birre avete alla spina?","Which beers do you have on tap?"],
+"molti":["Ci sono molti turisti oggi.","There are a lot of tourists today."],
+"qualcuno":["Qualcuno parla inglese?","Does anyone speak English?"],
+"nulla":["Non ho capito nulla.","I didn't understand a thing."],
+"davvero":["È davvero buonissimo.","It's really delicious."],
+"forse":["Forse andiamo domani.","Maybe we'll go tomorrow."],
+"stamattina":["Stamattina abbiamo visitato il museo.","This morning we visited the museum."],
+"tardi":["È troppo tardi per cenare?","Is it too late to have dinner?"],
+"subito":["Arrivo subito!","I'll be right there!"],
+"qua":["Vieni qua, guarda!","Come here, look!"],
+"lì":["Il bagno è lì, in fondo.","The toilet is there, at the back."],
+"fondo":["Vorrei quel formaggio là in fondo.","I'd like that cheese over there at the back."],
+"almeno":["Ci vogliono almeno venti minuti.","It takes at least twenty minutes."],
+"quasi":["Siamo quasi arrivati.","We're almost there."],
+"male":["Oggi sto male.","I feel ill today."],
+"peggio":["Oggi il tempo è peggio di ieri.","The weather is worse today than yesterday."],
+/* pronouns and possessives */
+"tu":["Tu sei di Roma?","Are you from Rome?"],
+"voi":["Voi siete americani?","Are you American?"],
+"li":["I biglietti? Li ho io.","The tickets? I've got them."],
+"mie":["Queste sono le mie amiche.","These are my friends."],
+"tuo":["Come si chiama tuo fratello?","What's your brother called?"],
+"tuoi":["Dove sono i tuoi bagagli?","Where's your luggage?"],
+"tue":["Sono queste le tue chiavi?","Are these your keys?"],
+"sue":["Le sue amiche sono in piazza.","Her friends are in the square."],
+"nostro":["Questo è il nostro tavolo.","This is our table."],
+"nostri":["I nostri biglietti sono qui.","Our tickets are here."],
+"nostre":["Le nostre valigie sono in albergo.","Our suitcases are at the hotel."],
+"vostro":["Qual è il vostro piatto tipico?","What's your local dish?"],
+"queste":["Queste ostriche sono fresche?","Are these oysters fresh?"],
+"quel":["Vorrei quel formaggio, grazie.","I'd like that cheese, thanks."],
+"quella":["Quella birra è artigianale?","Is that beer a craft one?"],
+"c'è":["C'è un bancomat qui vicino?","Is there an ATM nearby?"],
+/* numbers, time, money */
+"zero":["Questa birra è zero alcol.","This beer is alcohol-free."],
+"undici":["Chiudiamo alle undici.","We close at eleven."],
+"trenta":["Costa trenta euro.","It costs thirty euros."],
+"quaranta":["Ci vogliono quaranta minuti.","It takes forty minutes."],
+"settanta":["Una bottiglia da settanta centilitri.","A 70cl bottle."],
+"cento":["Un etto sono cento grammi.","An etto is a hundred grams."],
+"cinquant'anni":["Mio marito ha cinquant'anni.","My husband is fifty."],
+"chilo":["Un chilo di pomodori, per favore.","A kilo of tomatoes, please."],
+"mese":["Torniamo il mese prossimo.","We're coming back next month."],
+"settimana":["Restiamo una settimana.","We're staying a week."],
+"notte":["Una notte in albergo.","One night in the hotel."],
+"volte":["Ci siamo stati due volte.","We've been there twice."],
+"lunedì":["Il museo è chiuso il lunedì.","The museum is closed on Mondays."],
+"posti":["Ci sono posti liberi?","Are there any free seats?"],
+/* courtesy and people */
+"buonanotte":["Buonanotte, a domani!","Good night, see you tomorrow!"],
+"scusa":["Scusa, sono in ritardo.","Sorry, I'm late."],
+"auguri":["Auguri! Buon viaggio.","All the best! Have a good trip."],
+"nonno":["Mio nonno era di Napoli.","My grandfather was from Naples."],
+"madre":["Sua madre cucina benissimo.","His mother cooks wonderfully."],
+"figlio":["Questo è mio figlio.","This is my son."],
+"fidanzata":["La sua fidanzata è italiana.","His girlfriend is Italian."],
+/* food, drink, tasting */
+"acide":["Le birre acide sono la mia passione.","Sour beers are my thing."],
+"brut":["Un prosecco brut, per favore.","A brut prosecco, please."],
+"dessert":["Un vino da dessert, dolce.","A sweet dessert wine."],
+"zuccherino":["Questo bianco è troppo zuccherino.","This white is too sugary."],
+"ostrica":["Posso assaggiare un'ostrica?","May I try an oyster?"],
+"cannolo":["Un cannolo appena fatto.","A freshly made cannolo."],
+"pezzetto":["Ne prendo solo un pezzetto.","I'll just have a small piece."],
+"fetta":["Una fetta di torta, grazie.","A slice of cake, please."],
+"pieno":["No, grazie, sono pieno.","No thanks, I'm full."],
+"sazio":["Sono sazio, era tutto ottimo.","I've had plenty, it was all excellent."],
+"sazi":["Siamo sazi, grazie.","We've had plenty, thanks."],
+"sazie":["Siamo sazie, grazie.","We've had plenty, thanks."],
+"seduto":["Sono seduto vicino alla finestra.","I'm sitting by the window."],
+"vin":["Un bicchiere di vin santo.","A glass of vin santo."],
+"santo":["Il vin santo è dolce.","Vin santo is sweet."],
+"aperitivo":["Prendiamo un aperitivo alle sette.","Let's have an aperitivo at seven."],
+"degustazioni":["Fate degustazioni in cantina?","Do you do tastings at the winery?"],
+"viaggio":["Buon viaggio!","Have a good trip!"],
+"frutti di mare":["Non mangio frutti di mare.","I don't eat seafood."],
+/* sizes, strength, nutrition */
+"taglie":["Che taglie avete?","What sizes do you have?"],
+"misura":["Non è la mia misura.","It isn't my size."],
+"formato":["Avete un formato più grande?","Do you have a bigger size?"],
+"grado":["Un grado in più cambia tutto.","One degree more changes everything."],
+"analcolico":["Avete una birra analcolica?","Do you have an alcohol-free beer?"],
+"grasso":["Questo formaggio è molto grasso.","This cheese is very fatty."],
+"zuccheri":["Quanti zuccheri ci sono?","How much sugar is there?"],
+"proteine":["Questo piatto ha molte proteine.","This dish has a lot of protein."],
+"carboidrati":["Evito i carboidrati la sera.","I avoid carbs in the evening."],
+"peso":["Qual è il peso della porzione?","What's the weight of the portion?"],
+"millilitri":["Duecento millilitri di vino.","Two hundred millilitres of wine."],
+"lattina":["Una lattina di birra, grazie.","A can of beer, thanks."],
+"ingredienti":["Quali sono gli ingredienti?","What are the ingredients?"],
+"etichetta":["Che cosa dice l'etichetta?","What does the label say?"],
+"valori":["Avete i valori nutrizionali?","Do you have the nutritional information?"],
+"nutrizionali":["I valori nutrizionali sono sull'etichetta.","The nutritional values are on the label."],
+"forte":["Questa grappa è molto forte.","This grappa is very strong."],
+/* music, art, culture */
+"musica":["Mi piace la musica italiana.","I like Italian music."],
+"canzone":["Che bella canzone!","What a lovely song!"],
+"chiare":["Preferisco le birre chiare.","I prefer pale beers."],
+"rumore":["C'è troppo rumore qui.","There's too much noise here."],
+"storia":["Ti racconto una storia.","Let me tell you a story."],
+"significato":["Qual è il significato di questa parola?","What's the meaning of this word?"],
+"generale":["Ho capito il significato generale.","I understood the general meaning."],
+"pausa":["Facciamo una pausa?","Shall we take a break?"],
+"frase":["Ripete la frase, per favore?","Could you repeat the sentence, please?"],
+"frasi":["Provo a ripetere le frasi.","I'll try to repeat the sentences."],
+"pronuncia":["La mia pronuncia non è buona.","My pronunciation isn't good."],
+"glassato":["Un dolce glassato al cioccolato.","A chocolate-glazed dessert."],
+/* verb forms and infinitives listed on their own */
+"dite":["Come si dice? Ditemi voi.","How do you say it? You tell me."],
+"vorrebbe":["Mia moglie vorrebbe un caffè.","My wife would like a coffee."],
+"potrebbe":["Potrebbe ripetere, per favore?","Could you repeat that, please?"],
+"stato":["Sono stato a Roma due volte.","I've been to Rome twice."],
+"state":["Siete state in Sicilia?","Have you been to Sicily?"],
+"detto":["Che cosa ha detto?","What did he say?"],
+"preso":["Ho preso il treno delle otto.","I took the eight o'clock train."],
+"visto":["Avete visto gli affreschi?","Have you seen the frescoes?"],
+"aperto":["Il museo è aperto oggi.","The museum is open today."],
+"scelto":["Ho scelto il vino rosso.","I've chosen the red wine."],
+"bevuto":["Abbiamo bevuto un ottimo bianco.","We drank an excellent white."],
+"conosciuto":["Abbiamo conosciuto due italiani.","We met two Italians."],
+"venuto":["È venuto anche mio marito.","My husband came too."],
+"riesco":["Non riesco a scegliere.","I can't make up my mind."],
+"lasciamo":["Lasciamo i bagagli in albergo.","Let's leave the luggage at the hotel."],
+"ascolta":["Ascolta questa canzone!","Listen to this song!"],
+"ascoltare":["Mi piace ascoltare la radio italiana.","I like listening to Italian radio."],
+"imparare":["Voglio imparare l'italiano.","I want to learn Italian."],
+"contenere":["Può contenere lattosio.","It may contain lactose."],
+"pesare":["Può pesare mezzo chilo?","Could you weigh out half a kilo?"],
+"girare":["Deve girare a destra.","You have to turn right."],
+"pensare":["Devo pensare un attimo.","I need to think for a second."],
+"riuscire":["Non riesco a capire.","I can't manage to understand."],
+"valere":["Vale la pena andarci.","It's worth going there."],
+"bisognare":["Bisogna prenotare prima.","You have to book in advance."],
+"fermarsi":["Vogliamo fermarci tre notti.","We want to stay three nights."],
+"sedersi":["Possiamo sederci fuori?","Can we sit outside?"],
+"chiamarsi":["Come si chiama questo formaggio?","What's this cheese called?"],
+"trovarsi":["Ci troviamo benissimo qui.","We're loving it here."],
+"adorare":["Adoro la cucina italiana.","I adore Italian food."],
+"girarsi":["Si gira e sorride.","He turns round and smiles."],
+"ordinerei":["Io ordinerei il pesce.","I'd order the fish."],
+"ordinerà":["Ordinerà un altro dolce.","He'll order another dessert."],
+"qualcos'altro":["Desidera qualcos'altro?","Would you like anything else?"],
+"cinquant'":["Ho cinquant'anni.","I'm fifty."],
+"vecchio":["Questo vino è più vecchio di me.","This wine is older than I am."],
+"ordinerà":["Ordinerà un altro dolce.","He'll order another dessert."]
+};
+const EXK = new Map(Object.entries(EX_EXTRA).map(([k,v])=>[norm(k).replace(/[^a-z']/g,""), v]));
+
+/* a sentence built from the word's own entry, when nothing else exists */
+function autoExample(word){
+  const k = norm(word).replace(/[^a-z']/g,"");
+  const noun = NOUNS.find(x => norm(x[0].replace(/^(il|lo|la|i|le|gli|l')\s?/,"")) === k);
+  if(noun){
+    const [full, en, g, theme] = noun;
+    const bare = full.replace(/^(il|lo|la|l')\s?/,"");
+    const indef = g==="m" ? (/^(s[^aeiou]|z|gn|ps|x)/i.test(bare) ? "uno " : "un ")
+                          : (/^[aeiou]/i.test(bare) ? "un'" : "una ");
+    if(["strada","arte","trasporti","orari","aiuto","consigli"].includes(theme))
+      return {it:`Dov'è ${full}, per favore?`, en:`Where is the ${en}, please?`};
+    if(["caffe","ristorante","vino","birra","salumi","soldi","misure"].includes(theme))
+      return {it:`Vorrei ${indef}${bare}, grazie.`, en:`I'd like a ${en}, thanks.`};
+    return {it:`Mi piace molto ${full}.`, en:`I really like the ${en}.`};
+  }
+  const adj = ADJ.find(a => norm(a[0]) === k ||
+    (a[0].endsWith("o") && ["a","i","e"].some(x=>norm(a[0].slice(0,-1)+x)===k)));
+  if(adj){
+    const base = adj[0], f = base.endsWith("o") ? base.slice(0,-1)+"a" : base;
+    return {it:`Questo vino è molto ${base}.`, en:`This wine is very ${adj[1]}.`,
+            alt:`Questa birra è molto ${f}.`};
+  }
+  return null;
+}
 function exampleFor(word, forms){
+  const k0 = norm(word).replace(/[^a-z']/g,"");
+  if(EXK.has(k0)) return EXK.get(k0);
   const tries = [word].concat(forms||[]);
   for(const t of tries){
     const k = norm(t).replace(/[^a-z']/g,"");
     if(EXAMPLES.has(k)) return EXAMPLES.get(k);
+    if(EXK.has(k)) return EXK.get(k);
   }
-  return null;
+  const auto = autoExample(word);
+  return auto ? [auto.it, auto.en] : null;
+}
+
+
+/* ============================================================
+   Search that reads whole phrases, not just single words
+   ============================================================ */
+function tokensOf(q){
+  return String(q).split(/([A-Za-zÀ-ÿ]+['’])|([A-Za-zÀ-ÿ]+)/)
+    .filter(x => x && /[A-Za-zÀ-ÿ]/.test(x));
+}
+function primaryGloss(e){
+  if(e.kind === "form") return engPerson(e.p, e.v.e).replace(/^he \/ she /, "he/she ");
+  return String(e.gloss);
+}
+function wordBreakdown(q){
+  return tokensOf(q).map(t => {
+    const r = lookup(t);
+    return {t, entries: r ? r.entries : [], extra: r && r.extra};
+  });
+}
+/* sentences in the app that contain the whole phrase */
+function phraseMatches(q){
+  const needle = norm(q);
+  if(needle.length < 3) return [];
+  return SENTENCES.filter(([it,en]) => en && norm(it).includes(needle)).slice(0,3);
+}
+const CLITIC_SENSE = {gli:"to him", le:"to her", mi:"to me", ti:"to you", ci:"to us",
+  vi:"to you", ne:"of it", lo:"it", la:"it", li:"them"};
+function editDistance(a,b){
+  const m=a.length, n=b.length;
+  if(Math.abs(m-n)>2) return 9;
+  let prev=Array.from({length:n+1},(_,j)=>j), cur=new Array(n+1);
+  for(let i=1;i<=m;i++){
+    cur[0]=i;
+    for(let j=1;j<=n;j++)
+      cur[j]=Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+(a[i-1]===b[j-1]?0:1));
+    [prev,cur]=[cur,prev];
+  }
+  return prev[n];
+}
+function didYouMean(word){
+  const w = norm(word).replace(/[^a-z']/g,"");
+  if(w.length < 3) return [];
+  const out = [];
+  for(const k of LEX.keys()){
+    if(Math.abs(k.length - w.length) > 2) continue;
+    const d = editDistance(w, k);
+    if(d <= 2) out.push({k, d});
+  }
+  /* also try the word with a pronoun peeled off: prederne -> predere -> prendere */
+  for(const c of CLITICS){
+    if(w.length > c.length + 3 && w.endsWith(c)){
+      const stem = w.slice(0, -c.length);
+      for(const k of LEX.keys()){
+        if(Math.abs(k.length - stem.length) > 2 || k.length < 4) continue;
+        if(!LEX.get(k).some(e=>e.kind==="inf")) continue;
+        const d = editDistance(stem, k) - 0.5;
+        if(d <= 2) out.push({k, d, c});
+      }
+    }
+  }
+  out.sort((a,b)=>a.d-b.d);
+  const seen = new Set();
+  return out.filter(o => !seen.has(o.k) && seen.add(o.k)).slice(0,3);
+}
+function breakdownHTML(q){
+  const parts = wordBreakdown(q);
+  if(!parts.length) return "";
+  const known = parts.filter(p => p.entries.length);
+  const rough = parts.map((p,i) => {
+    if(!p.entries.length) return "…";
+    const k = norm(p.t).replace(/[^a-z']/g,"");
+    const next = parts[i+1];
+    if(CLITIC_SENSE[k] && next && next.entries.some(e=>e.kind==="form")) return CLITIC_SENSE[k];
+    return primaryGloss(p.entries[0]).split(" / ")[0];
+  }).join(" ");
+  const hits = phraseMatches(q);
+  const multi = parts.length > 1 && known.length > 0;
+  return `
+    <div class="card" style="border-color:var(--blu);border-width:1.5px">
+      <div class="row" style="align-items:center">
+        <button class="speak" data-say="${esc(q)}">▶</button>
+        <div class="grow" style="font-family:var(--serif);font-size:20px;font-weight:700">${esc(q)}</div>
+      </div>
+      ${multi ? `<div style="margin-top:10px"><span class="pill">Word by word</span>
+        <div style="font-size:16px;margin-top:5px">${esc(rough)}</div>
+        <p class="small" style="margin:4px 0 0">Rough and literal — Italian rarely lines up one word to one word. The real sense is usually in the sentence below.</p>
+      </div>` : ""}
+      ${hits.length ? `<div style="margin-top:12px">
+        <span class="pill green">${multi?"Found in the app":"In the app"}</span>
+        ${hits.map(([it,en])=>`<div class="ex" style="margin-top:7px">
+          <button class="speak" data-say="${esc(it.replace(/[«»]/g,""))}">▶</button>
+          <div class="grow"><div>${gloss(it)}</div><div class="exen">${esc(en)}</div></div>
+        </div>`).join("")}
+      </div>` : ""}
+      <div style="margin-top:12px;border-top:1px solid var(--line);padding-top:10px">
+        <span class="pill">Each word</span>
+        ${parts.map(p => {
+          if(!p.entries.length){
+            const near = didYouMean(p.t);
+            return `<div class="phrase"><div class="it">${esc(p.t)}</div>
+              <div class="en">No entry spelled that way.${near.length?" Did you mean:":""}</div>
+              ${near.length?`<div class="chips" style="margin:6px 0 0">${near.map(o=>{
+                 const ent = LEX.get(o.k)[0];
+                 const g = primaryGloss(ent).split(" / ")[0];
+                 return `<button class="chip" data-open="${esc(o.k)}">${esc(o.k)}${o.c?" + "+esc(o.c):""} — ${esc(g)}</button>`;
+               }).join("")}</div>`:""}</div>`;
+          }
+          const glosses = [...new Set(p.entries.map(primaryGloss))].join(" · ");
+          const vb = p.entries.find(e=>e.v);
+          return `<div class="phrase"><div class="row" style="align-items:center">
+            <button class="speak" data-say="${esc(p.t)}">▶</button>
+            <button class="grow" data-open="${esc(p.t)}" style="background:none;border:0;text-align:left;padding:0">
+              <div class="it">${esc(p.t)}</div>
+              <div class="en">${esc(glosses)}${vb?` — from ${esc(vb.v.i)}`:""}</div>
+              ${p.extra?`<div class="small" style="color:var(--blu);margin-top:2px">${p.extra}</div>`:""}
+            </button>
+          </div></div>`;
+        }).join("")}
+      </div>
+      <p class="small" style="margin:10px 0 0">Tap any word above for the full entry.</p>
+    </div>`;
 }
 
 /* ============================================================
@@ -3216,10 +3626,12 @@ function dictEntries(){
 }
 const DICT = null;
 function renderDict(){
+  if(dictType === "core") return renderCore();
   const all = (renderDict._cache = renderDict._cache || dictEntries());
   const t = norm(dictQ);
   let list = all.filter(e => dictType === "all" || e.type === dictType);
-  if(t) list = list.filter(e => norm(e.it).includes(t) || norm(e.en).includes(t));
+  if(t) list = list.filter(e => norm(e.it).includes(t) || norm(e.en).includes(t)
+        || (e.type === "verb" && e.v.f.some(f => norm(f) === t)));
   const keyOf = e => dictDir === "it" ? norm(e.look || e.it) : norm(e.en.replace(/^(to|a|the) /,""));
   list = list.slice().sort((a,b)=> keyOf(a).localeCompare(keyOf(b)));
   const groups = new Map();
@@ -3237,7 +3649,7 @@ function renderDict(){
     </div>
     <div class="searchwrap"><input id="dq" type="search" placeholder="Search either language…" value="${esc(dictQ)}"></div>
     <div class="chips">
-      ${[["all","All"],["verb","Verbs"],["noun","Nouns"],["adj","Adjectives"],["word","Everything else"]]
+      ${[["core","★ Start here"],["all","All"],["verb","Verbs"],["noun","Nouns"],["adj","Adjectives"],["word","Everything else"]]
         .map(([k,n])=>`<button class="chip" data-type="${k}" aria-pressed="${dictType===k}">${n}</button>`).join("")}
     </div>
     ${dictType==="verb" ? `<div class="note">
@@ -3245,7 +3657,8 @@ function renderDict(){
       Some -ire verbs add <b>-isc-</b>: capisco, capisci, capisce, capiamo, capite, capiscono.
       </div>
       <button class="btn wide" id="drillVerbs" style="margin:8px 0">Practise conjugations</button>` : ""}
-    <p class="small" style="margin:2px 0 6px">${list.length} entries</p>
+    ${dictQ.trim() ? breakdownHTML(dictQ.trim()) : ""}
+    <p class="small" style="margin:2px 0 6px">${list.length} entr${list.length===1?"y":"ies"} in the list${dictQ.trim()?" matching “"+esc(dictQ.trim())+"”":""}</p>
     <div class="azrow">${[...groups.keys()].map(L=>`<button class="az" data-jump="${L}">${L}</button>`).join("")}</div>
     ${[...groups.entries()].map(([L,items])=>`
       <h3 id="L-${L}" style="font-family:var(--serif);font-size:19px;color:var(--blu);border-bottom:1px solid var(--line);padding-bottom:4px;scroll-margin-top:60px">${L}</h3>
@@ -3261,12 +3674,15 @@ function renderDict(){
               <span class="pill ${e.type==="verb"?"gold":""}" style="font-size:10.5px">${esc(e.type==="verb"?e.sub:e.type==="noun"?e.sub[0]:e.type==="adj"?"adj":"")}</span>
             </div>
           </div>`).join("")}
-      </div>`).join("") || `<div class="card"><p style="margin:0">Nothing matched “${esc(dictQ)}”.</p></div>`}
+      </div>`).join("") || (dictQ.trim()
+        ? `<div class="card"><p style="margin:0">No headword spelled “${esc(dictQ)}” — but if it's a form of another word, the panel above has it.</p></div>`
+        : "")}
   `;
   view.querySelectorAll("[data-jump]").forEach(b=> b.onclick = ()=> scrollSafe(view.querySelector("#L-"+b.dataset.jump)));
   view.querySelectorAll("[data-dir]").forEach(b=> b.onclick = ()=>{ dictDir = b.dataset.dir; renderDict(); });
   view.querySelectorAll("[data-type]").forEach(b=> b.onclick = ()=>{ dictType = b.dataset.type; renderDict(); });
   view.querySelectorAll("[data-open]").forEach(b=> b.onclick = ()=> openWord(b.getAttribute("data-open")));
+  view.querySelectorAll("[data-focus]").forEach(b=> b.onclick = ()=> startFocus(b.getAttribute("data-focus"), 20));
   if($("#drillVerbs")) $("#drillVerbs").onclick = ()=>{ go("drills"); startDrill("conj","all"); };
   const q = $("#dq");
   q.oninput = ()=>{
@@ -3688,6 +4104,114 @@ function storyQuiz(st, host){
     host.appendChild(btn);
     scrollSafe(btn);
   });
+}
+
+
+/* ============================================================
+   DATA: Start here — the shortest useful list
+   ============================================================ */
+const CORE_VERBS = [
+["essere","Everything starts here: who you are, where you're from, what things are."],
+["avere","Possession, and also hunger, thirst and age: ho fame, ho sete, ho 50 anni."],
+["volere","You'll mostly use one form of it — vorrei, 'I'd like'. That single word orders anything."],
+["potere","Posso…? = may I…? Permission for everything from tasting to sitting outside."],
+["dovere","Devo…? = do I have to…? Booking, validating, changing trains."],
+["andare","Where you're going, and andiamo — let's go."],
+["fare","Weather, activities, and dozens of set phrases: fa caldo, facciamo una passeggiata."],
+["stare","How people are: come sta? sto bene. Also how long you're staying."],
+["prendere","What you'll have: prendo un caffè. And what you catch: prendiamo il treno."],
+["mangiare","Half the trip, and a clean model for every regular -are verb."],
+["bere","The other half. Irregular but short: bevo, bevi, beve."],
+["dire","Come si dice…? — the question that teaches you every other word."],
+["parlare","Parla inglese? Parlo un po' d'italiano. Opens and rescues conversations."],
+["capire","Non ho capito is the most useful sentence a beginner owns."],
+["sapere","Sa dov'è…? Asking a stranger for a fact, politely."],
+["piacere","Mi piace / mi piacciono. How you say what you and your partner enjoy."]
+];
+
+const CORE_GROUPS = [
+{t:"The first ten words", why:"Learn these and you can be polite anywhere, all day.",
+ w:[["buongiorno","good morning / good day"],["buonasera","good evening"],["ciao","hi / bye (informal)"],
+    ["arrivederci","goodbye"],["per favore","please"],["grazie","thank you"],["prego","you're welcome / go ahead"],
+    ["scusi","excuse me (to a stranger)"],["sì","yes"],["no","no"]]},
+{t:"The five formulas", why:"Nearly every request on a trip is one of these five with a noun after it.",
+ w:[["vorrei…","I'd like…"],["posso…?","may I…?"],["mi può…?","could you…?"],
+    ["c'è…? / ci sono…?","is there…? / are there…?"],["dov'è…?","where is…?"],
+    ["avete…?","do you have…?"],["quanto costa?","how much is it?"]]},
+{t:"Question words", why:"Six words that open any conversation. Italian asks with tone, so the order never changes.",
+ w:[["dove","where"],["quando","when"],["quanto","how much"],["come","how"],["che cosa","what"],
+    ["chi","who"],["perché","why / because"],["quale","which"],["a che ora","at what time"]]},
+{t:"Keeping a conversation alive", why:"What to say when you've understood, half understood, or not at all.",
+ w:[["bene","well / good"],["va bene","that's fine"],["certo","of course"],["volentieri","gladly"],
+    ["non capisco","I don't understand"],["non lo so","I don't know"],["parla inglese?","do you speak English?"],
+    ["come si dice…?","how do you say…?"],["più lentamente","more slowly"],["anche","also / too"]]},
+{t:"At the table", why:"Ten words that cover ordering, eating and paying.",
+ w:[["il menù","the menu"],["il conto","the bill"],["un tavolo","a table"],["l'acqua","water"],
+    ["il pane","bread"],["il vino","wine"],["la birra","beer"],["il caffè","coffee"],
+    ["buono","good / tasty"],["piccante","spicy"]]},
+{t:"Getting around", why:"Enough to buy a ticket, find a platform and follow directions.",
+ w:[["il treno","the train"],["l'autobus","the bus"],["il biglietto","the ticket"],["la stazione","the station"],
+    ["il bagno","the toilet"],["a destra","to the right"],["a sinistra","to the left"],["sempre dritto","straight ahead"],
+    ["vicino","near"],["lontano","far"],["aperto","open"],["chiuso","closed"]]},
+{t:"Numbers and time", why:"Prices, platforms and opening hours all come at you as numbers.",
+ w:[["uno","one"],["due","two"],["tre","three"],["quattro","four"],["cinque","five"],["sei","six"],
+    ["sette","seven"],["otto","eight"],["nove","nine"],["dieci","ten"],["mezzo","half"],
+    ["oggi","today"],["domani","tomorrow"],["adesso","now"],["dopo","after / later"]]},
+{t:"When something goes wrong", why:"Short, direct, and worth knowing before you need them.",
+ w:[["aiuto","help"],["non funziona","it doesn't work"],["ho perso…","I've lost…"],
+    ["la farmacia","the pharmacy"],["un medico","a doctor"],["sto male","I feel ill"],
+    ["non parlo italiano","I don't speak Italian"],["mi sono perso","I'm lost"]]}
+];
+const CORE_WORDS = CORE_GROUPS.flatMap(g => g.w);
+
+function renderCore(){
+  view.innerHTML = `
+    <h1>Start here</h1>
+    <div class="chips">
+      ${[["core","★ Start here"],["all","All"],["verb","Verbs"],["noun","Nouns"],["adj","Adjectives"],["word","Everything else"]]
+        .map(([k,n])=>`<button class="chip" data-type="${k}" aria-pressed="${k==="core"}">${n}</button>`).join("")}
+    </div>
+    <p class="lede">Sixteen verbs and about eighty words. Learn this much and you can eat, travel, ask for help and hold a short conversation. Everything else in the app is detail on top.</p>
+
+    <div class="row" style="gap:8px;margin:8px 0 4px">
+      <button class="btn grow" id="coreConj">Drill the 16 verbs</button>
+      <button class="btn ghost grow" id="coreCards">Flashcards on the words</button>
+    </div>
+    <button class="btn quiet wide" id="backDict" style="margin:8px 0 18px">Browse the full dictionary instead</button>
+
+    <h2>The sixteen verbs</h2>
+    <p class="small" style="margin:0 0 8px">Tap one for the full present tense, with a worked example for every person.</p>
+    ${CORE_VERBS.map(([v,why])=>{
+      const vb = ALLVERBS.find(x=>x.i===v);
+      return `<div class="card tight"><div class="row" style="align-items:flex-start">
+        <button class="speak" data-say="${esc(v)}">▶</button>
+        <button class="grow" data-open="${esc(v)}" style="background:none;border:0;text-align:left;padding:0">
+          <div class="it">${esc(v)} <span class="small">${esc(vb?vb.e:"")}</span></div>
+          <div class="en">${esc(why)}</div>
+          <div class="small" style="color:var(--blu);margin-top:3px">${vb?esc(vb.f.join(" · ")):""}</div>
+        </button>
+        <span class="pill ${vb&&vb.irr?"red":"green"}" style="font-size:10.5px">${vb?esc(famLabel(vb)):""}</span>
+      </div></div>`;}).join("")}
+
+    ${CORE_GROUPS.map(g=>`
+      <h2>${esc(g.t)}</h2>
+      <p class="small" style="margin:0 0 8px">${esc(g.why)}</p>
+      <div class="card" style="padding:2px 12px">
+        ${g.w.map(([it,en])=>`
+          <div class="phrase"><div class="row" style="align-items:center">
+            <button class="speak" data-say="${esc(it.replace(/…|\?/g,""))}">▶</button>
+            <div class="grow"><div class="it">${gloss(it)}</div><div class="en">${esc(en)}</div></div>
+          </div></div>`).join("")}
+      </div>`).join("")}
+
+    <h2>When you've got these</h2>
+    <div class="card"><p style="margin:0">Move to the <b>Plan</b> tab and start at Day 1, or open <b>Practice → Stories</b> and listen to one. Both use exactly these words first.</p></div>
+  `;
+  $("#coreConj").onclick = ()=>{ go("drills"); startDrill("coreconj","all"); };
+  $("#coreCards").onclick = ()=>{ go("drills"); startDrill("flash","core"); };
+  $("#backDict").onclick = ()=>{ dictType = "all"; renderDict(); };
+  view.querySelectorAll("[data-type]").forEach(b=> b.onclick = ()=>{ dictType = b.dataset.type; renderDict(); });
+  view.querySelectorAll("[data-open]").forEach(b=> b.onclick = ()=> openWord(b.getAttribute("data-open")));
 }
 
 /* ---------- keep the app up to date, and working offline ---------- */
