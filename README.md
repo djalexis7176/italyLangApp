@@ -11,7 +11,7 @@ A single-page web app: phrases, verb conjugation, flashcards, matching, and role
 **Numbering changed at build 13.** Versions are now a plain count of downloads — 13, then 14, then 15 — instead of the old three-part numbers. The build formerly called 3.7.0 is listed in the app's changelog as *12 (was 3.7.0)*; everything before it keeps its original label.
 
 
-This build is **16**. The file is named `index-v16-relationship-chains.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits under the **Andiamo.** wordmark at the top of every screen — `v16 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
+This build is **17**. The file is named `index-v17-today-layout-and-howto.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits under the **Andiamo.** wordmark at the top of every screen — `v17 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
 
 ## How updating works
 
@@ -19,8 +19,8 @@ This build is **16**. The file is named `index-v16-relationship-chains.html` —
 
 When you upload a new build, change two numbers so phones know something moved:
 
-1. In `index.html`, near the top of the script: `const BUILD = "16";` — and add a line to the `CHANGES` list describing what you did.
-2. In `sw.js`, line 5: `const BUILD = "16";`
+1. In `index.html`, near the top of the script: `const BUILD = "17";` — and add a line to the `CHANGES` list describing what you did.
+2. In `sw.js`, line 5: `const BUILD = "17";`
 
 Keep them the same. If you forget, the app still updates (HTML is network-first), but the icons and manifest may stay on the old cached copies.
 
@@ -64,6 +64,12 @@ The **Voice** button in the top bar cycles through the Italian voices installed 
 
 - **iPhone:** Settings → Accessibility → Spoken Content → Voices → Italian.
 - **Android:** Settings → System → Languages & input → Text-to-speech → install the Italian voice.
+
+## Finding your way around
+
+The **Today** tab is a title card and six bars, all the same size: How to use this app · ★ Start here · Quick reference · My phrases · Start today's 10-minute session · then the day's lesson and the full set of practice drills, each folded into an accordion. Phrase of the day closes the page.
+
+**How to use this app** is a short page — one line per tab, five things worth knowing — with accordions underneath for anyone who wants more: what the personal sheet asks and why, what happens to your answers, moving to another device, formal versus informal, editing generated phrases, and keeping the app up to date. It's also linked at the top of the Plan tab.
 
 ## Start here
 

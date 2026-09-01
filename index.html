@@ -148,9 +148,10 @@ p.lede{color:var(--muted);margin:0 0 14px;max-width:60ch}
     linear-gradient(160deg,#1D5C82,#123449 70%);
   padding:22px 20px 20px;margin-top:14px;
 }
+.hero{text-align:center}
 .hero h1{margin:0 0 6px;font-size:34px;color:#fff}
-.hero p{margin:0;color:#CBDDE9;font-size:14.5px;max-width:44ch}
-.hero .meter{margin-top:16px;display:flex;gap:14px;font-size:12.5px;color:#CBDDE9}
+.hero p{margin:0 auto;color:#CBDDE9;font-size:14.5px;max-width:40ch}
+.hero .meter{margin-top:16px;display:flex;gap:22px;font-size:12.5px;color:#CBDDE9;justify-content:center}
 .hero .meter b{display:block;font-family:var(--serif);font-size:22px;color:#fff;font-weight:700}
 
 /* ---------- lists ---------- */
@@ -252,6 +253,18 @@ ol.plan li b{display:block;font-size:15px}
 .hint{font-size:12.5px;color:var(--muted);margin:2px 0 10px}
 .linkbtn{background:none;border:0;padding:2px 0;font:inherit;font-size:12.5px;color:var(--blu);
   border-bottom:1px solid var(--blu);cursor:pointer}
+.rowbtn{
+  display:flex;align-items:center;gap:10px;width:100%;text-align:left;
+  background:#fff;border:1px solid var(--line);border-radius:12px;
+  padding:14px 14px;margin:8px 0;font-size:15px;font-weight:600;color:var(--ink);
+  box-shadow:var(--shadow);
+}
+.rowbtn .sub{display:block;font-weight:400;font-size:12.5px;color:var(--muted);margin-top:2px}
+.rowbtn .go{margin-left:auto;color:var(--blu);font-weight:700}
+.rowbtn.accent{border-color:var(--oro);background:#FDF8EE}
+details.acc.slim>summary{padding:14px;font-size:15px}
+details.acc.slim{margin:8px 0}
+details.acc.slim .sub{display:block;font-weight:400;font-size:12.5px;color:var(--muted);margin-top:2px}
 .updbar{position:fixed;left:12px;right:12px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:70;
   background:var(--blu-dark);color:#fff;border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:10px;
   font-size:14px;box-shadow:0 8px 24px rgba(14,34,48,.35)}
@@ -2294,7 +2307,7 @@ STORIES.push(
 /* ============================================================
    ENGINE
    ============================================================ */
-const BUILD = "16";
+const BUILD = "17";
 const BUILT = "2026-08-31";
 const VERSTAMP = (function(){
   const [y,m,d] = BUILT.split("-");
@@ -2302,6 +2315,7 @@ const VERSTAMP = (function(){
 })();
 let UPD = {state:"unknown", at:0};
 const CHANGES = [
+  ["17","2026-08-31","Today is cleaner: centred title card, then six thin bars the same size, with the day's lesson and the practice drills tucked into accordions. New How to use this app page, short by default with accordions for the personal sheet, your data and moving devices."],
   ["16","2026-08-31","My phrases now opens on your phrases, with editing as a small link. People are described by chaining relationships — daughter, of my brother-in-law, of his brother — with a live preview and a Chi è…? card for each. Added jobs, interests, music, drinks and plans; named favourites; and favourite books kept separate from what you're reading now."],
   ["15","2026-08-31","English works in the dictionary search: type what, where, how much and get the Italian. The sheet now takes no children, people linked through other people (my cousin's girlfriend), several jobs and situations at once, second reasons for the trip, and optional detailed food and drink lists where you mark each item love / like / not keen / can't stand / allergic / not right now."],
   ["14","2026-08-31","My phrases: fill in a short sheet about yourself and the app writes your own phrasebook — the questions people will ask, with your answers in Italian. Formal or informal, editable, drillable, and exportable to another device. Nothing leaves the phone."],
@@ -2458,7 +2472,7 @@ function renderHome(){
   view.innerHTML = `
   <section class="hero">
     <h1>Andiamo.</h1>
-    <p>Italian you can actually use at a bar, a ticket window and a wine cellar. Fourteen days, twenty minutes each.</p>
+    <p>Italian you can actually use at a bar, a ticket window and a wine cellar.</p>
     <div class="meter">
       <div><b>${S.streak}</b>day streak</div>
       <div><b>${learned}</b>cards solid</div>
@@ -2466,31 +2480,49 @@ function renderHome(){
     </div>
   </section>
 
-  <button class="btn wide" id="startHere" style="margin:14px 0 8px">★ Start here — the 16 verbs and 80 words</button>
-  <button class="btn ghost wide" id="quickStart">Start today's 10-minute session</button>
-  <button class="btn quiet wide" id="quickRef" style="margin-top:8px">Quick reference — phrases by situation</button>
-  <button class="btn quiet wide" id="myRef" style="margin-top:8px">${S.profileDone ? "My phrases — your own cheat sheet" : "Make my own cheat sheet"}</button>
-  <p class="small" style="text-align:center;margin:0 0 8px">Flashcards, then a quiz, then three verbs to conjugate.</p>
+  <button class="rowbtn" id="howTo" style="margin-top:14px">
+    <span>How to use this app<span class="sub">What each part is for, in a minute</span></span><span class="go">?</span></button>
 
-  <h2>${day.d}: ${esc(day.t)}</h2>
-  <div class="card">
-    <p style="margin:0 0 10px">${esc(day.do)}</p>
-    ${day.cats.length ? `<div class="chips">${day.cats.map(c=>`<button class="chip" data-goCat="${c}">${esc(catName(c))}</button>`).join("")}</div>` : ""}
-    <div class="chips">${day.verbs.map(v=>`<button class="chip" data-goVerb="${v}">${v}</button>`).join("")}</div>
-    <p class="small" style="margin:6px 0 10px">Then practise: ${esc(day.drill)}</p>
-    <div class="row" style="gap:8px">
-      <button class="btn quiet" id="prevDay">Back a day</button>
-      <button class="btn quiet" id="nextDay">Mark done, next day</button>
+  <button class="rowbtn accent" id="startHere">
+    <span>★ Start here<span class="sub">The 16 verbs and 80 words worth learning first</span></span><span class="go">›</span></button>
+
+  <button class="rowbtn" id="quickRef">
+    <span>Quick reference<span class="sub">Phrases by situation — restaurant, hotel, train, doctor</span></span><span class="go">›</span></button>
+
+  <button class="rowbtn" id="myRef">
+    <span>My phrases<span class="sub">${S.profileDone ? "Your own cheat sheet" : "Build your own cheat sheet"}</span></span><span class="go">›</span></button>
+
+  <div style="height:14px"></div>
+
+  <button class="rowbtn" id="quickStart">
+    <span>Start today's 10-minute session<span class="sub">Flashcards, a quiz, then a few verbs</span></span><span class="go">›</span></button>
+
+  <details class="acc slim">
+    <summary>${day.d}: ${esc(day.t)}<span class="sub">Today's lesson from the 14-day plan</span></summary>
+    <div class="body">
+      <p style="margin:0 0 10px">${esc(day.do)}</p>
+      ${day.cats.length ? `<div class="chips">${day.cats.map(c=>`<button class="chip" data-goCat="${c}">${esc(catName(c))}</button>`).join("")}</div>` : ""}
+      <div class="chips">${day.verbs.map(v=>`<button class="chip" data-goVerb="${v}">${v}</button>`).join("")}</div>
+      <p class="small" style="margin:6px 0 10px">Then practise: ${esc(day.drill)}</p>
+      <div class="row" style="gap:8px">
+        <button class="btn quiet" id="prevDay">Back a day</button>
+        <button class="btn quiet" id="nextDay">Mark done, next day</button>
+      </div>
     </div>
-  </div>
+  </details>
 
-  <h2>Practice</h2>
-  <div class="grid2">
-    ${[["flash","Flashcards"],["quiz","Quick quiz"],["listen","Listen &amp; choose"],["match","Matching"],
-       ["conj","Conjugation"],["which","Which word?"],["qa","Answer them"],["dialog","Role-play"],
-       ["story","Stories"]]
-      .map(([k,n])=>`<button class="match" data-drill="${k}">${n}</button>`).join("")}
-  </div>
+  <details class="acc slim">
+    <summary>Practice<span class="sub">Eleven ways to drill anything in the app</span></summary>
+    <div class="body">
+      <div class="grid2">
+        ${[["flash","Flashcards"],["quiz","Quick quiz"],["listen","Listen &amp; choose"],["match","Matching"],
+           ["conj","Conjugation"],["which","Which word?"],["cloze","Fill the gap"],["qa","Answer them"],
+           ["build","Sentence builder"],["dialog","Role-play"],["story","Stories"]]
+          .map(([k,n])=>`<button class="match" data-drill="${k}">${n}</button>`).join("")}
+      </div>
+      <button class="btn quiet wide" id="allPractice" style="margin-top:10px">Open the Practice tab</button>
+    </div>
+  </details>
 
   <h2>Phrase of the day</h2>
   <div class="card">
@@ -2503,12 +2535,13 @@ function renderHome(){
       </div>
     </div>
   </div>
-  <p class="small" style="margin:18px 0 0">Tap <b>Voice</b> at the top to change the Italian voice or slow the speed down.</p>
   `;
+  $("#howTo").onclick = openHowTo;
   $("#startHere").onclick = () => { dictType = "core"; go("words"); };
-  $("#quickStart").onclick = () => { go("drills"); startDrill("mix","all"); };
   $("#quickRef").onclick = () => { quickPick = null; go("phrases"); scrollSafe(view.querySelector("#quickGrid")); };
   $("#myRef").onclick = () => { go("saved"); scrollSafe(view.querySelector("#mineBox")); };
+  $("#quickStart").onclick = () => { go("drills"); startDrill("mix","all"); };
+  $("#allPractice").onclick = () => go("drills");
   $("#prevDay").onclick = () => { S.day = Math.max(1, S.day-1); save(); renderHome(); };
   $("#nextDay").onclick = () => { S.day = Math.min(PLAN.length, S.day+1); addXp(3); save(); renderHome(); toast("Nice. On to " + PLAN[S.day-1].d); };
   view.querySelectorAll("[data-drill]").forEach(b=> b.onclick = ()=>{ go("drills"); startDrill(b.dataset.drill,"all"); });
@@ -2642,6 +2675,8 @@ function renderPlan(){
       </details>`).join("")}
     <h2>Skip these for now</h2>
     <div class="card"><p style="margin:0">The subjunctive, the passato remoto, and any vocabulary you wouldn't say on a normal day. They cost weeks and buy you almost nothing on a two-week trip.</p></div>
+    <button class="rowbtn" id="howToPlan" style="margin:4px 0 16px">
+      <span>How to use this app<span class="sub">What each part is for</span></span><span class="go">?</span></button>
     <h2>This app</h2>
     <div class="card">
       <div class="row" style="align-items:center">
@@ -2662,6 +2697,7 @@ function renderPlan(){
     <button class="btn ghost wide" id="reset">Clear all progress</button>
   `;
   $("#checkUpd").onclick = ()=> checkForUpdate(true);
+  $("#howToPlan").onclick = openHowTo;
   $("#planCore").onclick = ()=>{ dictType = "core"; go("words"); };
   view.querySelectorAll("[data-goCat]").forEach(b=> b.onclick = ()=>{ go("phrases"); openCat(b.getAttribute("data-goCat")); });
   view.querySelectorAll("[data-goVerb]").forEach(b=> b.onclick = ()=> openVerb(b.getAttribute("data-goVerb")));
@@ -5833,6 +5869,80 @@ function importProfile(file){
     }catch(e){ toast("That file isn't an Andiamo export"); }
   };
   r.readAsText(file);
+}
+
+
+/* ============================================================
+   How to use this app
+   ============================================================ */
+const HOWTO = [
+["Today","Your shortcuts, today's lesson, and a phrase to learn."],
+["Phrases","320 phrases by topic, plus 18 situation pages — restaurant, hotel, train, doctor."],
+["Words","The dictionary, both directions. Search in English or Italian, or paste a whole phrase."],
+["Practice","Eleven drills, ten role-play conversations and seven story lessons."],
+["Plan","A 14-day route through it all, plus the only grammar you need."],
+["Saved","Your own phrases, the words you kept, and your notes."]
+];
+const HOWTO_TIPS = [
+["Tap any Italian word","Anywhere in the app. You get the meaning, and the full table if it's a verb."],
+["▶ says it out loud","Voice, at the top, changes the speaker and slows it down."],
+["★ keeps a phrase","Saved phrases become their own practice deck."],
+["Practise one word","At the bottom of any word pop-up: 10, 20, 30 or 50 questions on that word alone."],
+["It works offline","Once you've opened it with signal, it keeps working without any."]
+];
+const HOWTO_MORE = [
+["What the personal sheet asks, and why",
+ `<p>Six short steps, all optional:</p>
+  <p><b>You</b> — name, where you're from, languages. Sets whether Italian describes you as masculine or feminine, which changes endings everywhere else.</p>
+  <p><b>Family</b> — partner, children, who's travelling with you. People can be linked through other people: <i>daughter, of my brother-in-law, of his brother</i>.</p>
+  <p><b>Work</b> — pick as many as fit. Student and job-hunting at once is a normal answer.</p>
+  <p><b>What you like</b> — interests, music, books, films, food and drink. Open <b>More detail</b> to mark each food and drink as love, like, not keen, can't stand, allergic, or not right now.</p>
+  <p><b>The trip</b> — dates, transport, where you're going, what you want to do.</p>
+  <p><b>The occasion</b> — why you're here, plus allergies, mobility and an emergency contact.</p>`],
+["What happens to your answers",
+ `<p>They stay in this browser, on this device. The app has no server and makes no network calls with your data — you can put the phone in airplane mode and everything still works.</p>
+  <p>Two things worth knowing. Clearing your browser data erases it. And anyone holding your unlocked phone can read it, so think twice before putting anything in there you wouldn't want read aloud.</p>
+  <p>Skip any question you'd rather not answer. Nothing depends on a complete sheet.</p>`],
+["Moving it to another device",
+ `<p>On the old device: <b>Saved → Your phrases → Export</b>. That writes a small file to your downloads.</p>
+  <p>Email or AirDrop it to yourself, then on the new device open the app and use <b>Load a saved export</b> at the bottom of the Saved tab.</p>
+  <p>It brings your sheet, your edits, your notes and your word list. Your streak and card progress stay behind.</p>`],
+["Formal or informal",
+ `<p>Italian has two ways of saying <i>you</i>. <b>Lei</b> is for strangers, waiters, officials, anyone older. <b>Tu</b> is for friends, family, children, and most people your own age in a relaxed place.</p>
+  <p>Your phrases are written in lei by default. The toggle above them rewrites the whole set in tu.</p>
+  <p>If you're unsure, use lei. Nobody is ever offended by it.</p>`],
+["Editing what the app wrote",
+ `<p>Tap ✎ on any of your phrases to reword it. Your version is kept and used from then on.</p>
+  <p>Worth doing for film and book titles, since Italy often has its own — <i>2001: A Space Odyssey</i> is <i>2001: Odissea nello spazio</i>.</p>`],
+["Keeping the app up to date",
+ `<p>The version sits under the wordmark at the top: <b>v${"" + BUILD} · ${BUILT}</b>. Once it has checked, it adds ✓ latest in green.</p>
+  <p>Tap the version any time to check. If a newer build is on GitHub, a bar appears at the bottom to load it.</p>`]
+];
+function openHowTo(){
+  const sheet = document.createElement("div");
+  sheet.className = "sheetbg";
+  sheet.innerHTML = `
+    <div class="sheet" role="dialog" aria-label="How to use this app">
+      <div style="font-family:var(--serif);font-size:24px;font-weight:700;margin-bottom:2px">How to use this app</div>
+      <p class="small" style="margin:0 0 14px">Six tabs along the bottom. That's the whole thing.</p>
+      <div class="card" style="padding:2px 12px">
+        ${HOWTO.map(([t,b])=>`<div class="phrase"><div style="font-weight:700;font-size:14.5px">${esc(t)}</div>
+          <div class="en">${esc(b)}</div></div>`).join("")}
+      </div>
+      <h3 style="margin:18px 0 6px">Worth knowing</h3>
+      <div class="card" style="padding:2px 12px">
+        ${HOWTO_TIPS.map(([t,b])=>`<div class="phrase"><div style="font-weight:700;font-size:14.5px">${esc(t)}</div>
+          <div class="en">${esc(b)}</div></div>`).join("")}
+      </div>
+      <h3 style="margin:18px 0 6px">More detail, if you want it</h3>
+      ${HOWTO_MORE.map(([t,b])=>`<details class="acc"><summary>${esc(t)}</summary>
+        <div class="body" style="font-size:14.5px">${b}</div></details>`).join("")}
+      <button class="btn wide" id="closeHow" style="margin-top:16px">Close</button>
+    </div>`;
+  document.body.appendChild(sheet);
+  const close = ()=> sheet.remove();
+  sheet.onclick = e => { if(e.target === sheet) close(); };
+  sheet.querySelector("#closeHow").onclick = close;
 }
 
 /* ---------- keep the app up to date, and working offline ---------- */
