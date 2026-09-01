@@ -133,7 +133,14 @@ p.lede{color:var(--muted);margin:0 0 14px;max-width:60ch}
 .btn:disabled{opacity:.45}
 .speak{
   border:1px solid var(--line);background:#fff;border-radius:10px;width:38px;height:38px;
-  flex:0 0 38px;display:grid;place-items:center;font-size:15px;color:var(--blu);
+  flex:0 0 38px;display:grid;place-items:center;font-size:15px;color:var(--blu);position:relative;
+}
+body[data-rep="3"] .speak::after{content:"3"}
+body[data-rep="5"] .speak::after{content:"5"}
+body[data-rep="10"] .speak::after{content:"10"}
+body[data-rep] .speak::after{
+  position:absolute;top:-5px;right:-5px;background:var(--oro);color:#12222c;
+  font-size:9px;font-weight:700;line-height:1;padding:2px 3px;border-radius:5px;
 }
 .star{border:0;background:none;font-size:17px;line-height:1;color:var(--line);padding:4px}
 .star[aria-pressed="true"]{color:var(--oro)}
@@ -2307,7 +2314,7 @@ STORIES.push(
 /* ============================================================
    ENGINE
    ============================================================ */
-const BUILD = "17";
+const BUILD = "18";
 const BUILT = "2026-08-31";
 const VERSTAMP = (function(){
   const [y,m,d] = BUILT.split("-");
@@ -2315,6 +2322,7 @@ const VERSTAMP = (function(){
 })();
 let UPD = {state:"unknown", at:0};
 const CHANGES = [
+  ["18","2026-08-31","Repeat after me. Set it once under Voice — off, 3×, 5× or 10× — and every play button in the app says the phrase, leaves you a gap to say it back, then says it again, slower the last time. Plus a hands-free session that runs a whole deck, and a Repeat button on quick-reference pages, stories and your own phrases."],
   ["17","2026-08-31","Today is cleaner: centred title card, then six thin bars the same size, with the day's lesson and the practice drills tucked into accordions. New How to use this app page, short by default with accordions for the personal sheet, your data and moving devices."],
   ["16","2026-08-31","My phrases now opens on your phrases, with editing as a small link. People are described by chaining relationships — daughter, of my brother-in-law, of his brother — with a live preview and a Chi è…? card for each. Added jobs, interests, music, drinks and plans; named favourites; and favourite books kept separate from what you're reading now."],
   ["15","2026-08-31","English works in the dictionary search: type what, where, how much and get the Italian. The sheet now takes no children, people linked through other people (my cousin's girlfriend), several jobs and situations at once, second reasons for the trip, and optional detailed food and drink lists where you mark each item love / like / not keen / can't stand / allergic / not right now."],
@@ -2339,7 +2347,7 @@ const store = (()=>{
   try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); return localStorage; }
   catch(e){ const m={}; return {getItem:k=>(k in m?m[k]:null), setItem:(k,v)=>{m[k]=String(v)}, removeItem:k=>{delete m[k]}}; }
 })();
-const DEF = {xp:0, streak:0, last:"", start:"", box:{}, star:{}, seen:{}, day:1, rate:0.9, voice:"", list:{}, notes:[], draft:"", profile:{}, profileEdits:{}, profileReg:"lei", profileDone:false, sheetOpen:false};
+const DEF = {xp:0, streak:0, last:"", start:"", box:{}, star:{}, seen:{}, day:1, rate:0.9, voice:"", repeat:0, list:{}, notes:[], draft:"", profile:{}, profileEdits:{}, profileReg:"lei", profileDone:false, sheetOpen:false};
 let S = Object.assign({}, DEF, JSON.parse(store.getItem("andiamo")||"{}"));
 const save = () => store.setItem("andiamo", JSON.stringify(S));
 function today(){ return new Date().toISOString().slice(0,10); }
@@ -2362,6 +2370,7 @@ function paintHeader(){
   $("#streakN").textContent = S.streak;
   $("#xpN").textContent = S.xp;
   paintVersion();
+  if(typeof paintRepeatBadge === "function") paintRepeatBadge();
 }
 function paintVersion(){
   const b = $("#verBtn");
@@ -2399,20 +2408,12 @@ function speak(text){
 }
 document.addEventListener("click", e=>{
   const b = e.target.closest("[data-say]");
-  if(b){ speak(b.getAttribute("data-say")); }
+  if(!b) return;
+  const t = b.getAttribute("data-say");
+  if(S.repeat) repeatAfterMe(t, S.repeat); else speak(t);
 });
 $("#verBtn").onclick = () => checkForUpdate(true);
-$("#voiceBtn").onclick = () => {
-  loadVoices();
-  const names = voices.map(v=>v.name);
-  const cur = names.indexOf(S.voice);
-  if(names.length){ S.voice = names[(cur+1) % names.length]; }
-  const speeds = [0.7,0.8,0.9,1];
-  S.rate = speeds[(speeds.indexOf(S.rate)+1) % speeds.length];
-  save();
-  toast((S.voice ? S.voice.split(" ")[0]+" · " : "") + "speed " + S.rate);
-  speak("Andiamo! Parliamo italiano.");
-};
+$("#voiceBtn").onclick = () => openVoicePanel();
 
 /* --- flattened item pools --- */
 const ALLPHRASES = [];
@@ -2564,10 +2565,12 @@ function renderQuick(){
     <p class="hint">Polite, formal register — right for anyone you don't know. Tap ▶ to hear it, any word for its meaning, ☆ to save it.</p>
     <div class="card">${q.p.map((p,i)=>rowHTML({it:p[0], en:p[1], ph:"", key:q.id+":"+i})).join("")}</div>
     <button class="btn wide" id="practiseQ" style="margin-top:10px">Practise this set</button>
+    <button class="btn ghost wide" id="repeatQ" style="margin-top:8px">Repeat after me — the whole page</button>
     <button class="btn ghost wide" id="allQ" style="margin-top:8px">All situations</button>`;
   $("#backQ").onclick = ()=>{ quickPick = null; renderPhrases(); };
   $("#allQ").onclick = ()=>{ quickPick = null; renderPhrases(); };
   $("#practiseQ").onclick = ()=>{ go("drills"); startDrill("mix", q.id); };
+  $("#repeatQ").onclick = ()=> startRepeatRun(q.p.map(x=>({it:x[0], en:x[1]})), q.t);
   wirePhraseRows();
 }
 function renderPhrases(){
@@ -2720,7 +2723,8 @@ const DRILLS = [
  ["qa","Answer them","They ask, you answer. Choose the reply that actually works."],
  ["build","Sentence builder","Words in the wrong order. Put them back."],
  ["dialog","Role-play","Whole conversations. Your lines stay hidden until you've tried them out loud."],
- ["story","Stories","A restaurant story told seven ways. Listen, read, translate, then fill the gaps."]
+ ["story","Stories","A restaurant story told seven ways. Listen, read, translate, then fill the gaps."],
+ ["repeat","Repeat after me","It says a phrase, waits while you say it back, then says it again. Hands free."]
 ];
 let sess = null, deckSel = "all";
 
@@ -2730,6 +2734,7 @@ function renderDrills(){
   view.innerHTML = `
     <h1>Practice</h1>
     <p class="lede">Pick a set, then pick a way to drill it.</p>
+    <p class="hint">Repeat after me is under <b>Voice</b> at the top — set it to 3×, 5× or 10× and every ▶ in the app waits for you to say it back.</p>
     <p class="hint">Stuck on a word mid-drill? Tap it — the meaning pops up without ending the question, and the bottom of that pop-up drills that one word 10, 20, 30 or 50 times.</p>
     <div class="chips">${decks.map(([k,n])=>`<button class="chip" data-deck="${k}" aria-pressed="${deckSel===k}">${esc(n)}</button>`).join("")}</div>
     <div id="drillList">${DRILLS.map(([k,n,b])=>`
@@ -2805,6 +2810,7 @@ function startDrill(type, deck){
   if(type==="match") return startMatch(deckSel);
   if(type==="dialog") return startDialog();
   if(type==="story")  return startStory();
+  if(type==="repeat") return startRepeatRun(studyOrder(pool(deckSel), 20), "Repeat after me");
   let steps = [], title = "";
   switch(type){
     case "flash":  steps = buildFlash(deckSel,12); title="Flashcards"; break;
@@ -3069,6 +3075,7 @@ function stepBuild(s, host){
 let special = null;
 TABS.drills = function(){ if(special && !sess) return paintSpecial(); return renderDrills(); };
 function paintSpecial(){
+  if(special.type === "repeat") return paintRepeat();
   if(special.type === "match") return paintMatch();
   if(special.type === "story") return special.pick ? paintStory() : paintStoryList();
   return paintDialogList();
@@ -4562,9 +4569,11 @@ function storyRead(st, host){
         </div>
       </div>`).join("")}</div>
     <button class="btn wide" id="toggleEn" style="margin-top:10px">${special.shown.en?"Hide the English":"Show the English"}</button>
-    <button class="btn ghost wide" id="playAll" style="margin-top:8px">Play the whole story</button>`;
+    <button class="btn ghost wide" id="playAll" style="margin-top:8px">Play the whole story</button>
+    <button class="btn ghost wide" id="repeatStory" style="margin-top:8px">Repeat after me — line by line</button>`;
   $("#toggleEn").onclick = ()=>{ special.shown.en = !special.shown.en; paintStory(); };
   $("#playAll").onclick = ()=> speakLines(st.l.map(l=>l[0]));
+  $("#repeatStory").onclick = ()=> startRepeatRun(st.l.map(l=>({it:l[0], en:l[1]})), st.t);
 }
 
 function speakLines(lines){
@@ -5804,10 +5813,11 @@ function renderMyPhrases(host){
       <button class="chip" data-reg="lei" aria-pressed="${reg==="lei"}">Formal (lei)</button>
       <button class="chip" data-reg="tu" aria-pressed="${reg==="tu"}">Informal (tu)</button>
     </div>
-    <div class="row" style="gap:8px;margin-bottom:14px">
+    <div class="row" style="gap:8px;margin-bottom:8px">
       <button class="btn quiet grow" id="drillMine">Practise these</button>
       <button class="btn quiet grow" id="expMine">Export</button>
     </div>
+    <button class="btn ghost wide" id="repeatMine" style="margin-bottom:14px">Repeat after me — all of them</button>
     ${secs.map(s=>`
       <h3 style="font-family:var(--serif);font-size:18px;margin:18px 0 2px">${esc(s.t)}</h3>
       <p class="small" style="margin:0 0 8px">${esc(s.b)}</p>
@@ -5827,6 +5837,7 @@ function renderMyPhrases(host){
     <p class="small" style="margin-top:14px">Names, films and bands are printed as you typed them. Tap ✎ on any card to reword it — your version is kept.</p>`;
   $("#editSheet").onclick = ()=>{ sheetStep = 0; S.sheetOpen = true; save(); renderSheet(); };
   $("#drillMine").onclick = ()=>{ go("drills"); startDrill("mix","mine"); };
+  $("#repeatMine").onclick = ()=> startRepeatRun(myCardItems(), "My phrases");
   $("#expMine").onclick = exportProfile;
   host.querySelectorAll("[data-reg]").forEach(b=> b.onclick = ()=>{ S.profileReg = b.dataset.reg; save(); renderSaved(); });
   host.querySelectorAll("[data-editc]").forEach(b=> b.onclick = ()=>{
@@ -5886,6 +5897,7 @@ const HOWTO = [
 const HOWTO_TIPS = [
 ["Tap any Italian word","Anywhere in the app. You get the meaning, and the full table if it's a verb."],
 ["▶ says it out loud","Voice, at the top, changes the speaker and slows it down."],
+["Repeat after me","Turn it on under Voice — 3×, 5× or 10× — and every ▶ waits for you to say it back."],
 ["★ keeps a phrase","Saved phrases become their own practice deck."],
 ["Practise one word","At the bottom of any word pop-up: 10, 20, 30 or 50 questions on that word alone."],
 ["It works offline","Once you've opened it with signal, it keeps working without any."]
@@ -5914,6 +5926,10 @@ const HOWTO_MORE = [
 ["Editing what the app wrote",
  `<p>Tap ✎ on any of your phrases to reword it. Your version is kept and used from then on.</p>
   <p>Worth doing for film and book titles, since Italy often has its own — <i>2001: A Space Odyssey</i> is <i>2001: Odissea nello spazio</i>.</p>`],
+["Practising out loud",
+ `<p>Under <b>Voice</b>, set <b>Repeat after me</b> to 3×, 5× or 10×. From then on every play button in the app says the phrase, leaves a gap the same length for you to say it back, and says it again — more slowly the last time. The gap grows with the phrase, so short ones stay brisk.</p>
+  <p>For hands-free practice use <b>Practice → Repeat after me</b>, or the Repeat button on any quick-reference page, story or your own phrases. It works through the whole list on its own.</p>
+  <p>One catch: phones stop web audio when the screen locks. Keep the screen awake, or set the auto-lock longer.</p>`],
 ["Keeping the app up to date",
  `<p>The version sits under the wordmark at the top: <b>v${"" + BUILD} · ${BUILT}</b>. Once it has checked, it adds ✓ latest in green.</p>
   <p>Tap the version any time to check. If a newer build is on GitHub, a bar appears at the bottom to load it.</p>`]
@@ -5943,6 +5959,178 @@ function openHowTo(){
   const close = ()=> sheet.remove();
   sheet.onclick = e => { if(e.target === sheet) close(); };
   sheet.querySelector("#closeHow").onclick = close;
+}
+
+
+/* ============================================================
+   Repeat after me
+   One setting, honoured by every play button in the app.
+   ============================================================ */
+let sayToken = 0;
+function estimate(text){ return Math.max(700, String(text).length * 62); }
+/* say it once, and resolve with how long it actually took */
+function sayOnce(text, rate){
+  const clean = String(text).replace(/[«»]/g,"").replace(/\.\.\./g,"…");
+  return new Promise(resolve => {
+    if(!window.speechSynthesis){ setTimeout(()=>resolve(estimate(clean)), 10); return; }
+    const t0 = Date.now();
+    let done = false;
+    const finish = ()=>{ if(done) return; done = true; resolve(Math.max(400, Date.now() - t0)); };
+    const u = new SpeechSynthesisUtterance(clean);
+    u.lang = "it-IT"; u.rate = rate || S.rate;
+    const v = voices.find(v=>v.name===S.voice) || voices[0];
+    if(v) u.voice = v;
+    u.onend = finish; u.onerror = finish;
+    speechSynthesis.speak(u);
+    setTimeout(finish, estimate(clean) * 3 + 4000);   /* in case onend never fires */
+  });
+}
+const wait = ms => new Promise(r => setTimeout(r, ms));
+/* say it, leave a gap the same length for you to say it back, repeat */
+async function repeatAfterMe(text, times, onStep){
+  const token = ++sayToken;
+  if(window.speechSynthesis) speechSynthesis.cancel();
+  const n = Math.max(1, times || 1);
+  for(let i = 0; i < n; i++){
+    if(token !== sayToken) return false;
+    if(onStep) onStep(i + 1, n);
+    const slower = i === n - 1 && n > 1 ? Math.max(0.55, S.rate - 0.2) : S.rate;
+    const took = await sayOnce(text, slower);
+    if(token !== sayToken) return false;
+    if(i < n - 1) await wait(Math.round(took * 1.15) + 250);   /* your turn */
+  }
+  return token === sayToken;
+}
+function stopSaying(){ sayToken++; if(window.speechSynthesis) speechSynthesis.cancel(); }
+
+/* ---------- voice and repeat settings ---------- */
+function openVoicePanel(){
+  loadVoices();
+  const sheet = document.createElement("div");
+  sheet.className = "sheetbg";
+  const speeds = [0.6,0.7,0.8,0.9,1];
+  sheet.innerHTML = `
+    <div class="sheet" role="dialog" aria-label="Voice settings">
+      <div style="font-family:var(--serif);font-size:23px;font-weight:700">Voice</div>
+      <p class="small" style="margin:2px 0 14px">How Italian sounds, and whether it waits for you.</p>
+
+      <div style="font-weight:700;font-size:14.5px">Repeat after me</div>
+      <p class="small" style="margin:2px 0 6px">With this on, every ▶ says the phrase, leaves you a gap to say it back, then says it again. The last time through is slower.</p>
+      <div class="chips">
+        ${[[0,"Off"],[3,"3×"],[5,"5×"],[10,"10×"]].map(([v,l])=>
+          `<button class="chip" data-rep="${v}" aria-pressed="${(S.repeat||0)===v}">${l}</button>`).join("")}
+      </div>
+
+      <div style="font-weight:700;font-size:14.5px;margin-top:16px">Speed</div>
+      <div class="chips">
+        ${speeds.map(v=>`<button class="chip" data-rate="${v}" aria-pressed="${S.rate===v}">${v===1?"Normal":v+"×"}</button>`).join("")}
+      </div>
+
+      <div style="font-weight:700;font-size:14.5px;margin-top:16px">Italian voice</div>
+      ${voices.length
+        ? `<div class="chips">${voices.map(v=>
+            `<button class="chip" data-voice="${esc(v.name)}" aria-pressed="${S.voice===v.name}">${esc(v.name.split(" (")[0])}</button>`).join("")}</div>`
+        : `<p class="small" style="margin:4px 0 0">No Italian voice installed yet. iPhone: Settings → Accessibility → Spoken Content → Voices → Italian. Android: Settings → System → Languages → Text-to-speech.</p>`}
+
+      <button class="btn wide" id="testVoice" style="margin-top:16px">Try it — «Vorrei un caffè, per favore.»</button>
+      <button class="btn ghost wide" id="closeVoice" style="margin-top:8px">Done</button>
+    </div>`;
+  document.body.appendChild(sheet);
+  const close = ()=>{ stopSaying(); sheet.remove(); };
+  sheet.onclick = e => { if(e.target === sheet) close(); };
+  sheet.querySelector("#closeVoice").onclick = close;
+  sheet.querySelector("#testVoice").onclick = ()=> repeatAfterMe("Vorrei un caffè, per favore.", S.repeat || 1);
+  sheet.querySelectorAll("[data-rep]").forEach(b=> b.onclick = ()=>{
+    S.repeat = +b.dataset.rep; save(); paintRepeatBadge(); sheet.remove(); openVoicePanel();
+  });
+  sheet.querySelectorAll("[data-rate]").forEach(b=> b.onclick = ()=>{
+    S.rate = +b.dataset.rate; save(); sheet.remove(); openVoicePanel();
+  });
+  sheet.querySelectorAll("[data-voice]").forEach(b=> b.onclick = ()=>{
+    S.voice = b.getAttribute("data-voice"); save(); sheet.remove(); openVoicePanel();
+    speak("Perfetto.");
+  });
+}
+function paintRepeatBadge(){
+  document.body.setAttribute("data-rep", S.repeat ? String(S.repeat) : "");
+  const b = $("#voiceBtn");
+  if(b) b.textContent = S.repeat ? "Voice " + S.repeat + "×" : "Voice";
+}
+
+/* ---------- hands-free session over any list ---------- */
+function startRepeatRun(items, title){
+  if(!items || !items.length) return toast("Nothing to repeat here");
+  special = {type:"repeat", items, title:title||"Repeat after me", i:0, playing:false, n:S.repeat||3};
+  sess = null;
+  go("drills");
+}
+async function repeatRun(){
+  const sp = special;
+  sp.playing = true;
+  paintRepeat();
+  while(sp.playing && sp === special && sp.i < sp.items.length){
+    const it = sp.items[sp.i];
+    const ok = await repeatAfterMe(it.it, sp.n, (k,n)=>{
+      const el = $("#repCount");
+      if(el) el.textContent = k + " of " + n;
+    });
+    if(!ok || !sp.playing || sp !== special) return;
+    await wait(500);
+    if(!sp.playing || sp !== special) return;
+    sp.i++;
+    paintRepeat();
+  }
+  if(sp === special){ sp.playing = false; paintRepeat(); }
+}
+function paintRepeat(){
+  const sp = special;
+  const it = sp.items[Math.min(sp.i, sp.items.length-1)];
+  const done = sp.i >= sp.items.length;
+  view.innerHTML = `
+    <div class="row" style="align-items:center;margin:14px 0 6px">
+      <div class="grow"><div style="font-weight:700">${esc(sp.title)}</div>
+        <div class="small">${done ? "Finished" : (sp.i+1) + " of " + sp.items.length} · each one ${sp.n}×</div></div>
+      <button class="btn quiet" id="exitRep">Stop</button>
+    </div>
+    <div class="bar"><i style="width:${sp.i/sp.items.length*100}%"></i></div>
+    ${done ? `
+      <div class="card flash"><div class="big">Fatto.</div>
+        <p class="small" style="text-align:center;margin:0">${sp.items.length} phrases, ${sp.n} times each.</p></div>
+      <button class="btn wide" id="againRep">Go again</button>
+      <button class="btn ghost wide" id="backRep" style="margin-top:8px">Back to practice</button>`
+    : `
+      <div class="card flash" style="min-height:210px">
+        <span class="pill">${sp.playing ? `<span id="repCount">1 of ${sp.n}</span>` : "Paused"}</span>
+        <div class="big" style="font-size:24px">${gloss(it.it)}</div>
+        <div class="en">${esc(it.en)}</div>
+      </div>
+      <div class="chips" style="justify-content:center">
+        ${[3,5,10].map(n=>`<button class="chip" data-repn="${n}" aria-pressed="${sp.n===n}">${n}×</button>`).join("")}
+      </div>
+      <div class="row" style="gap:8px">
+        <button class="btn ghost" id="prevRep" ${sp.i?"":"disabled"}>Back</button>
+        <button class="btn grow" id="playRep">${sp.playing ? "Pause" : (sp.i ? "Carry on" : "Start")}</button>
+        <button class="btn ghost" id="nextRep">Skip</button>
+      </div>
+      <p class="hint" style="margin-top:12px">It says the phrase, waits while you say it back, then says it again — the last time more slowly. Keep the screen awake: phones stop the audio when they lock.</p>`}`;
+  $("#exitRep").onclick = ()=>{ stopSaying(); special = null; renderDrills(); };
+  if($("#againRep")) $("#againRep").onclick = ()=>{ sp.i = 0; repeatRun(); };
+  if($("#backRep")) $("#backRep").onclick = ()=>{ special = null; renderDrills(); };
+  if($("#playRep")) $("#playRep").onclick = ()=>{
+    if(sp.playing){ sp.playing = false; stopSaying(); paintRepeat(); }
+    else repeatRun();
+  };
+  if($("#prevRep")) $("#prevRep").onclick = ()=>{ stopSaying(); sp.playing = false; sp.i = Math.max(0, sp.i-1); paintRepeat(); };
+  if($("#nextRep")) $("#nextRep").onclick = ()=>{
+    stopSaying();
+    const was = sp.playing; sp.playing = false;
+    sp.i = Math.min(sp.items.length, sp.i+1);
+    if(was && sp.i < sp.items.length) repeatRun(); else paintRepeat();
+  };
+  view.querySelectorAll("[data-repn]").forEach(b=> b.onclick = ()=>{
+    sp.n = +b.dataset.repn; S.repeat = sp.n; save(); paintRepeatBadge();
+    if(sp.playing){ stopSaying(); repeatRun(); } else paintRepeat();
+  });
 }
 
 /* ---------- keep the app up to date, and working offline ---------- */

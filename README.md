@@ -11,7 +11,7 @@ A single-page web app: phrases, verb conjugation, flashcards, matching, and role
 **Numbering changed at build 13.** Versions are now a plain count of downloads — 13, then 14, then 15 — instead of the old three-part numbers. The build formerly called 3.7.0 is listed in the app's changelog as *12 (was 3.7.0)*; everything before it keeps its original label.
 
 
-This build is **17**. The file is named `index-v17-today-layout-and-howto.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits under the **Andiamo.** wordmark at the top of every screen — `v17 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
+This build is **18**. The file is named `index-v18-repeat-after-me.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits under the **Andiamo.** wordmark at the top of every screen — `v18 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
 
 ## How updating works
 
@@ -19,8 +19,8 @@ This build is **17**. The file is named `index-v17-today-layout-and-howto.html` 
 
 When you upload a new build, change two numbers so phones know something moved:
 
-1. In `index.html`, near the top of the script: `const BUILD = "17";` — and add a line to the `CHANGES` list describing what you did.
-2. In `sw.js`, line 5: `const BUILD = "17";`
+1. In `index.html`, near the top of the script: `const BUILD = "18";` — and add a line to the `CHANGES` list describing what you did.
+2. In `sw.js`, line 5: `const BUILD = "18";`
 
 Keep them the same. If you forget, the app still updates (HTML is network-first), but the icons and manifest may stay on the old cached copies.
 
@@ -57,6 +57,16 @@ Open the Pages link on the phone, then:
 - **Android (Chrome):** ⋮ menu → **Add to Home screen** / **Install app**.
 
 You get the gold **A.** icon, it opens full screen with no browser bars, and it keeps working when you have no data. Your streak, saved phrases and card progress live on that device, so your phone and laptop track separately.
+
+## Repeat after me
+
+Tap **Voice** at the top and set **Repeat after me** to 3×, 5× or 10×. From then on every play button in the app — phrases, dictionary entries, verb forms, story lines, quiz feedback, your own phrases — says the Italian, leaves you a gap the same length to say it back, then says it again. The last time through is slower. The play buttons carry a small gold badge while it's on, so you always know why they're looping.
+
+The gap is measured, not fixed: it times the first playback and matches it, so *Ciao* stays brisk and *Sarebbe possibile per dodici persone, stasera?* gets the room it needs.
+
+For hands-free practice there's **Practice → Repeat after me**, which works through a whole deck on its own with pause, skip and back. The same thing sits on every quick-reference page (*Repeat after me — the whole page*), on every story (line by line), and on your own phrases.
+
+One limitation worth knowing: phones stop web audio when the screen locks, so keep the screen awake for pocket practice.
 
 ## Spoken Italian
 
