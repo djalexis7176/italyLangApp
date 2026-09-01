@@ -8,7 +8,10 @@ A single-page web app: phrases, verb conjugation, flashcards, matching, and role
 
 ## Version
 
-This build is **3.7.0**. The file is named `index-v3.7.0-combined-forms.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits under the **Andiamo.** wordmark at the top of every screen — `v3.7 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
+**Numbering changed at build 13.** Versions are now a plain count of downloads — 13, then 14, then 15 — instead of the old three-part numbers. The build formerly called 3.7.0 is listed in the app's changelog as *12 (was 3.7.0)*; everything before it keeps its original label.
+
+
+This build is **13**. The file is named `index-v13-quick-reference.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits under the **Andiamo.** wordmark at the top of every screen — `v13 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
 
 ## How updating works
 
@@ -16,8 +19,8 @@ This build is **3.7.0**. The file is named `index-v3.7.0-combined-forms.html` �
 
 When you upload a new build, change two numbers so phones know something moved:
 
-1. In `index.html`, near the top of the script: `const BUILD = "3.7.0";` — and add a line to the `CHANGES` list describing what you did.
-2. In `sw.js`, line 5: `const BUILD = "3.7.0";`
+1. In `index.html`, near the top of the script: `const BUILD = "13";` — and add a line to the `CHANGES` list describing what you did.
+2. In `sw.js`, line 5: `const BUILD = "13";`
 
 Keep them the same. If you forget, the app still updates (HTML is network-first), but the icons and manifest may stay on the old cached copies.
 
@@ -110,6 +113,14 @@ Every word pop-up ends with **Practise this word** and four buttons: 10, 20, 30,
 
 Nouns and adjectives generate their own sentences from their entry, so even a word with only one appearance in the app gives you a full session.
 
+## Quick reference
+
+**Phrases → Quick reference** (also a button on Today) is a grid of 18 situations. Tap one and you get a single page with everything you're likely to need there, in the order you'll need it, in the polite register you'd use with a stranger:
+
+Restaurant · Hotel check-in · From your hotel room · Station & train · Airport & plane · Bus & coach · Bar & tavern · Grocery shopping · Nightclub · Vineyard & winery · Dinner with a family · At a wedding · Meeting someone new · Customs & passport control · Police · Hospital & emergency · At the doctor · Pharmacy
+
+280 phrases in total. Each page has a **Practise this set** button, every phrase can be starred and heard, every word is tappable, and all of it is in the main search.
+
 ## Searching a phrase
 
 The search box in **Words** takes more than one word. Type `e poi gli chiede` and you get, in order: a word-by-word reading (*and then to him he/she asks*), any sentence in the app containing that phrase with its real translation, and each word listed separately with its meaning and a tap-through to the full entry. Type one word and you get the same panel — so conjugated forms like `posso`, `piacciono` or `visitato` now resolve, where before the A–Z list said nothing matched.
@@ -132,7 +143,7 @@ Every definition carries an example sentence with audio — pulled from the app'
 
 ## What's in it
 
-- 320 phrases across 19 travel situations, with pronunciation and audio
+- 600 phrases: 320 by topic, 280 across 18 quick-reference situations, with pronunciation and audio
 - 93 verbs conjugated in the present tense, stem and ending colour-coded
 - 100 nouns with their articles, 30 adjectives
 - 52 question-and-answer pairs (they ask, you answer)
