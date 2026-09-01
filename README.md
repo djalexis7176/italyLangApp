@@ -11,7 +11,7 @@ A single-page web app: phrases, verb conjugation, flashcards, matching, and role
 **Numbering changed at build 13.** Versions are now a plain count of downloads — 13, then 14, then 15 — instead of the old three-part numbers. The build formerly called 3.7.0 is listed in the app's changelog as *12 (was 3.7.0)*; everything before it keeps its original label.
 
 
-This build is **13**. The file is named `index-v13-quick-reference.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits under the **Andiamo.** wordmark at the top of every screen — `v13 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
+This build is **14**. The file is named `index-v14-my-phrases.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits under the **Andiamo.** wordmark at the top of every screen — `v14 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
 
 ## How updating works
 
@@ -19,8 +19,8 @@ This build is **13**. The file is named `index-v13-quick-reference.html` — **r
 
 When you upload a new build, change two numbers so phones know something moved:
 
-1. In `index.html`, near the top of the script: `const BUILD = "13";` — and add a line to the `CHANGES` list describing what you did.
-2. In `sw.js`, line 5: `const BUILD = "13";`
+1. In `index.html`, near the top of the script: `const BUILD = "14";` — and add a line to the `CHANGES` list describing what you did.
+2. In `sw.js`, line 5: `const BUILD = "14";`
 
 Keep them the same. If you forget, the app still updates (HTML is network-first), but the icons and manifest may stay on the old cached copies.
 
@@ -113,6 +113,23 @@ Every word pop-up ends with **Practise this word** and four buttons: 10, 20, 30,
 
 Nouns and adjectives generate their own sentences from their entry, so even a word with only one appearance in the app gives you a full session.
 
+## My phrases — your own cheat sheet
+
+**Saved → My phrases** (also a button on Today) opens a six-step sheet: who you are, your family and who's travelling with you, work, what you like, the trip, and the occasion. About 45 questions, nearly all one tap, everything skippable. From your answers the app writes a phrasebook of roughly 60–70 lines in your own words — the question a stranger will ask, then your answer:
+
+> *Che cosa la porta in Italia?* — What brings you to Italy?
+> **Siamo qui per il matrimonio di mio nipote Madigan.** — We're here for my nephew Madigan's wedding.
+
+Sections: Chi sono · La mia famiglia · Il mio lavoro · I miei gusti · Il viaggio · L'occasione · Domande da fare. The last one is openers of your own, picked from what you told me — say you like wine and you get *Qual è la cantina migliore della zona?*; say you're here for a wedding and you get *Come conosce gli sposi?*
+
+A toggle switches the whole set between **formal (lei)** and **informal (tu)**. Tap ✎ on any card to reword it — useful for film titles, since *2001: A Space Odyssey* is *2001: Odissea nello spazio* in Italy. Your version is kept. **Practise these** turns your own sentences into a drill deck, which is the part that actually teaches them.
+
+Grammar follows your answers: one question at the start sets whether Italian describes you as masculine or feminine, so you get *sono americano* or *sono americana*, *sposato* or *sposata*, all the way through. Jobs, nationalities, relationships and interests are picklists rather than free text, so they come out as real Italian; names, bands and titles are free text and print as you typed them.
+
+### Privacy and moving it to another device
+
+Nothing is sent anywhere — the app has no server. **Export** writes a `.json` to your downloads that you can email or AirDrop to yourself; **Load a saved export**, at the bottom of the Saved tab, reads it back on the new device along with your notes and word list. Two things worth knowing: clearing your browser data erases it, and anyone with your unlocked phone can read it.
+
 ## Quick reference
 
 **Phrases → Quick reference** (also a button on Today) is a grid of 18 situations. Tap one and you get a single page with everything you're likely to need there, in the order you'll need it, in the polite register you'd use with a stranger:
@@ -149,6 +166,7 @@ Every definition carries an example sentence with audio — pulled from the app'
 - 52 question-and-answer pairs (they ask, you answer)
 - 10 full role-play conversations
 - 19 confusable word pairs — sapere/conoscere, piace/piacciono, vorrei/voglio and the rest
+- Your own generated phrasebook from a personal sheet
 - A Start here shortlist: 16 verbs, 81 words
 - 11 drill types and a 14-day plan
 - 7 story lessons with listening, translation and gap-fill quizzes
