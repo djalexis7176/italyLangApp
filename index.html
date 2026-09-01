@@ -1210,6 +1210,19 @@ const FUNC = [
 /* joining words and adverbs */
 ["e","and"],["ed","and (before a vowel)"],["o","or"],["ma","but"],["però","but / however"],
 ["perché","why / because"],["se","if"],["che","that / which / what","Also 'than' after a comparison."],
+["che cosa","what","Che cosa vuole? = what would you like?"],
+["che cos'è","what is it / what is …?","Che cos'è questo? = what is this?"],
+["cos'è","what is …?"],["chi è","who is …?"],["dove sono","where are …?"],
+["come si dice","how do you say …?","Come si dice 'spoon' in italiano?"],
+["come si chiama","what is it called / what is your name"],
+["che cosa vuol dire","what does … mean?"],["vuol dire","it means"],
+["a che ora","at what time / when"],["che ore sono","what time is it?"],
+["quanto costa","how much is it?"],["quanto costano","how much are they?"],
+["quanti anni","how old"],["da quanto tempo","how long (for)"],
+["quanto tempo","how much time / how long"],["dove si trova","where is … (located)?"],
+["c'è","is there …?"],["ci sono","are there …?"],["come mai","how come / why"],
+["perché no","why not"],["che cosa c'è","what is there / what's in it"],
+["di chi è","whose is it?"],["quale preferisce","which do you prefer?"],
 ["come","how / like"],["quando","when"],["dove","where"],["dov'è","where is"],
 ["quanto","how much"],["quanti","how many (m)"],["quanta","how much (f)"],["quante","how many (f)"],["quant'è","how much is it"],
 ["quale","which"],["quali","which (plural)"],["qual","which (before è)"],["chi","who"],
@@ -2279,7 +2292,7 @@ STORIES.push(
 /* ============================================================
    ENGINE
    ============================================================ */
-const BUILD = "14";
+const BUILD = "15";
 const BUILT = "2026-08-31";
 const VERSTAMP = (function(){
   const [y,m,d] = BUILT.split("-");
@@ -2287,6 +2300,7 @@ const VERSTAMP = (function(){
 })();
 let UPD = {state:"unknown", at:0};
 const CHANGES = [
+  ["15","2026-08-31","English works in the dictionary search: type what, where, how much and get the Italian. The sheet now takes no children, people linked through other people (my cousin's girlfriend), several jobs and situations at once, second reasons for the trip, and optional detailed food and drink lists where you mark each item love / like / not keen / can't stand / allergic / not right now."],
   ["14","2026-08-31","My phrases: fill in a short sheet about yourself and the app writes your own phrasebook — the questions people will ask, with your answers in Italian. Formal or informal, editable, drillable, and exportable to another device. Nothing leaves the phone."],
   ["13","2026-08-31","Quick reference: 18 situation pages — restaurant, hotel check-in, hotel room, train, plane, bus, bar, grocery, nightclub, winery, family dinner, wedding, meeting someone, customs, police, hospital, doctor, pharmacy. 280 phrases, all searchable, each set drillable. Version numbers are now a plain count: this is the 13th build."],
   ["12 (was 3.7.0)","2026-08-31","Verbs with two meanings now show an example for each — prendo il treno / prendo un caffè. Combined forms like prenderne explain the pronoun stuck on the end, and misspellings get a did-you-mean list that also un-sticks pronouns: prederne suggests prendere + ne."],
@@ -3976,6 +3990,37 @@ function primaryGloss(e){
   if(e.kind === "form") return engPerson(e.p, e.v.e).replace(/^he \/ she /, "he/she ");
   return String(e.gloss);
 }
+/* the English index: type "what" and get the Italian for it */
+const ENIDX = (function(){
+  const m = new Map();
+  const put = (word, entry) => {
+    const k = String(word).toLowerCase().replace(/[^a-z' ]/g,"").trim();
+    if(!k) return;
+    if(!m.has(k)) m.set(k, []);
+    if(m.get(k).length < 8) m.get(k).push(entry);
+  };
+  const feed = (it, en, kind) => {
+    put(en, {it, en, kind});
+    String(en).split(/[\/,()]| or | and /).forEach(part => {
+      const p = part.trim();
+      if(p && p !== en) put(p, {it, en, kind});
+      p.split(/\s+/).forEach(wd => { if(wd.length > 2) put(wd, {it, en, kind}); });
+    });
+  };
+  EXPR.forEach(e => feed(e.it, e.en, "expr"));
+  ALLVERBS.forEach(v => feed(v.i, v.e, "verb"));
+  NOUNS.forEach(n => feed(n[0], n[1], "noun"));
+  ADJ.forEach(a => feed(a[0], a[1], "adj"));
+  FUNC.forEach(f => feed(f[0], f[1], "word"));
+  return m;
+})();
+function englishMatches(word){
+  const k = String(word).toLowerCase().replace(/[^a-z']/g,"").trim();
+  if(!k || k.length < 2) return [];
+  const out = ENIDX.get(k) || [];
+  const seen = new Set();
+  return out.filter(e => !seen.has(e.it) && seen.add(e.it)).slice(0,6);
+}
 function wordBreakdown(q){
   return tokensOf(q).map(t => {
     const r = lookup(t);
@@ -3986,7 +4031,10 @@ function wordBreakdown(q){
 function phraseMatches(q){
   const needle = norm(q);
   if(needle.length < 3) return [];
-  return SENTENCES.filter(([it,en]) => en && norm(it).includes(needle)).slice(0,3);
+  const it = SENTENCES.filter(([i,e]) => e && norm(i).includes(needle)).slice(0,3);
+  if(it.length) return it;
+  /* nothing in Italian — try the English side of every phrase in the app */
+  return SENTENCES.filter(([i,e]) => e && norm(e).includes(needle)).slice(0,3);
 }
 const CLITIC_SENSE = {gli:"to him", le:"to her", mi:"to me", ti:"to you", ci:"to us",
   vi:"to you", ne:"of it", lo:"it", la:"it", li:"them"};
@@ -4039,7 +4087,8 @@ function breakdownHTML(q){
     return primaryGloss(p.entries[0]).split(" / ")[0];
   }).join(" ");
   const hits = phraseMatches(q);
-  const multi = parts.length > 1 && known.length > 0;
+  /* an English query shouldn't get a word-by-word Italian reading */
+  const multi = parts.length > 1 && known.length > parts.length / 2;
   return `
     <div class="card" style="border-color:var(--blu);border-width:1.5px">
       <div class="row" style="align-items:center">
@@ -4061,6 +4110,15 @@ function breakdownHTML(q){
         <span class="pill">Each word</span>
         ${parts.map(p => {
           if(!p.entries.length){
+            const eng = englishMatches(p.t);
+            if(eng.length) return `<div class="phrase">
+              <div class="it">${esc(p.t)} <span class="pill green" style="font-size:10.5px">English</span></div>
+              <div class="en">In Italian:</div>
+              ${eng.map(e=>`<div class="row" style="align-items:center;margin-top:5px">
+                <button class="speak" data-say="${esc(e.it)}">▶</button>
+                <button class="grow" data-open="${esc(e.it)}" style="background:none;border:0;text-align:left;padding:0">
+                  <div class="it">${esc(e.it)}</div><div class="en">${esc(e.en)}</div></button>
+              </div>`).join("")}</div>`;
             const near = didYouMean(p.t);
             return `<div class="phrase"><div class="it">${esc(p.t)}</div>
               <div class="en">No entry spelled that way.${near.length?" Did you mean:":""}</div>
@@ -4739,7 +4797,30 @@ const JOBS = [
 ["psicologo","psicologo","psicologa","psychologist"],
 ["ricercatore","ricercatore","ricercatrice","researcher"],
 ["professore","professore","professoressa","university lecturer"],
-["parrucchiere","parrucchiere","parrucchiera","hairdresser"]
+["parrucchiere","parrucchiere","parrucchiera","hairdresser"],
+["fisioterapista","fisioterapista","fisioterapista","physical therapist"],
+["terapista","terapista occupazionale","terapista occupazionale","occupational therapist"],
+["terapeuta","terapeuta","terapeuta","therapist"],
+["logopedista","logopedista","logopedista","speech therapist"],
+["amministratore","amministratore delegato","amministratrice delegata","CEO"],
+["religioso","religioso","religiosa","in the clergy"],
+["sacerdote","sacerdote","pastora","priest / minister"],
+["marketing","consulente di marketing","consulente di marketing","marketing consultant"],
+["freelance","libero professionista","libera professionista","freelance"],
+["venditore","venditore di software","venditrice di software","in software sales"],
+["militare_c","consulente militare","consulente militare","military consultant"],
+["ballerino","ballerino","ballerina","dancer"],
+["pittore","pittore","pittrice","painter"],
+["assistente","assistente sociale","assistente sociale","social worker"],
+["ostetrica","ostetrico","ostetrica","midwife"],
+["bibliotecario","bibliotecario","bibliotecaria","librarian"],
+["traduttore","traduttore","traduttrice","translator"],
+["editore","editore","editrice","editor / publisher"],
+["contadino","contadino","contadina","farmer / smallholder"],
+["giardiniere","giardiniere","giardiniera","gardener"],
+["falegname","falegname","falegname","carpenter"],
+["studente_legge","studente di legge","studentessa di legge","law student"],
+["studente_med","studente di medicina","studentessa di medicina","medical student"]
 ];
 const NAZ = [
 ["usa","americano","americana","dagli Stati Uniti","the United States"],
@@ -4765,18 +4846,22 @@ const LINGUE = [["inglese","English"],["spagnolo","Spanish"],["francese","French
 ["portoghese","Portuguese"],["olandese","Dutch"],["russo","Russian"],["cinese","Chinese"],
 ["giapponese","Japanese"],["arabo","Arabic"],["hindi","Hindi"],["greco","Greek"]];
 const RELAZIONI = [
-["moglie","mia moglie","my wife","f"],["marito","mio marito","my husband","m"],
-["compagna","la mia compagna","my partner","f"],["compagno","il mio compagno","my partner","m"],
-["figlia","mia figlia","my daughter","f"],["figlio","mio figlio","my son","m"],
-["sorella","mia sorella","my sister","f"],["fratello","mio fratello","my brother","m"],
-["madre","mia madre","my mother","f"],["padre","mio padre","my father","m"],
-["nipote_f","mia nipote","my niece","f"],["nipote_m","mio nipote","my nephew","m"],
-["cugina","mia cugina","my cousin","f"],["cugino","mio cugino","my cousin","m"],
-["zia","mia zia","my aunt","f"],["zio","mio zio","my uncle","m"],
-["suocera","mia suocera","my mother-in-law","f"],["suocero","mio suocero","my father-in-law","m"],
-["nonna","mia nonna","my grandmother","f"],["nonno","mio nonno","my grandfather","m"],
-["amica","la mia amica","my friend","f"],["amico","il mio amico","my friend","m"],
-["collega","il mio collega","my colleague","m"]
+["moglie","mia moglie","my wife","f","la moglie"],["marito","mio marito","my husband","m","il marito"],
+["compagna","la mia compagna","my partner","f","la compagna"],["compagno","il mio compagno","my partner","m","il compagno"],
+["fidanzata","la mia fidanzata","my girlfriend","f","la fidanzata"],["fidanzato","il mio fidanzato","my boyfriend","m","il fidanzato"],
+["figlia","mia figlia","my daughter","f","la figlia"],["figlio","mio figlio","my son","m","il figlio"],
+["sorella","mia sorella","my sister","f","la sorella"],["fratello","mio fratello","my brother","m","il fratello"],
+["madre","mia madre","my mother","f","la madre"],["padre","mio padre","my father","m","il padre"],
+["nipote_f","mia nipote","my niece","f","la nipote"],["nipote_m","mio nipote","my nephew","m","il nipote"],
+["nipotina","mia nipote","my granddaughter","f","la nipote"],["nipotino","mio nipote","my grandson","m","il nipote"],
+["cugina","mia cugina","my cousin (f)","f","la cugina"],["cugino","mio cugino","my cousin (m)","m","il cugino"],
+["zia","mia zia","my aunt","f","la zia"],["zio","mio zio","my uncle","m","lo zio"],
+["suocera","mia suocera","my mother-in-law","f","la suocera"],["suocero","mio suocero","my father-in-law","m","il suocero"],
+["cognata","mia cognata","my sister-in-law","f","la cognata"],["cognato","mio cognato","my brother-in-law","m","il cognato"],
+["nonna","mia nonna","my grandmother","f","la nonna"],["nonno","mio nonno","my grandfather","m","il nonno"],
+["amica","la mia amica","my friend (f)","f","l'amica"],["amico","il mio amico","my friend (m)","m","l'amico"],
+["collega","il mio collega","my colleague","m","il collega"],
+["vicina","la mia vicina","my neighbour (f)","f","la vicina"],["vicino_p","il mio vicino","my neighbour (m)","m","il vicino"]
 ];
 const INTERESSI = [
 ["cibo","la buona cucina","good food"],["vino","il vino","wine"],["birra","la birra artigianale","craft beer"],
@@ -4849,6 +4934,93 @@ const MOBILITA = [["scale","Faccio fatica con le scale.","I struggle with stairs
 ["sedia","Uso la sedia a rotelle.","I use a wheelchair."],
 ["udito","Sento poco, può parlare più forte?","I don't hear well, could you speak up?"],
 ["vista","Vedo poco senza occhiali.","I don't see well without glasses."]];
+
+/* ============================================================
+   DATA: food and drink, with how strongly you feel about each
+   [code, "il pollo", "al pollo", "chicken", "s" | "p"]
+   ============================================================ */
+const CIBI_X = [
+["manzo","il manzo","al manzo","red meat / beef","s"],
+["maiale","il maiale","al maiale","pork","s"],
+["agnello","l'agnello","all'agnello","lamb","s"],
+["pollo","il pollo","al pollo","chicken","s"],
+["salumi","i salumi","ai salumi","cured meats","p"],
+["salsiccia","la salsiccia","alla salsiccia","sausage","s"],
+["prosciutto","il prosciutto","al prosciutto","ham","s"],
+["pesce","il pesce","al pesce","fish","s"],
+["crostacei","i crostacei","ai crostacei","shellfish","p"],
+["molluschi","i molluschi","ai molluschi","molluscs","p"],
+["formaggi","i formaggi","ai formaggi","cheese","p"],
+["latticini","i latticini","ai latticini","dairy","p"],
+["uova","le uova","alle uova","eggs","p"],
+["noci","la frutta secca","alla frutta secca","nuts","s"],
+["arachidi","le arachidi","alle arachidi","peanuts","p"],
+["glutine","il glutine","al glutine","gluten","s"],
+["pasta","la pasta","alla pasta","pasta","s"],
+["pizza","la pizza","alla pizza","pizza","s"],
+["riso","il riso","al riso","rice","s"],
+["verdure","le verdure","alle verdure","vegetables","p"],
+["insalata","l'insalata","all'insalata","salad","s"],
+["funghi","i funghi","ai funghi","mushrooms","p"],
+["pomodori","i pomodori","ai pomodori","tomatoes","p"],
+["aglio","l'aglio","all'aglio","garlic","s"],
+["cipolla","la cipolla","alla cipolla","onion","s"],
+["piccante","il piccante","al piccante","spicy food","s"],
+["olive","le olive","alle olive","olives","p"],
+["tartufo","il tartufo","al tartufo","truffle","s"],
+["frattaglie","le frattaglie","alle frattaglie","offal","p"],
+["dolci","i dolci","ai dolci","desserts","p"],
+["cioccolato","il cioccolato","al cioccolato","chocolate","s"],
+["gelato","il gelato","al gelato","ice cream","s"],
+["frutta","la frutta","alla frutta","fruit","s"],
+["fritto","il fritto","al fritto","fried food","s"],
+["asiatica","la cucina asiatica","alla cucina asiatica","Asian food","s"],
+["indiana","la cucina indiana","alla cucina indiana","Indian food","s"],
+["giapponese","la cucina giapponese","alla cucina giapponese","Japanese food","s"],
+["messicana","la cucina messicana","alla cucina messicana","Mexican food","s"],
+["tedesca","la cucina tedesca","alla cucina tedesca","German food","s"]
+];
+const BEVANDE_X = [
+["rosso","il vino rosso","al vino rosso","red wine","s"],
+["chianti","il Chianti","al Chianti","Chianti","s"],
+["barolo","il Barolo","al Barolo","Barolo","s"],
+["brunello","il Brunello","al Brunello","Brunello","s"],
+["montepulciano","il Montepulciano","al Montepulciano","Montepulciano","s"],
+["nerodavola","il Nero d'Avola","al Nero d'Avola","Nero d'Avola","s"],
+["bianco","il vino bianco","al vino bianco","white wine","s"],
+["pinot","il Pinot grigio","al Pinot grigio","Pinot grigio","s"],
+["vermentino","il Vermentino","al Vermentino","Vermentino","s"],
+["verdicchio","il Verdicchio","al Verdicchio","Verdicchio","s"],
+["rosato","il rosato","al rosato","rosé","s"],
+["prosecco","il prosecco","al prosecco","prosecco","s"],
+["spumante","lo spumante","allo spumante","sparkling wine","s"],
+["passito","i vini dolci","ai vini dolci","dessert wine","p"],
+["vinsanto","il vin santo","al vin santo","vin santo","s"],
+["spritz","lo spritz","allo spritz","an Aperol spritz","s"],
+["negroni","il Negroni","al Negroni","a Negroni","s"],
+["campari","il Campari","al Campari","Campari","s"],
+["amaro","gli amari","agli amari","amari","p"],
+["limoncello","il limoncello","al limoncello","limoncello","s"],
+["grappa","la grappa","alla grappa","grappa","s"],
+["grappa_barrique","la grappa invecchiata","alla grappa invecchiata","aged grappa","s"],
+["birra","la birra","alla birra","beer","s"],
+["artigianale","la birra artigianale","alla birra artigianale","craft beer","s"],
+["ipa","le IPA","alle IPA","IPAs","p"],
+["stout","le birre scure","alle birre scure","stouts and porters","p"],
+["acide","le birre acide","alle birre acide","sour beers","p"],
+["lager","la lager","alla lager","lager","s"],
+["cocktail","i cocktail","ai cocktail","cocktails","p"],
+["gin","il gin","al gin","gin","s"],
+["whisky","il whisky","al whisky","whisky","s"],
+["caffe_b","il caffè","al caffè","coffee","s"],
+["te","il tè","al tè","tea","s"],
+["frizzante","l'acqua frizzante","all'acqua frizzante","sparkling water","s"]
+];
+const TIERS = [
+["love","♥","Love"],["like","+","Like"],["no","–","Not keen"],
+["hate","✕","Can't stand"],["all","!","Allergic"],["now","⏸","Not right now"]
+];
+
 const MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
 const NUMERI = ["zero","uno","due","tre","quattro","cinque","sei","sette","otto","nove","dieci","undici","dodici",
 "tredici","quattordici","quindici","sedici","diciassette","diciotto","diciannove","venti","ventuno","ventidue",
@@ -4877,8 +5049,11 @@ const SHEET = [
   o:[["sposato","Married"],["compagno","With a partner"],["single","Single"],
      ["divorziato","Divorced"],["vedovo","Widowed"],["skip","Rather not say"]]},
  {k:"partner", type:"text", q:"Your partner's name", ph:"Leanne"},
+ {k:"nofigli", type:"select", q:"Children",
+  o:[["no","I have no children"],["noi","We have no children"],["si","I have children — let me add them"]]},
  {k:"figli", type:"people", q:"Your children", hint:"Add one row each. Ages are optional."},
- {k:"congiunti", type:"people", q:"Who you're travelling with", hint:"Or who else is in Italy at the same time."},
+ {k:"congiunti", type:"people", q:"Who you're travelling with",
+  hint:"Or who else is in Italy at the same time. Use the second box to link them to someone else — girlfriend of my cousin, friend of my sister."},
  {k:"gruppo", type:"number", q:"How many of you are travelling in total", ph:"18"},
  {k:"emerg_nome", type:"text", q:"Emergency contact — name", ph:"Leanne"},
  {k:"emerg_rel", type:"select", q:"Emergency contact — who they are", o:RELAZIONI.map(r=>[r[0], r[2]])},
@@ -4886,10 +5061,11 @@ const SHEET = [
 ]},
 {t:"Work", b:"Enough to answer che lavoro fa? without freezing.",
  q:[
- {k:"situazione", type:"select", q:"Right now you are…",
+ {k:"situazione", type:"multi", q:"Right now you are… (choose as many as fit)",
   o:[["lavoro","Working"],["studente","A student"],["pensione","Retired"],
-     ["cerco","Looking for work"],["pausa","Between jobs"],["casa","Working at home / family"],["skip","Rather not say"]]},
- {k:"lavoro", type:"select", q:"Your job", o:JOBS.map(j=>[j[0], j[3]])},
+     ["cerco","Looking for work"],["pausa","Between jobs"],["disoccupato","Unemployed"],
+     ["freelance","Freelance"],["casa","Working at home / family"],["volontario","Volunteering"]]},
+ {k:"lavoro", type:"multi", q:"Your job — or jobs", o:JOBS.map(j=>[j[0], j[3]])},
  {k:"settore", type:"multi", q:"The field you work in",
   o:[["informatico","IT / tech"],["sanitario","healthcare"],["scolastico","education"],
      ["edile","construction"],["turistico","tourism"],["alimentare","food"],["finanziario","finance"],
@@ -4906,9 +5082,13 @@ const SHEET = [
  {k:"libri", type:"list5", q:"Books or authors you like", ph:"Dune"},
  {k:"film", type:"list5", q:"Films you like", ph:"2001: A Space Odyssey"},
  {k:"serie", type:"list5", q:"TV series you like", ph:"The Wire"},
- {k:"cibo", type:"multi", q:"Food — anything that's true for you", o:CIBI.map(c=>[c[0], c[2]])},
+ {k:"cibo", type:"multi", q:"Food — the quick version", o:CIBI.map(c=>[c[0], c[2]])},
  {k:"allergie", type:"multi", q:"Allergies", o:ALLERGIE.map(a=>[a[0], a[2]])},
- {k:"bevande", type:"multi", q:"Drinking", o:BEVANDE.map(b=>[b[0], b[2]])}
+ {k:"bevande", type:"multi", q:"Drinking — the quick version", o:BEVANDE.map(b=>[b[0], b[2]])},
+ {k:"cibi_x", type:"tiers", adv:1, q:"Food, in detail", list:"CIBI_X",
+  hint:"Tap once for ♥ love, again for + like, again for – not keen, again for ✕ can't stand, again for ! allergic, again for ⏸ not right now. Tap past the end to clear."},
+ {k:"bev_x", type:"tiers", adv:1, q:"Drinks, in detail", list:"BEVANDE_X",
+  hint:"Same taps. Everything here is optional — the app writes a phrase for each one you mark."}
 ]},
 {t:"The trip", b:"Dates, how you got here, what you're planning.",
  q:[
@@ -4923,7 +5103,8 @@ const SHEET = [
 ]},
 {t:"The occasion & the practical", b:"Why you're here, and the things a stranger might need to ask you.",
  q:[
- {k:"motivo", type:"select", q:"What brought you to Italy", o:MOTIVI.map(m=>[m[0], m[2]])},
+ {k:"motivo", type:"select", q:"What brought you to Italy — the main reason", o:MOTIVI.map(m=>[m[0], m[2]])},
+ {k:"motivi2", type:"multi", q:"…and anything else while you're here", o:MOTIVI.map(m=>[m[0], m[2]])},
  {k:"occasione_chi", type:"select", q:"If it's someone's wedding or birthday, whose?",
   o:RELAZIONI.map(r=>[r[0], r[2]])},
  {k:"occasione_nome", type:"text", q:"…and their name", ph:"Madigan"},
@@ -4951,12 +5132,18 @@ function renderSheet(){
     </div>
     <div class="bar"><i style="width:${done}%"></i></div>
     <p class="hint">Skip anything you'd rather not answer. Your answers never leave this device.</p>
-    <div id="qs">${st.q.map(q=>qHTML(q)).join("")}</div>
+    <div id="qs">${st.q.filter(q=>!q.adv).map(q=>qHTML(q)).join("")}</div>
+    ${st.q.some(q=>q.adv) ? (S.sheetAdv && S.sheetAdv[sheetStep]
+      ? `<div id="qsadv">${st.q.filter(q=>q.adv).map(q=>qHTML(q)).join("")}</div>
+         <button class="btn ghost wide" id="lessAdv">Hide the detailed lists</button>`
+      : `<button class="btn ghost wide" id="moreAdv">More detail — say exactly what you love and can't stand</button>`) : ""}
     <div class="row" style="gap:8px;margin-top:14px">
       <button class="btn ghost" id="prevStep" ${sheetStep?"":"disabled"}>Back</button>
       <button class="btn grow" id="nextStep">${sheetStep===SHEET.length-1?"Build my phrases":"Next"}</button>
     </div>`;
   wireSheet(st);
+  if($("#moreAdv")) $("#moreAdv").onclick = ()=>{ S.sheetAdv = S.sheetAdv||{}; S.sheetAdv[sheetStep]=1; save(); renderSheet(); };
+  if($("#lessAdv")) $("#lessAdv").onclick = ()=>{ S.sheetAdv[sheetStep]=0; save(); renderSheet(); };
   $("#closeSheetForm").onclick = ()=>{ S.sheetOpen = false; save(); renderSaved(); };
   $("#prevStep").onclick = ()=>{ sheetStep--; window.scrollTo(0,0); renderSheet(); };
   $("#nextStep").onclick = ()=>{
@@ -4993,6 +5180,16 @@ function qHTML(q){
       ${[0,1,2,3,4].map(i=>`<input class="answer" style="margin-bottom:6px" data-list="${q.k}" data-i="${i}"
         placeholder="${i===0?esc(q.ph||""):""}" value="${esc(arr[i]||"")}">`).join("")}</div>`;
   }
+  if(q.type === "tiers"){
+    const src = q.list === "CIBI_X" ? CIBI_X : BEVANDE_X;
+    const st = v || {};
+    const mark = c => { const t = TIERS.find(x=>x[0]===st[c]); return t ? t[1]+" " : ""; };
+    return `<div class="card tight">${head}
+      <div class="chips">${TIERS.map(t=>`<span class="pill" style="font-size:11px">${t[1]} ${t[2]}</span>`).join(" ")}</div>
+      <div class="chips">${src.map(x=>
+        `<button class="chip" data-tier="${q.k}" data-v="${x[0]}" aria-pressed="${!!st[x[0]]}">${mark(x[0])}${esc(x[3])}</button>`
+      ).join("")}</div></div>`;
+  }
   if(q.type === "people"){
     const arr = Array.isArray(v) ? v : [];
     return `<div class="card tight">${head}
@@ -5002,13 +5199,22 @@ function qHTML(q){
   return "";
 }
 function peopleRow(k,i,p){
-  return `<div class="row" style="gap:6px;margin-bottom:6px" data-prow="${k}:${i}">
-    <select class="answer" style="flex:1.1;padding:10px" data-pk="${k}" data-i="${i}" data-f="rel">
-      ${RELAZIONI.map(r=>`<option value="${r[0]}" ${p.rel===r[0]?"selected":""}>${esc(r[2])}</option>`).join("")}
-    </select>
-    <input class="answer" style="flex:1.2" data-pk="${k}" data-i="${i}" data-f="name" placeholder="name" value="${esc(p.name||"")}">
-    <input class="answer" style="flex:.55" data-pk="${k}" data-i="${i}" data-f="age" inputmode="numeric" placeholder="age" value="${esc(p.age||"")}">
-    <button class="btn quiet" data-delp="${k}:${i}" style="padding:8px 10px">✕</button>
+  return `<div style="border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:8px" data-prow="${k}:${i}">
+    <div class="row" style="gap:6px">
+      <select class="answer" style="flex:1.1;padding:10px" data-pk="${k}" data-i="${i}" data-f="rel">
+        ${RELAZIONI.map(r=>`<option value="${r[0]}" ${p.rel===r[0]?"selected":""}>${esc(r[2])}</option>`).join("")}
+      </select>
+      <input class="answer" style="flex:1.1" data-pk="${k}" data-i="${i}" data-f="name" placeholder="name" value="${esc(p.name||"")}">
+      <input class="answer" style="flex:.5" data-pk="${k}" data-i="${i}" data-f="age" inputmode="numeric" placeholder="age" value="${esc(p.age||"")}">
+      <button class="btn quiet" data-delp="${k}:${i}" style="padding:8px 10px">✕</button>
+    </div>
+    <div class="row" style="gap:6px;margin-top:5px;align-items:center">
+      <span class="small" style="flex:0 0 auto">of…</span>
+      <select class="answer" style="flex:1;padding:9px" data-pk="${k}" data-i="${i}" data-f="via">
+        <option value="">— nobody, they're mine —</option>
+        ${RELAZIONI.map(r=>`<option value="${r[0]}" ${p.via===r[0]?"selected":""}>${esc(r[2])}</option>`).join("")}
+      </select>
+    </div>
   </div>`;
 }
 function wireSheet(st){
@@ -5017,6 +5223,18 @@ function wireSheet(st){
     const k = b.dataset.sel;
     setP(k, P_(k) === b.dataset.v ? "" : b.dataset.v);
     renderSheet();
+  });
+  view.querySelectorAll("[data-tier]").forEach(b => b.onclick = ()=>{
+    const k = b.dataset.tier, item = b.dataset.v;
+    const st = Object.assign({}, P_(k) || {});
+    const order = TIERS.map(t=>t[0]);
+    const cur = st[item] ? order.indexOf(st[item]) : -1;
+    const next = cur + 1;
+    if(next >= order.length) delete st[item]; else st[item] = order[next];
+    setP(k, st);
+    const t = TIERS.find(x=>x[0]===st[item]);
+    b.textContent = (t ? t[1]+" " : "") + b.textContent.replace(/^[♥+–✕!⏸]\s/,"");
+    b.setAttribute("aria-pressed", String(!!st[item]));
   });
   view.querySelectorAll("[data-multi]").forEach(b => b.onclick = ()=>{
     const k = b.dataset.multi, v = b.dataset.v;
@@ -5143,14 +5361,25 @@ function buildProfile(){
       add(s2, `${r[1][0].toUpperCase()+r[1].slice(1)} ${x.name} ha ${numIt(x.age)} anni.`,
              `${r[2][0].toUpperCase()+r[2].slice(1)} ${x.name} is ${x.age}.`);
     });
-  } else if(p.figli) add(s2, `Non ho figli.`, `I don't have children.`, "figli");
+  } else if(p.nofigli === "no") add(s2, `Non ho figli.`, `I don't have children.`, "figli");
+  else if(p.nofigli === "noi") add(s2, `Non abbiamo figli.`, `We don't have children.`, "figli");
+  const plain = t => String(t).replace(/\s*\([^)]*\)/g,"");
+  const nameOf = (x) => {
+    const r = relOf(x.rel);
+    if(x.via){ const v = relOf(x.via); return {it:`${r[4]} di ${v[1]}`, en:`${plain(v[2])}'s ${plain(r[2]).replace(/^my /,"")}`}; }
+    return {it:r[1], en:plain(r[2])};
+  };
   const con = (p.congiunti||[]).filter(x=>x.name);
   if(con.length){
-    add(s2, `Sono qui con ${joinIt(con.slice(0,3).map(x=>relOf(x.rel)[1] + " " + x.name))}.`,
-           `I'm here with ${joinEn(con.slice(0,3).map(x=>relOf(x.rel)[2] + " " + x.name))}.`);
-    const kinds = [...new Set(con.map(x=>relOf(x.rel)[1]))];
+    add(s2, `Sono qui con ${joinIt(con.slice(0,3).map(x=>nameOf(x).it + " " + x.name))}.`,
+           `I'm here with ${joinEn(con.slice(0,3).map(x=>nameOf(x).en + " " + x.name))}.`);
+    con.filter(x=>x.via).slice(0,4).forEach(x=>{
+      const n = nameOf(x);
+      add(s2, `${x.name} è ${n.it}.`, `${x.name} is ${n.en}.`);
+    });
+    const kinds = [...new Set(con.filter(x=>!x.via).map(x=>relOf(x.rel)[1]))];
     if(kinds.length > 2) add(s2, `C'è tutta la famiglia: ${joinIt(kinds.slice(0,5))}.`,
-      `The whole family is here: ${[...new Set(con.map(x=>relOf(x.rel)[2]))].slice(0,5).join(", ")}.`);
+      `The whole family is here: ${joinEn([...new Set(con.filter(x=>!x.via).map(x=>relOf(x.rel)[2]))].slice(0,5))}.`);
   }
   if(p.gruppo) add(s2, `Siamo in ${numIt(p.gruppo)}.`, `There are ${p.gruppo} of us.`);
   if(p.emerg_nome && p.emerg_tel){
@@ -5161,19 +5390,33 @@ function buildProfile(){
 
   /* ---- work ---- */
   const s3 = sec("Il mio lavoro", "Answering che lavoro fa? and what comes after it.");
-  const job = JOBS.find(j=>j[0]===p.lavoro);
-  if(p.situazione === "lavoro" && job) add(s3, `Sono ${G(job[1], job[2])}.`, `I'm ${job[3].replace(/^in /,"in ")}.`, "lavoro");
-  if(p.situazione === "studente") add(s3, `Sono ${G("studente","studentessa")}.`, `I'm a student.`, "lavoro");
-  if(p.situazione === "pensione") add(s3, `Sono in pensione.`, `I'm retired.`, "lavoro");
-  if(p.situazione === "cerco") add(s3, `Al momento sto cercando lavoro.`, `I'm looking for work at the moment.`, "lavoro");
-  if(p.situazione === "pausa") add(s3, `Al momento sono tra un lavoro e l'altro.`, `I'm between jobs at the moment.`, "lavoro");
-  if(p.situazione === "casa") add(s3, `Mi occupo della famiglia.`, `I look after the family.`, "lavoro");
+  const jobs = (Array.isArray(p.lavoro) ? p.lavoro : (p.lavoro ? [p.lavoro] : []))
+    .map(c=>JOBS.find(j=>j[0]===c)).filter(Boolean);
+  const sit = Array.isArray(p.situazione) ? p.situazione : (p.situazione ? [p.situazione] : []);
+  if(jobs.length){
+    add(s3, `Sono ${G(jobs[0][1], jobs[0][2])}.`,
+        `I'm ${/^(in |a )/.test(jobs[0][3]) ? jobs[0][3] : (/^[aeiou]/i.test(jobs[0][3])?"an ":"a ")+jobs[0][3]}.`, "lavoro");
+    if(jobs.length > 1)
+      add(s3, `Faccio anche ${G("il","la")} ${jobs[1][G(1,2)].replace(/^(il |la |lo )/,"")}.`,
+             /^in /.test(jobs[1][3]) ? `I also work ${jobs[1][3]}.`
+               : `I also work as ${/^[aeiou]/i.test(jobs[1][3])?"an":"a"} ${jobs[1][3]}.`);
+  }
+  if(sit.includes("studente")) add(s3, `Sono ${G("studente","studentessa")}.`, `I'm a student.`, jobs.length?null:"lavoro");
+  if(sit.includes("pensione")) add(s3, `Sono in pensione.`, `I'm retired.`);
+  if(sit.includes("cerco")) add(s3, `Al momento sto cercando lavoro.`, `I'm looking for work at the moment.`);
+  if(sit.includes("pausa")) add(s3, `Sono tra un lavoro e l'altro.`, `I'm between jobs.`);
+  if(sit.includes("disoccupato")) add(s3, `In questo momento sono ${G("disoccupato","disoccupata")}.`, `I'm unemployed at the moment.`);
+  if(sit.includes("freelance")) add(s3, `Lavoro in proprio, come ${G("libero professionista","libera professionista")}.`, `I work for myself, freelance.`);
+  if(sit.includes("casa")) add(s3, `Mi occupo della famiglia.`, `I look after the family.`);
+  if(sit.includes("volontario")) add(s3, `Faccio volontariato.`, `I do voluntary work.`);
+  if(sit.length > 1) add(s3, `È un periodo un po' così: ${joinIt(sit.slice(0,3).map(c=>({lavoro:"lavoro",studente:"studio",pensione:"sono in pensione",cerco:"cerco lavoro",pausa:"sono tra un lavoro e l'altro",disoccupato:"sono senza lavoro",freelance:"lavoro in proprio",casa:"sto con la famiglia",volontario:"faccio volontariato"})[c]))}.`,
+    `It's a mixed moment: ${joinEn(sit.slice(0,3).map(c=>({lavoro:"I work",studente:"I study",pensione:"I'm retired",cerco:"I'm job-hunting",pausa:"I'm between jobs",disoccupato:"I'm out of work",freelance:"I freelance",casa:"I'm at home",volontario:"I volunteer"})[c]))}.`);
   const set = (p.settore||[]);
-  if(set.length && ["lavoro","cerco","pausa"].includes(p.situazione))
+  if(set.length && sit.some(x=>["lavoro","cerco","pausa","freelance"].includes(x)))
     add(s3, `Lavoro nel settore ${set[0]}.`,
         `I work in ${String((SHEET[2].q[2].o.find(o=>o[0]===set[0])||[])[1]).split(" / ")[0]}.`);
   if(p.studio) add(s3, `Studio ${p.studio}.`, `I'm studying ${p.studio}.`);
-  if(p.situazione === "pensione") add(s3, `Prima lavoravo, adesso viaggio.`, `I used to work, now I travel.`);
+  if(sit.includes("pensione")) add(s3, `Prima lavoravo, adesso viaggio.`, `I used to work, now I travel.`);
 
   /* ---- tastes ---- */
   const s4 = sec("I miei gusti", "What you like — the part that keeps a conversation going.");
@@ -5219,6 +5462,47 @@ function buildProfile(){
     const item = BEVANDE.find(x=>x[0]===b);
     if(item) add(s4, item[1], item[2], i===0?"beve":null);
   });
+  /* the detailed lists, if the person opened them */
+  const tierLines = (state, src, sec, askKey) => {
+    const st = state || {};
+    const byTier = {};
+    Object.keys(st).forEach(code => {
+      const row = src.find(x=>x[0]===code);
+      if(row) (byTier[st[code]] = byTier[st[code]] || []).push(row);
+    });
+    const P2 = a => a.filter(r=>r[4]==="p"), S1 = a => a.filter(r=>r[4]==="s");
+    if(byTier.love) add(sec, `Adoro ${joinIt(byTier.love.slice(0,5).map(r=>r[1]))}.`,
+      `I love ${joinEn(byTier.love.slice(0,5).map(r=>r[3]))}.`, askKey);
+    if(byTier.like){
+      const sg = S1(byTier.like), pl = P2(byTier.like);
+      if(sg.length) add(sec, `${sg.length>1?"Mi piacciono":"Mi piace"} ${joinIt(sg.slice(0,4).map(r=>r[1]))}.`,
+        `I like ${joinEn(sg.slice(0,4).map(r=>r[3]))}.`);
+      if(pl.length) add(sec, `Mi piacciono ${joinIt(pl.slice(0,4).map(r=>r[1]))}.`, `I like ${joinEn(pl.slice(0,4).map(r=>r[3]))}.`);
+    }
+    if(byTier.no){
+      const sg = S1(byTier.no), pl = P2(byTier.no);
+      if(sg.length) add(sec, `${sg.length>1?"Non mi piacciono":"Non mi piace"} molto ${joinIt(sg.slice(0,4).map(r=>r[1]))}.`,
+        `I'm not keen on ${joinEn(sg.slice(0,4).map(r=>r[3]))}.`);
+      if(pl.length) add(sec, `Non mi piacciono molto ${joinIt(pl.slice(0,4).map(r=>r[1]))}.`, `I'm not keen on ${joinEn(pl.slice(0,4).map(r=>r[3]))}.`);
+    }
+    if(byTier.hate){
+      const sg = S1(byTier.hate), pl = P2(byTier.hate);
+      if(sg.length) add(sec, `${sg.length>1?"Non mi piacciono":"Non mi piace"} per niente ${joinIt(sg.slice(0,3).map(r=>r[1]))}.`,
+        `I really can't stand ${joinEn(sg.slice(0,3).map(r=>r[3]))}.`);
+      if(pl.length) add(sec, `Non mi piacciono per niente ${joinIt(pl.slice(0,3).map(r=>r[1]))}.`, `I really can't stand ${joinEn(pl.slice(0,3).map(r=>r[3]))}.`);
+      add(sec, `Preferirei qualcosa senza, se è possibile.`, `I'd rather have something without it, if possible.`);
+    }
+    if(byTier.all){
+      byTier.all.slice(0,4).forEach(r=>{
+        add(sec, `Sono ${G("allergico","allergica")} ${r[2]}. È grave.`, `I'm allergic to ${r[3]}. It's serious.`);
+        add(sec, `${r[4]==="p"?"Ci sono":"C'è"} ${r[1]} in questo piatto?`, `Is there ${r[3]} in this dish?`);
+      });
+    }
+    if(byTier.now) add(sec, `In questo periodo non posso prendere ${joinIt(byTier.now.slice(0,3).map(r=>r[1]))}.`,
+      `I can't have ${joinEn(byTier.now.slice(0,3).map(r=>r[3]))} at the moment.`);
+  };
+  tierLines(p.cibi_x, CIBI_X, s4, "mangia");
+  tierLines(p.bev_x, BEVANDE_X, s4, "beve");
 
   /* ---- the trip ---- */
   const s5 = sec("Il viaggio", "Dates, transport, plans.");
@@ -5260,6 +5544,11 @@ function buildProfile(){
       add(s6, `Congratulazioni agli sposi!`, `Congratulations to the couple!`);
     } else {
       add(s6, `Siamo qui ${mot[1]}.`, `We're here ${mot[2]}.`, "porta");
+    }
+    const altri = (p.motivi2||[]).filter(c=>c!==p.motivo).map(c=>MOTIVI.find(m=>m[0]===c)).filter(Boolean);
+    if(altri.length){
+      add(s6, `E poi anche ${joinIt(altri.slice(0,3).map(m=>m[1]))}.`, `And also ${joinEn(altri.slice(0,3).map(m=>m[2]))}.`);
+      add(s6, `Restiamo anche ${altri[0][1]}.`, `We're also staying ${altri[0][2]}.`);
     }
   }
   if(p.religione && p.religione !== "no" && p.religione !== "altro"){

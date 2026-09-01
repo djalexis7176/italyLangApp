@@ -11,7 +11,7 @@ A single-page web app: phrases, verb conjugation, flashcards, matching, and role
 **Numbering changed at build 13.** Versions are now a plain count of downloads — 13, then 14, then 15 — instead of the old three-part numbers. The build formerly called 3.7.0 is listed in the app's changelog as *12 (was 3.7.0)*; everything before it keeps its original label.
 
 
-This build is **14**. The file is named `index-v14-my-phrases.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits under the **Andiamo.** wordmark at the top of every screen — `v14 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
+This build is **15**. The file is named `index-v15-english-search-and-detail.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits under the **Andiamo.** wordmark at the top of every screen — `v15 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
 
 ## How updating works
 
@@ -19,8 +19,8 @@ This build is **14**. The file is named `index-v14-my-phrases.html` — **rename
 
 When you upload a new build, change two numbers so phones know something moved:
 
-1. In `index.html`, near the top of the script: `const BUILD = "14";` — and add a line to the `CHANGES` list describing what you did.
-2. In `sw.js`, line 5: `const BUILD = "14";`
+1. In `index.html`, near the top of the script: `const BUILD = "15";` — and add a line to the `CHANGES` list describing what you did.
+2. In `sw.js`, line 5: `const BUILD = "15";`
 
 Keep them the same. If you forget, the app still updates (HTML is network-first), but the icons and manifest may stay on the old cached copies.
 
@@ -126,6 +126,14 @@ A toggle switches the whole set between **formal (lei)** and **informal (tu)**. 
 
 Grammar follows your answers: one question at the start sets whether Italian describes you as masculine or feminine, so you get *sono americano* or *sono americana*, *sposato* or *sposata*, all the way through. Jobs, nationalities, relationships and interests are picklists rather than free text, so they come out as real Italian; names, bands and titles are free text and print as you typed them.
 
+### Going into more detail
+
+Each step of the sheet shows a short set of questions. Where more depth is available there's a **More detail** button — on the tastes step it opens two long lists, 39 foods and 34 drinks, where each item is tapped to cycle through ♥ love · + like · – not keen · ✕ can't stand · ! allergic · ⏸ not right now. One more tap clears it. Only the ones you mark generate phrases, so you can spend thirty seconds or ten minutes on it.
+
+Marking shellfish as allergic gives you *Sono allergico ai crostacei. È grave.* and *Ci sono i crostacei in questo piatto?*; marking gluten as not-right-now gives *In questo periodo non posso prendere il glutine.*
+
+Other things the sheet handles: **no children** as an explicit answer (yours or ours), people **linked through other people** — a second box on each row turns girlfriend + cousin into *la fidanzata di mio cugino* — **several work situations at once** (student and looking for work and between jobs), several jobs, and a **main reason plus secondary reasons** for the trip.
+
 ### Privacy and moving it to another device
 
 Nothing is sent anywhere — the app has no server. **Export** writes a `.json` to your downloads that you can email or AirDrop to yourself; **Load a saved export**, at the bottom of the Saved tab, reads it back on the new device along with your notes and word list. Two things worth knowing: clearing your browser data erases it, and anyone with your unlocked phone can read it.
@@ -145,6 +153,8 @@ The search box in **Words** takes more than one word. Type `e poi gli chiede` an
 The word-by-word line is labelled as rough on purpose: Italian doesn't line up one word to one word, and the sentence beneath it is the honest translation. Small pronouns get a bit of context — `gli` before a verb reads as *to him*, not *the*.
 
 Words with a pronoun stuck on the end are unpicked: `prenderne` comes back as *prendere — to take / to have*, with a line saying **ne** is on the end meaning *of it*. Same for `assaggiarlo`, `portarvi`, `berne`, `mangialo`, `mostrarmelo`. Misspell one and the did-you-mean list peels the pronoun off too — `prederne` suggests **prendere + ne**.
+
+**English works in the box too.** Type `what`, `where`, `when`, `who`, `how much`, `how do you say`, `hungry`, `ticket` and you get the Italian for it, each result tappable for the full entry. Whole English phrases are matched against the app's own sentences, so `how do you say` finds *Come si dice ... in italiano?*
 
 Accented words are told apart properly: `e` is *and* while `è` is *he/she is*, `si` is *oneself* while `sì` is *yes*, `da` is *from* while `dà` is *he gives*. Typing without the accent still finds the word.
 
