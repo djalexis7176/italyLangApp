@@ -11,7 +11,7 @@ A single-page web app: phrases, verb conjugation, flashcards, matching, and role
 **Numbering changed at build 13.** Versions are now a plain count of downloads — 13, then 14, then 15 — instead of the old three-part numbers. The build formerly called 3.7.0 is listed in the app's changelog as *12 (was 3.7.0)*; everything before it keeps its original label.
 
 
-This build is **22**. The file is named `index-v22-saved-accordions.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits at the right of the blue bar at the top of every screen — `v22 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
+This build is **23**. The file is named `index-v23-pause-and-back.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits at the right of the blue bar at the top of every screen — `v23 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
 
 ## How updating works
 
@@ -19,8 +19,8 @@ This build is **22**. The file is named `index-v22-saved-accordions.html` — **
 
 When you upload a new build, change two numbers so phones know something moved:
 
-1. In `index.html`, near the top of the script: `const BUILD = "22";` — and add a line to the `CHANGES` list describing what you did.
-2. In `sw.js`, line 5: `const BUILD = "22";`
+1. In `index.html`, near the top of the script: `const BUILD = "23";` — and add a line to the `CHANGES` list describing what you did.
+2. In `sw.js`, line 5: `const BUILD = "23";`
 
 Keep them the same. If you forget, the app still updates (HTML is network-first), but the icons and manifest may stay on the old cached copies.
 
@@ -62,7 +62,7 @@ You get the gold **A.** icon, it opens full screen with no browser bars, and it 
 
 At the bottom of the blue **Andiamo.** tile on the Today tab, under the streak figures, there are two buttons: **♪ Voice & speed** on the left and **↻ Repeat · off** on the right. Tap the Repeat one and choose 3×, 5× or 10× — it turns gold and reads *↻ Repeat · 5×* so you can see it's on. From any other tab, the small **♪** at the top right of the blue bar opens the same panel. From then on every play button in the app — phrases, dictionary entries, verb forms, story lines, quiz feedback, your own phrases — says the Italian, leaves you a gap the same length to say it back, then says it again. The last time through is slower. The play buttons carry a small gold badge while it's on, so you always know why they're looping.
 
-**How long it waits** is its own setting in the same panel — Quick, Normal, Slow, Very slow — and it's also on screen during a hands-free session so you can adjust while practising. The gap is measured against the phrase rather than fixed, so *Ciao* stays brisk and *Sarebbe possibile per dodici persone, stasera?* gets the room it needs. Never shorter than 1.2 seconds, never longer than 12. Changing it plays a sample so you can hear the difference.
+Every reading is followed by a gap, including a single pass through a list, and there's a gap after the spoken English too. **How long it waits** is its own setting in the same panel — Quick, Normal, Slow, Very slow — and it's also on screen during a hands-free session so you can adjust while practising. The gap is measured against the phrase rather than fixed, so *Ciao* stays brisk and *Sarebbe possibile per dodici persone, stasera?* gets the room it needs. Never shorter than 1.2 seconds, never longer than 12. Changing it plays a sample so you can hear the difference.
 
 For hands-free practice there's **Practice → Repeat after me**, which works through a whole deck on its own with pause, skip and back. The same thing sits on every quick-reference page (*Repeat after me — the whole page*), on every story (line by line), and on your own phrases.
 
