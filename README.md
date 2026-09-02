@@ -11,7 +11,7 @@ A single-page web app: phrases, verb conjugation, flashcards, matching, and role
 **Numbering changed at build 13.** Versions are now a plain count of downloads — 13, then 14, then 15 — instead of the old three-part numbers. The build formerly called 3.7.0 is listed in the app's changelog as *12 (was 3.7.0)*; everything before it keeps its original label.
 
 
-This build is **19**. The file is named `index-v19-tile-controls.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits at the right of the blue bar at the top of every screen — `v19 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
+This build is **22**. The file is named `index-v22-saved-accordions.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits at the right of the blue bar at the top of every screen — `v22 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
 
 ## How updating works
 
@@ -19,8 +19,8 @@ This build is **19**. The file is named `index-v19-tile-controls.html` — **ren
 
 When you upload a new build, change two numbers so phones know something moved:
 
-1. In `index.html`, near the top of the script: `const BUILD = "19";` — and add a line to the `CHANGES` list describing what you did.
-2. In `sw.js`, line 5: `const BUILD = "19";`
+1. In `index.html`, near the top of the script: `const BUILD = "22";` — and add a line to the `CHANGES` list describing what you did.
+2. In `sw.js`, line 5: `const BUILD = "22";`
 
 Keep them the same. If you forget, the app still updates (HTML is network-first), but the icons and manifest may stay on the old cached copies.
 
@@ -62,9 +62,20 @@ You get the gold **A.** icon, it opens full screen with no browser bars, and it 
 
 At the bottom of the blue **Andiamo.** tile on the Today tab, under the streak figures, there are two buttons: **♪ Voice & speed** on the left and **↻ Repeat · off** on the right. Tap the Repeat one and choose 3×, 5× or 10× — it turns gold and reads *↻ Repeat · 5×* so you can see it's on. From any other tab, the small **♪** at the top right of the blue bar opens the same panel. From then on every play button in the app — phrases, dictionary entries, verb forms, story lines, quiz feedback, your own phrases — says the Italian, leaves you a gap the same length to say it back, then says it again. The last time through is slower. The play buttons carry a small gold badge while it's on, so you always know why they're looping.
 
-The gap is measured, not fixed: it times the first playback and matches it, so *Ciao* stays brisk and *Sarebbe possibile per dodici persone, stasera?* gets the room it needs.
+**How long it waits** is its own setting in the same panel — Quick, Normal, Slow, Very slow — and it's also on screen during a hands-free session so you can adjust while practising. The gap is measured against the phrase rather than fixed, so *Ciao* stays brisk and *Sarebbe possibile per dodici persone, stasera?* gets the room it needs. Never shorter than 1.2 seconds, never longer than 12. Changing it plays a sample so you can hear the difference.
 
 For hands-free practice there's **Practice → Repeat after me**, which works through a whole deck on its own with pause, skip and back. The same thing sits on every quick-reference page (*Repeat after me — the whole page*), on every story (line by line), and on your own phrases.
+
+### A whole verb out loud
+
+Open any verb — tap it in **Words**, or on a **Start here** card — and press **Run through this verb out loud**. Before it starts you choose:
+
+- **Forms and examples** (*essere · io sono · Io sono di San Diego · tu sei · Tu sei di Sydney …*, 13 lines) or **Forms only** (*io sono · tu sei · lui è …*, 7 lines)
+- **Once** through, like a list, or **3× / 5× / 10×** to drill each line before moving on
+- **🔊 Say the English too** — reads the translation after each line in an English voice, so it works with the phone in your pocket
+- **↺ Loop the list** — starts again at the top
+
+All four can be changed mid-run from the session screen, along with the pause length.
 
 One limitation worth knowing: phones stop web audio when the screen locks, so keep the screen awake for pocket practice.
 
@@ -163,9 +174,20 @@ Marking shellfish as allergic gives you *Sono allergico ai crostacei. È grave.*
 
 Other things the sheet handles: **no children** as an explicit answer (yours or ours), people **linked through other people** — a second box on each row turns girlfriend + cousin into *la fidanzata di mio cugino* — **several work situations at once** (student and looking for work and between jobs), several jobs, and a **main reason plus secondary reasons** for the trip.
 
+### The Saved tab
+
+Four bars you open and close, so a quick note doesn't mean scrolling past everything else:
+
+- **My sheet** — which of the six steps are filled in, with an Open button on each that jumps you straight there
+- **Your phrases** — your generated phrasebook, itself split into collapsible sections
+- **Word list** — words you starred in a pop-up
+- **Notes** — write, edit, delete
+
+Coming in from **Today → My phrases** opens straight onto your phrases, since that's what you asked for. Opening the **Saved** tab itself gives you all four bars to choose from.
+
 ### Privacy and moving it to another device
 
-Nothing is sent anywhere — the app has no server. **Export** writes a `.json` to your downloads that you can email or AirDrop to yourself; **Load a saved export**, at the bottom of the Saved tab, reads it back on the new device along with your notes and word list. Two things worth knowing: clearing your browser data erases it, and anyone with your unlocked phone can read it.
+Nothing is sent anywhere — the app has no server. **Download a backup**, at the bottom of the Saved tab, writes one `.json` to your downloads holding everything personal: your sheet answers, any phrases you reworded, your notes, your saved words and starred phrases, your streak and card progress, and your voice and repeat settings. Email or AirDrop it to yourself and use **Load a backup** on the new phone. Two things worth knowing: clearing your browser data erases it, and anyone with your unlocked phone can read it.
 
 ## Quick reference
 
