@@ -301,6 +301,8 @@ details.acc.slim .sub{display:block;font-weight:400;font-size:12.5px;color:var(-
 .crow .ex{display:flex;gap:8px;align-items:flex-start;margin:6px 0 0 0;font-size:14px}
 .crow .ex .speak{width:30px;height:30px;flex:0 0 30px;font-size:12px}
 .crow .exen{color:var(--muted);font-size:13.5px}
+.crow .exen i{color:var(--blu);font-style:normal}
+.crow .aud{font-size:11.5px;color:var(--rosso);background:#FBEDEB;border-radius:99px;padding:2px 8px}
 .ex{display:flex;gap:8px;align-items:flex-start;font-size:14.5px}
 .ex .speak{width:30px;height:30px;flex:0 0 30px;font-size:12px}
 .exen{color:var(--muted);font-size:13.5px}
@@ -797,7 +799,9 @@ const VERBS = [
 {i:"tenere",e:"to hold / to keep",fam:"ere",irr:1,f:["tengo","tieni","tiene","teniamo","tenete","tengono"],n:"Tieni! = here, take it."},
 {i:"piacere",e:"to be pleasing (to like)",fam:"ere",irr:1,f:["piaccio","piaci","piace","piacciamo","piacete","piacciono"],n:"In practice you only need piace (one thing) and piacciono (several)."}
 ];
-const PRON = ["io","tu","lui / lei","noi","voi","loro"];
+const PRON = ["io","tu","lui / lei / Lei","noi","voi","loro"];
+/* who each form is aimed at */
+const AUDIENCE = ["", "one friend", "him, her — and one stranger, politely", "", "any group, and any business", ""];
 
 /* ---------- DATA: nouns & words [italian, english, article, theme] ---------- */
 const NOUNS = [
@@ -1274,10 +1278,12 @@ const FUNC = [
 ["dritto","straight"],["destra","right (direction)"],["sinistra","left (direction)"],["via","street / away"],
 ["ben","nice and… / well","Ben luppolata = nice and hoppy."],
 /* pronouns and possessives */
-["io","I"],["tu","you (informal)"],["lui","he"],["lei","she / you (formal)"],["noi","we"],["voi","you (plural)"],
+["io","I"],["tu","you — one person you know"],["lui","he"],
+["lei","she / you (formal)","Capital Lei is the polite you, and it takes the lui/lei form of the verb: Lei può."],
+["noi","we"],["voi","you — more than one","Any group, and any business: Avete un tavolo? A shop is always voi."],
 ["loro","they / them"],["mi","me / to me / myself"],["ti","you / to you"],
 ["ci","us / to us / there","C'è, ci sono = there is, there are."],["vi","you (pl) / to you"],
-["si","oneself / one / people in general","Si mangia bene = one eats well here."],
+["si","oneself / one / people in general","Si mangia bene qui = one eats well here. Si può pagare con la carta = one can pay by card."],
 ["me","me (after a preposition)"],["te","you (after a preposition)"],
 ["ne","of it / of them","Ne prendo due = I'll take two of them."],["li","them (m)"],["glielo","it, to him / her / you"],
 ["mio","my (m)"],["mia","my (f)"],["miei","my (m pl)"],["mie","my (f pl)"],["tuo","your"],
@@ -2321,7 +2327,7 @@ STORIES.push(
 /* ============================================================
    ENGINE
    ============================================================ */
-const BUILD = "23";
+const BUILD = "24";
 const BUILT = "2026-08-31";
 const VERSTAMP = (function(){
   const [y,m,d] = BUILT.split("-");
@@ -2329,6 +2335,7 @@ const VERSTAMP = (function(){
 })();
 let UPD = {state:"unknown", at:0};
 const CHANGES = [
+  ["24","2026-08-31","Every verb example now shows who is speaking to whom. The third row is labelled lui / lei / Lei and carries a second example of the polite you; the voi row is marked as plural only, for groups and businesses. Eight core verbs have hand-written examples in each register. New grammar page on the four ways to say you, a drill on tu vs Lei vs voi, and clearer notes in the word pop-ups."],
   ["23","2026-08-31","Fixed the missing pause: reading a list once through now leaves you a gap after every line, not only between repeats, and there's a gap after the spoken English too. All four pause lengths are longer. Stop now takes you back where you started — the verb card, the story, the page you came from — instead of dumping you on Practice."],
   ["22","2026-08-31","Saved is four bars you open and close — My sheet, Your phrases, Word list, Notes — so a quick note doesn't mean scrolling past everything else. My sheet shows which steps are filled in and opens straight to any of them. Backup and restore now carry your progress and settings too, and say so. Every pop-up has an ✕ at the top as well as the button at the bottom."],
   ["21","2026-08-31","Run a verb out loud: open any verb and the app reads the whole conjugation to you, waiting after each line. Choose forms and examples or forms only, once through or 3/5/10 times each, with the English spoken too and an option to loop."],
@@ -3415,26 +3422,35 @@ function entryHTML(e, raw){
   if(e.kind === "form" || e.kind === "inf"){
     const v = e.v;
     const hit = v.f.map((f,i)=> norm(f)===norm(raw) ? i : -1).filter(i=>i>=0);
+    const extraUse = e.p === 2 ? ` — and the polite <b>you</b>, to one person you don't know`
+                    : e.p === 4 ? ` — always plural: a group, or a business` : "";
     const head = e.kind==="inf"
       ? `<b>${esc(v.i)}</b> = ${esc(v.e)} — this is the infinitive, the dictionary form.`
-      : `<b>${esc(v.f[e.p])}</b> = ${esc(PRON[e.p])} form of <b>${esc(v.i)}</b> (${esc(v.e)})`;
+      : `<b>${esc(v.f[e.p])}</b> = ${esc(PRON[e.p])} form of <b>${esc(v.i)}</b> (${esc(v.e)})${extraUse}`;
     return `
       <div style="font-size:15.5px">${head}</div>
       <div style="margin:6px 0"><span class="pill ${v.irr?"red":"green"}">${famLabel(v)}</span></div>
       <div class="conjlist">${PRON.map((p,i)=>{
         const exs = verbExamples(v,i);
         return `<div class="crow${hit.includes(i)?" hit":""}">
-          <div class="row" style="align-items:baseline;gap:8px">
+          <div class="row" style="align-items:baseline;gap:8px;flex-wrap:wrap">
             <span class="pron">${p}</span>
             <span class="form">${hilite(v,i)}</span>
             <span class="eng">= ${esc(engLabel(v,i))}</span>
+            ${AUDIENCE[i]?`<span class="aud">${esc(AUDIENCE[i])}</span>`:""}
           </div>
           ${exs.map(ex=>`<div class="ex">
             <button class="speak" data-say="${esc(ex.it)}">▶</button>
-            <div class="grow"><div>${gloss(ex.it)}</div><div class="exen">${esc(ex.en)}</div></div>
+            <div class="grow"><div>${gloss(ex.it)}</div>
+              <div class="exen">${esc(ex.en)}${ex.tag?` <i>— ${esc(ex.tag)}</i>`:""}</div></div>
           </div>`).join("")}
         </div>`;}).join("")}</div>
       <button class="btn quiet wide" data-run="${esc(v.i)}" style="margin:10px 0 2px">▶ Run through this verb out loud</button>
+      <div class="note" style="margin:10px 0 0;font-size:13.5px">
+        <b>lui / lei / Lei</b> does double duty: it's <i>he</i> and <i>she</i>, and it's also how you speak to one person you don't know.
+        <b>voi</b> is only ever plural — a group of people, or a business.
+        <button class="linkbtn" data-goyou>The four ways to say “you”</button>
+      </div>
       ${v.n?`<p class="small" style="margin:6px 0 0">${esc(v.n)}</p>`:""}
       ${hit.length>1?`<p class="small" style="margin:6px 0 0">Careful: this same form is used for ${hit.map(i=>PRON[i]).join(" and ")}. The rest of the sentence tells you which.</p>`:""}`;
   }
@@ -3544,7 +3560,55 @@ servire:[null,null,["Mi serve un tavolo per due.","I need a table for two."],nul
 colpire:[null,null,["Mi colpisce questo quadro.","This painting strikes me."],null,null,
        ["Mi colpiscono i colori.","The colours strike me."]],
 rappresentare:[null,null,["Che cosa rappresenta?","What does it represent?"],null,null,
-       ["Che cosa rappresentano?","What do they represent?"]]
+       ["Che cosa rappresentano?","What do they represent?"]],
+potere:[["Io posso pagare con la carta.","I can pay by card."],
+        ["Marco, tu puoi pagare con la carta.","Marco, you can pay by card.","to a friend — tu"],
+        ["Sì, signore, può pagare con la carta.","Yes sir, you can pay by card.","the polite you — same form as he/she"],
+        ["Noi possiamo pagare con la carta.","We can pay by card."],
+        ["Buone notizie: ora potete pagare tutti con la carta.","Good news: you can all pay by card now.","a waiter to a whole table — voi"],
+        ["Loro possono pagare con la carta.","They can pay by card."]],
+volere:[["Io voglio un caffè.","I want a coffee."],
+        ["Anna, vuoi un caffè?","Anna, do you want a coffee?","to a friend — tu"],
+        ["Signora, vuole un caffè?","Madam, would you like a coffee?","the polite you"],
+        ["Noi vogliamo due caffè.","We want two coffees."],
+        ["Ragazzi, volete un caffè?","Do you all want a coffee?","to a group — voi"],
+        ["Loro vogliono il conto.","They want the bill."]],
+dovere:[["Io devo prenotare.","I have to book."],
+        ["Marco, devi prenotare prima.","Marco, you have to book first.","to a friend — tu"],
+        ["Scusi, devo prenotare?","Excuse me, do I have to book?","the same form asks about you, politely: deve prenotare"],
+        ["Noi dobbiamo partire alle otto.","We have to leave at eight."],
+        ["Signori, dovete prenotare per il gruppo.","Gentlemen, you have to book for the group.","to a group — voi"],
+        ["Loro devono cambiare treno.","They have to change trains."]],
+andare:[["Io vado a Roma domani.","I'm going to Rome tomorrow."],
+        ["Anna, vai a Roma domani?","Anna, are you going to Rome tomorrow?","to a friend — tu"],
+        ["Scusi, va a Roma questo treno?","Excuse me, does this train go to Rome?","the same form is also the polite you: Lei va a Roma?"],
+        ["Noi andiamo a Roma domani.","We're going to Rome tomorrow."],
+        ["Ragazzi, andate a Roma anche voi?","Are you all going to Rome too?","to a group — voi"],
+        ["Loro vanno a Siena.","They're going to Siena."]],
+fare:[["Io faccio colazione alle otto.","I have breakfast at eight."],
+      ["Marco, che cosa fai stasera?","Marco, what are you doing tonight?","to a friend — tu"],
+      ["Scusi, fate colazione qui?","Excuse me, do you do breakfast here?","to a hotel or bar you'd use voi — the business is plural"],
+      ["Noi facciamo una passeggiata.","We're going for a walk."],
+      ["Ragazzi, fate voi la prenotazione?","Are you lot making the booking?","to a group — voi"],
+      ["Loro fanno il vino qui.","They make the wine here."]],
+dire:[["Io dico sempre la verità.","I always tell the truth."],
+      ["Anna, che cosa dici?","Anna, what are you saying?","to a friend — tu"],
+      ["Mi dica, signore.","Tell me, sir.","the polite form, and what a barista says to you: mi dica"],
+      ["Noi diciamo che è ottimo.","We say it's excellent."],
+      ["Ragazzi, ditemi dove andiamo.","Tell me where we're going, everyone.","to a group — voi"],
+      ["Loro dicono che è chiuso.","They say it's closed."]],
+parlare:[["Io parlo un po' d'italiano.","I speak a little Italian."],
+      ["Marco, parli inglese?","Marco, do you speak English?","to a friend — tu"],
+      ["Scusi, parla inglese?","Excuse me, do you speak English?","the polite you — the form you'll use with strangers"],
+      ["Noi parliamo inglese e spagnolo.","We speak English and Spanish."],
+      ["Ragazzi, parlate più piano, per favore.","Speak more quietly please, all of you.","to a group — voi"],
+      ["Loro parlano solo italiano.","They only speak Italian."]],
+capire:[["Io non capisco, mi scusi.","I don't understand, sorry."],
+      ["Marco, capisci l'italiano?","Marco, do you understand Italian?","to a friend — tu"],
+      ["Scusi, capisce l'inglese?","Excuse me, do you understand English?","the polite you"],
+      ["Noi capiamo poco.","We understand very little."],
+      ["Ragazzi, avete capito?","Have you all understood?","to a group — voi"],
+      ["Loro non capiscono l'inglese.","They don't understand English."]]
 };
 /* verbs whose meaning splits in two: a second example for the other sense */
 const VEX2 = {
@@ -3568,13 +3632,40 @@ finire:["il vino","the wine","finish"],
 trovare:["questo formaggio delizioso","this cheese delicious","find"]
 };
 const SUBJ = ["Io","Tu","Lui","Noi","Voi","Loro"];
+/* proper English questions: do you…, can you…, are you… */
+function enBase(v, e){
+  return (e && e[2]) ? e[2] : String(v.e).replace(/^to /,"").split(" / ")[0].split(" (")[0].trim();
+}
+function enQuestion(v, e, who){
+  const base = enBase(v, e), tail = e[1];
+  const first = base.split(" ")[0], rest = base.split(" ").slice(1).join(" ");
+  const tailFull = (rest ? rest + " " : "") + tail;
+  if(["can","must","should","will","may"].includes(first)) return `${first} ${who} ${tailFull}?`;
+  if(first === "be") return `are ${who} ${tailFull}?`;
+  return `do ${who} ${base} ${tail}?`;
+}
 function buildEx(v, i, e){
-  let en = engPerson(i, e[2] ? "to " + e[2] : v.e).replace(/^he \/ she /, "He ") + " " + e[1] + ".";
-  en = en[0].toUpperCase() + en.slice(1);
-  return {it: SUBJ[i] + " " + v.f[i] + " " + e[0] + ".", en};
+  const f = v.f[i], tail = e[0], enTail = e[1];
+  const verbEn = k => engPerson(k, e[2] ? "to " + e[2] : v.e);
+  const cap = t => t[0].toUpperCase() + t.slice(1);
+  switch(i){
+    case 0: return {it:`Io ${f} ${tail}.`, en:cap(verbEn(0) + " " + enTail + ".")};
+    case 1: return {it:`Marco, tu ${f} ${tail}?`, en:cap("marco, " + enQuestion(v, e, "you")), tag:"to a friend — tu"};
+    case 2: return {it:`Lui ${f} ${tail}.`, en:cap(verbEn(2).replace(/^he \/ she /,"He ") + " " + enTail + ".")};
+    case 3: return {it:`Noi ${f} ${tail}.`, en:cap(verbEn(3) + " " + enTail + ".")};
+    case 4: return {it:`Ragazzi, ${f} ${tail}?`, en:cap(enQuestion(v, e, "you all")), tag:"to a group — voi"};
+    case 5: return {it:`Loro ${f} ${tail}.`, en:cap(verbEn(5) + " " + enTail + ".")};
+  }
+}
+/* the polite "you", which borrows the lui/lei form */
+function politeEx(v, e){
+  if(!e) return null;
+  const q = enQuestion(v, e, "you");
+  return {it:`Scusi, signore, ${v.f[2]} ${e[0]}?`, en:`Excuse me sir, ${q}`,
+          tag:"same form, one stranger — Lei"};
 }
 function verbExample(v, i){
-  if(VEXF[v.i]) return VEXF[v.i][i] ? {it:VEXF[v.i][i][0], en:VEXF[v.i][i][1]} : null;
+  if(VEXF[v.i]) return VEXF[v.i][i] ? {it:VEXF[v.i][i][0], en:VEXF[v.i][i][1], tag:VEXF[v.i][i][2]} : null;
   return VEX[v.i] ? buildEx(v, i, VEX[v.i]) : null;
 }
 /* one example per sense of the verb */
@@ -3591,9 +3682,25 @@ function verbExamples(v, i){
   const out = [];
   const first = verbExample(v, i);
   if(first) out.push(first);
+  if(i === 2 && !VEXF[v.i]){ const p = politeEx(v, VEX[v.i]); if(p) out.push(p); }
   if(VEX2[v.i] && !VEXF[v.i]) out.push(buildEx(v, i, VEX2[v.i]));
   return out;
 }
+
+/* the "four ways to say you" link, wherever it appears */
+document.addEventListener("click", e=>{
+  const g = e.target.closest("[data-goyou]");
+  if(!g) return;
+  document.querySelectorAll(".sheetbg").forEach(x=>x.remove());
+  go("plan");
+  setTimeout(()=>{
+    const d = [...view.querySelectorAll("details")].find(x=>{
+      const sm = x.querySelector("summary");
+      return sm && /ways to say/.test(sm.textContent);
+    });
+    if(d){ d.open = true; scrollSafe(d); }
+  }, 40);
+});
 
 document.addEventListener("click", e=>{
   const x = e.target.closest("[data-x]");

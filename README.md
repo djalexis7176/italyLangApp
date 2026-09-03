@@ -11,7 +11,7 @@ A single-page web app: phrases, verb conjugation, flashcards, matching, and role
 **Numbering changed at build 13.** Versions are now a plain count of downloads — 13, then 14, then 15 — instead of the old three-part numbers. The build formerly called 3.7.0 is listed in the app's changelog as *12 (was 3.7.0)*; everything before it keeps its original label.
 
 
-This build is **23**. The file is named `index-v23-pause-and-back.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits at the right of the blue bar at the top of every screen — `v23 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
+This build is **24**. The file is named `index-v24-who-youre-speaking-to.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits at the right of the blue bar at the top of every screen — `v24 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
 
 ## How updating works
 
@@ -19,8 +19,8 @@ This build is **23**. The file is named `index-v23-pause-and-back.html` — **re
 
 When you upload a new build, change two numbers so phones know something moved:
 
-1. In `index.html`, near the top of the script: `const BUILD = "23";` — and add a line to the `CHANGES` list describing what you did.
-2. In `sw.js`, line 5: `const BUILD = "23";`
+1. In `index.html`, near the top of the script: `const BUILD = "24";` — and add a line to the `CHANGES` list describing what you did.
+2. In `sw.js`, line 5: `const BUILD = "24";`
 
 Keep them the same. If you forget, the app still updates (HTML is network-first), but the icons and manifest may stay on the old cached copies.
 
@@ -103,6 +103,19 @@ Two buttons at the top drill the lot: **Drill the 16 verbs** runs a conjugation 
 A full dictionary of everything the app uses — verbs, nouns, adjectives and the small words that hold sentences together. One button flips it between **Italian → English** and **English → Italian**, there's a search box that looks in both languages, filters for each word type, and an A–Z strip to jump down the list.
 
 Tap any entry and you get the same panel as tapping a word anywhere else: the meaning, the full verb table if it's a verb, and a real sentence from the app showing it in use. Expressions that need a person in front of them are conjugated out in full — look up **hunger** and you get *avere fame*, then ho fame / hai fame / ha fame / abbiamo fame / avete fame / hanno fame with the English beside each.
+
+## Who you're speaking to
+
+Italian has four ways of saying *you*, and the verb tables now make each one visible rather than leaving you to guess:
+
+- **tu** — one person you know. Tagged *one friend*.
+- **lui / lei / Lei** — the third row does double duty. It's *he* and *she*, and it's also how you address one stranger. Tagged *him, her — and one stranger, politely*, and it carries a second example showing exactly that: *Sì, signore, può pagare con la carta.*
+- **voi** — tagged *any group, and any business*. Never a polite singular in modern Italian.
+- **si** — the impersonal *one*, explained in the dictionary and the grammar page.
+
+Every example is framed so the audience is obvious: *Marco, tu paghi il conto?* for tu, *Ragazzi, pagate il conto?* for voi. Eight core verbs — potere, volere, dovere, andare, fare, dire, parlare, capire — have hand-written examples in each register, so potere reads *Io posso pagare con la carta · Marco, tu puoi pagare con la carta · Sì, signore, può pagare con la carta · Buone notizie: ora potete pagare tutti con la carta.*
+
+A note under every table repeats the rule and links to a new grammar page, **The four ways to say "you"**, in the Plan tab. There's also a *tu vs Lei vs voi* drill in Which word?, and the word pop-ups say which job a form is doing — tapping **può** tells you it's the lui/lei form *and the polite you*; tapping **potete** says *always plural: a group, or a business*.
 
 ## Verb tables
 
