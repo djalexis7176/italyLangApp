@@ -2209,6 +2209,93 @@ function convLines(c){
 }
 
 /* ============================================================
+   Numbers: spelling them out, and practising them
+   ============================================================ */
+const N_UNITS = ["zero","uno","due","tre","quattro","cinque","sei","sette","otto","nove"];
+const N_TEENS = ["dieci","undici","dodici","tredici","quattordici","quindici","sedici","diciassette","diciotto","diciannove"];
+const N_TENS  = ["","","venti","trenta","quaranta","cinquanta","sessanta","settanta","ottanta","novanta"];
+function numToIt(n){
+  n = Math.round(n);
+  if(n < 0) return "meno " + numToIt(-n);
+  if(n < 10) return N_UNITS[n];
+  if(n < 20) return N_TEENS[n-10];
+  if(n < 100){
+    const t = Math.floor(n/10), u = n % 10;
+    let base = N_TENS[t];
+    if(u === 0) return base;
+    if(u === 1 || u === 8) base = base.slice(0,-1);        /* ventuno, ventotto */
+    return base + (u === 3 ? "tré" : N_UNITS[u]);          /* ventitré */
+  }
+  if(n < 1000){
+    const h = Math.floor(n/100), r = n % 100;
+    let base = (h === 1 ? "cento" : N_UNITS[h] + "cento");
+    if(r === 0) return base;
+    const rest = numToIt(r);
+    if(/^o/.test(rest)) base = base.slice(0,-1);           /* centotto, centottanta */
+    return base + rest;
+  }
+  if(n < 1000000){
+    const k = Math.floor(n/1000), r = n % 1000;
+    let base = (k === 1 ? "mille" : numToIt(k) + "mila");
+    if(r === 0) return base;
+    return base + numToIt(r);
+  }
+  return String(n);
+}
+/* the stages, easiest first */
+const seq = (a,b,step)=>{ const o=[]; for(let i=a;i<=b;i+=step) o.push(i); return o; };
+const NUMSTAGES = [
+{id:"n1", t:"Zero to ten", b:"The ten you'll use most. Prices, platforms, people at a table.", n:seq(0,10,1)},
+{id:"n2", t:"Eleven to twenty", b:"These are their own words — not ten-one, ten-two.", n:seq(11,20,1)},
+{id:"n3", t:"The tens", b:"venti, trenta, quaranta… and note ventuno and ventotto lose a letter.", n:[10,20,30,40,50,60,70,80,90,100]},
+{id:"n4", t:"The traps: 4, 14, 40, 44, 400", b:"The ladder that catches everyone. Same root, four different words.",
+  n:[4,14,40,44,400, 5,15,50,55,500,5000, 6,16,60,66,600, 7,17,70,77,700, 8,18,80,88,800, 9,19,90,99,900]},
+{id:"n5", t:"Counting by twos", b:"Two at a time, to twenty.", n:seq(2,20,2)},
+{id:"n6", t:"Counting by fives", b:"Five at a time, to a hundred.", n:seq(5,100,5)},
+{id:"n7", t:"Counting by tens", b:"Ten at a time, to a hundred.", n:seq(10,100,10)},
+{id:"n8", t:"Tens and fives", b:"Now they alternate, so you can't run on autopilot.", n:[10,15,20,25,30,35,40,45,50,55,60,65,70,75,80]},
+{id:"n9", t:"Tens and doubles", b:"venti, ventidue, trenta, trentatré — the doubled ones.", n:[10,11,20,22,30,33,40,44,50,55,60,66,70,77,80,88,90,99]},
+{id:"n10", t:"Mixed jumps", b:"No pattern at all. This is what real numbers sound like.", n:[10,12,22,27,37,39,48,53,66,74,89,91,15,64,73,28]},
+{id:"n11", t:"Hundreds", b:"cento on its own, then duecento, trecento…", n:[100,200,300,400,500,600,700,800,900,1000]},
+{id:"n12", t:"Big ones", b:"Prices, years and distances.", n:[1200,1500,2000,2026,3500,4750,10000,45,999,101]}
+];
+/* numbers where they actually turn up */
+const NUMSENT = [
+["Sono quarantasei euro in tutto.","That's forty-six euros altogether."],
+["Il treno parte dal binario sette.","The train leaves from platform seven."],
+["Un tavolo per quattro, per favore.","A table for four, please."],
+["Siamo in diciotto.","There are eighteen of us."],
+["Ci vediamo alle otto e mezza.","See you at half past eight."],
+["Un etto e mezzo di prosciutto.","A hundred and fifty grams of ham."],
+["Ho cinquantadue anni.","I'm fifty-two."],
+["Costa dodici euro e cinquanta.","It costs twelve euros fifty."],
+["Camera trentaquattro, secondo piano.","Room thirty-four, second floor."],
+["Restiamo quattordici giorni.","We're staying fourteen days."],
+["Sono due chilometri e mezzo.","It's two and a half kilometres."],
+["Il museo chiude alle diciotto.","The museum closes at six in the evening."],
+["Una bottiglia da settantacinque centilitri.","A seventy-five centilitre bottle."],
+["Questa birra ha sei gradi e mezzo.","This beer is six and a half percent."],
+["Il conto è novantotto euro.","The bill is ninety-eight euros."],
+["Prendiamo il treno delle sedici e venti.","We'll take the 16:20 train."]
+];
+const NUMRULES = [
+["The first twenty are their own words",
+ "uno, due, tre, quattro, cinque, sei, sette, otto, nove, dieci — then undici, dodici, tredici, quattordici, quindici, sedici, and from seventeen the pattern flips: diciassette, diciotto, diciannove."],
+["Tens plus units run together as one word",
+ "venti + due = ventidue. trenta + cinque = trentacinque. No space, no 'and'."],
+["…except before uno and otto, where the ten drops its last letter",
+ "ventuno, ventotto, trentuno, trentotto, quarantuno, quarantotto, ottantuno, ottantotto."],
+["tre takes an accent when it's on the end",
+ "tre on its own, but ventitré, trentatré, quarantatré, cinquantatré."],
+["cento never takes 'un'",
+ "cento, not un cento. Then duecento, trecento. And it elides before otto: centotto, centottanta."],
+["mille becomes mila after one",
+ "mille, duemila, tremila, diecimila. 1200 is milleduecento — one word."],
+["Watch the four that sound alike",
+ "quattro (4), quattordici (14), quaranta (40), quarantaquattro (44), quattrocento (400). Same for cinque, sei, sette, otto, nove."]
+];
+
+/* ============================================================
    DATA: story lessons
    One classic restaurant joke, told seven ways. Same skeleton,
    different people, different thing being shared — so the
@@ -2603,7 +2690,7 @@ STORIES.push(
 /* ============================================================
    ENGINE
    ============================================================ */
-const BUILD = "25";
+const BUILD = "26";
 const BUILT = "2026-08-31";
 const VERSTAMP = (function(){
   const [y,m,d] = BUILT.split("-");
@@ -2611,6 +2698,7 @@ const VERSTAMP = (function(){
 })();
 let UPD = {state:"unknown", at:0};
 const CHANGES = [
+  ["26","2026-08-31","Numbers and counting: twelve stages from zero to ten up through counting by twos, fives and tens, the 4/14/40/44/400 traps, mixed jumps and big numbers. Each stage can be said out loud, listened to and tapped, or written out. Plus the seven rules behind Italian numbers and sixteen numbers in real sentences."],
   ["25","2026-08-31","Six conversations set around Bassano del Grappa, with your own name, family, dates and drink preferences filled in from your sheet — the wedding introduction, who's who at the table, asking a local, the winery, the taproom, and bumping into them again. Each can be read, answered line by line, or run hands-free with the repeat drill. Plus a Directions page covering the answers as well as the questions, the road vocabulary to go with it, and two new drills: tu vs Lei vs voi, and vada vs vai."],
   ["24","2026-08-31","Every verb example now shows who is speaking to whom. The third row is labelled lui / lei / Lei and carries a second example of the polite you; the voi row is marked as plural only, for groups and businesses. Eight core verbs have hand-written examples in each register. New grammar page on the four ways to say you, a drill on tu vs Lei vs voi, and clearer notes in the word pop-ups."],
   ["23","2026-08-31","Fixed the missing pause: reading a list once through now leaves you a gap after every line, not only between repeats, and there's a gap after the spoken English too. All four pause lengths are longer. Stop now takes you back where you started — the verb card, the story, the page you came from — instead of dumping you on Practice."],
@@ -2643,7 +2731,7 @@ const store = (()=>{
   try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); return localStorage; }
   catch(e){ const m={}; return {getItem:k=>(k in m?m[k]:null), setItem:(k,v)=>{m[k]=String(v)}, removeItem:k=>{delete m[k]}}; }
 })();
-const DEF = {xp:0, streak:0, last:"", start:"", box:{}, star:{}, seen:{}, day:1, rate:0.9, voice:"", repeat:0, gap:1.5, list:{}, notes:[], draft:"", profile:{}, profileEdits:{}, profileReg:"lei", profileDone:false, sheetOpen:false};
+const DEF = {xp:0, streak:0, last:"", start:"", box:{}, star:{}, seen:{}, numDone:{}, day:1, rate:0.9, voice:"", repeat:0, gap:1.5, list:{}, notes:[], draft:"", profile:{}, profileEdits:{}, profileReg:"lei", profileDone:false, sheetOpen:false};
 let S = Object.assign({}, DEF, JSON.parse(store.getItem("andiamo")||"{}"));
 const save = () => store.setItem("andiamo", JSON.stringify(S));
 function today(){ return new Date().toISOString().slice(0,10); }
@@ -2820,7 +2908,7 @@ function renderHome(){
       <div class="grid2">
         ${[["flash","Flashcards"],["quiz","Quick quiz"],["listen","Listen &amp; choose"],["match","Matching"],
            ["conj","Conjugation"],["which","Which word?"],["cloze","Fill the gap"],["qa","Answer them"],
-           ["build","Sentence builder"],["dialog","Role-play"],["story","Stories"],["conv","Conversations"]]
+           ["build","Sentence builder"],["dialog","Role-play"],["story","Stories"],["conv","Conversations"],["num","Numbers"]]
           .map(([k,n])=>`<button class="match" data-drill="${k}">${n}</button>`).join("")}
       </div>
       <button class="btn quiet wide" id="allPractice" style="margin-top:10px">Open the Practice tab</button>
@@ -3028,6 +3116,7 @@ const DRILLS = [
  ["qa","Answer them","They ask, you answer. Choose the reply that actually works."],
  ["build","Sentence builder","Words in the wrong order. Put them back."],
  ["dialog","Role-play","Whole conversations. Your lines stay hidden until you've tried them out loud."],
+ ["num","Numbers & counting","Twelve stages from zero to ten up to mixed jumps, plus the traps: 4, 14, 40, 44, 400."],
  ["conv","Conversations","Six conversations around Bassano, written with your own name, family and tastes in them."],
  ["story","Stories","A restaurant story told seven ways. Listen, read, translate, then fill the gaps."],
  ["repeat","Repeat after me","It says a phrase, waits while you say it back, then says it again. Hands free."]
@@ -3117,6 +3206,7 @@ function startDrill(type, deck){
   if(type==="dialog") return startDialog();
   if(type==="story")  return startStory();
   if(type==="conv")   return startConv();
+  if(type==="num")    return startNumbers();
   if(type==="repeat") return startRepeatRun(studyOrder(pool(deckSel), 20), "Repeat after me");
   let steps = [], title = "";
   switch(type){
@@ -3383,6 +3473,7 @@ let special = null;
 TABS.drills = function(){ if(special && !sess) return paintSpecial(); return renderDrills(); };
 function paintSpecial(){
   if(special.type === "repeat") return paintRepeat();
+  if(special.type === "num") return special.stage ? paintNum() : paintNumList();
   if(special.type === "conv") return special.pick ? paintConv() : paintConvList();
   if(special.type === "match") return paintMatch();
   if(special.type === "story") return special.pick ? paintStory() : paintStoryList();
@@ -4236,6 +4327,7 @@ const EXAMPLES = (function(){
   DIALOGHI.forEach(d => d.l.forEach(l => add(l[1], l[2])));
   STORIES.forEach(st => st.l.forEach(l => add(l[0], l[1])));
   CONV.forEach(c => c.l.forEach(l => { if(!/\{/.test(l[1])) add(l[1], l[2]); }));
+  NUMSENT.forEach(x => add(x[0], x[1]));
   return idx;
 })();
 
@@ -6446,6 +6538,7 @@ const HOWTO_TIPS = [
 ["Repeat after me","The gold ↻ Repeat button beside it. Set 3×, 5× or 10× and every ▶ waits for you to say it back."],
 ["A verb, out loud","Open any verb and press Run through this verb out loud — the whole conjugation, read to you, with gaps."],
 ["Conversations","Practice → Conversations puts your own name, family and tastes into six scripts set around Bassano."],
+["Numbers","Practice → Numbers & counting: twelve stages, three ways to drill each one."],
 ["★ keeps a phrase","Saved phrases become their own practice deck."],
 ["Practise one word","At the bottom of any word pop-up: 10, 20, 30 or 50 questions on that word alone."],
 ["It works offline","Once you've opened it with signal, it keeps working without any."]
@@ -6861,6 +6954,202 @@ function paintConv(){
   $("#playConv").onclick = ()=> speakLines(lines.map(l=>l[1]));
   $("#repeatConv").onclick = ()=> startRepeatRun(lines.map(l=>({it:l[1], en:l[2]})), c.t,
     {back: ()=>{ special = {type:"conv", pick:c.id, mode:"practise", shown:{}}; go("drills"); }});
+}
+
+
+/* ---------- Numbers: the practice screens ---------- */
+function startNumbers(){ special = {type:"num", stage:null, mode:null, i:0, right:0, wrong:0}; sess = null; go("drills"); }
+function numItems(st){ return st.n.map(n=>({n, it:numToIt(n)})); }
+
+function paintNumList(){
+  const done = S.numDone || {};
+  view.innerHTML = `
+    <div class="row" style="align-items:center;margin:14px 0 8px">
+      <div class="grow"><div style="font-weight:700">Numbers &amp; counting</div>
+        <div class="small">Twelve stages, easy first. Prices, platforms, ages, times.</div></div>
+      <button class="btn quiet" id="exitNum">Stop</button>
+    </div>
+    <details class="acc slim"><summary>How Italian numbers work<span class="sub">Seven rules, then you can build any of them</span></summary>
+      <div class="body">
+        ${NUMRULES.map(r=>`<p style="margin:0 0 10px"><b>${esc(r[0])}</b><br><span class="small">${esc(r[1])}</span></p>`).join("")}
+        <div class="card" style="padding:2px 12px">
+          ${[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20].map(n=>`
+            <div class="phrase"><div class="row" style="align-items:center">
+              <button class="speak" data-say="${numToIt(n)}">▶</button>
+              <div class="grow"><span style="display:inline-block;width:34px;font-weight:700">${n}</span>
+                <span class="it">${gloss(numToIt(n))}</span></div>
+            </div></div>`).join("")}
+        </div>
+      </div>
+    </details>
+    ${NUMSTAGES.map(st=>`<div class="card tight"><div class="row" style="align-items:center">
+      <div class="grow"><div style="font-weight:700">${esc(st.t)} ${done[st.id]?'<span class="pill green" style="font-size:10px">done</span>':""}</div>
+        <div class="small">${esc(st.b)}</div>
+        <div class="small" style="color:var(--blu);margin-top:2px">${st.n.slice(0,6).join(" · ")}${st.n.length>6?" …":""}</div></div>
+      <button class="btn quiet" data-stage="${st.id}">Open</button>
+    </div></div>`).join("")}
+    <div class="card tight"><div class="row" style="align-items:center">
+      <div class="grow"><div style="font-weight:700">Numbers in a sentence</div>
+        <div class="small">Sixteen real ones: prices, platforms, room numbers, times.</div></div>
+      <button class="btn quiet" id="numSent">Open</button>
+    </div></div>`;
+  $("#exitNum").onclick = ()=>{ special = null; renderDrills(); };
+  $("#numSent").onclick = ()=> startRepeatRun(NUMSENT.map(x=>({it:x[0], en:x[1]})), "Numbers in a sentence",
+    {back: ()=>{ special = {type:"num", stage:null}; go("drills"); }});
+  view.querySelectorAll("[data-stage]").forEach(b=> b.onclick = ()=>{
+    special.stage = b.dataset.stage; special.mode = null; paintNum();
+  });
+}
+
+function paintNum(){
+  const st = NUMSTAGES.find(x=>x.id===special.stage);
+  if(!special.mode) return paintNumModes(st);
+  if(special.mode === "say")  return paintNumSay(st);
+  if(special.mode === "pick") return paintNumPick(st);
+  if(special.mode === "type") return paintNumType(st);
+}
+function numHeader(st, sub){
+  return `<div class="row" style="align-items:center;margin:14px 0 6px">
+      <div class="grow"><div style="font-weight:700">${esc(st.t)}</div><div class="small">${esc(sub)}</div></div>
+      <button class="btn quiet" id="backNum">Back</button>
+    </div>`;
+}
+function paintNumModes(st){
+  view.innerHTML = `
+    ${numHeader(st, st.b)}
+    <div class="card">
+      <div class="small">This stage</div>
+      <div class="chips" style="margin-top:6px">${st.n.map(n=>`<span class="chip" style="font-weight:700">${n}</span>`).join("")}</div>
+    </div>
+    <button class="rowbtn" data-nmode="say"><span>Say them out loud<span class="sub">The number appears, you say it, then you hear it</span></span><span class="go">›</span></button>
+    <button class="rowbtn" data-nmode="pick"><span>Listen and pick<span class="sub">Hear the Italian, tap the right number</span></span><span class="go">›</span></button>
+    <button class="rowbtn" data-nmode="type"><span>Write it out<span class="sub">See the number, type the Italian</span></span><span class="go">›</span></button>
+    <button class="btn ghost wide" id="playNum" style="margin-top:10px">Just read them to me</button>`;
+  $("#backNum").onclick = ()=>{ special.stage = null; paintNumList(); };
+  view.querySelectorAll("[data-nmode]").forEach(b=> b.onclick = ()=>{
+    special.mode = b.dataset.nmode; special.i = 0; special.right = 0; special.wrong = 0; special.shown = false; paintNum();
+  });
+  $("#playNum").onclick = ()=> startRepeatRun(numItems(st).map(x=>({it:x.it, en:String(x.n)})), st.t,
+    {back: ()=>{ special = {type:"num", stage:st.id, mode:null}; go("drills"); }});
+}
+
+/* you see the digits, you say it, then it tells you */
+function paintNumSay(st){
+  const items = numItems(st), sp = special, it = items[sp.i];
+  const last = sp.i >= items.length - 1;
+  view.innerHTML = `
+    ${numHeader(st, `${sp.i+1} of ${items.length} · say it, then check`)}
+    <div class="bar"><i style="width:${sp.i/items.length*100}%"></i></div>
+    <div class="card flash" style="min-height:200px">
+      <div style="font-family:var(--serif);font-size:62px;font-weight:700;line-height:1">${it.n}</div>
+      ${sp.shown
+        ? `<div class="it" style="font-size:22px">${gloss(it.it)}</div>
+           <button class="speak" data-say="${it.it}">▶</button>`
+        : `<button class="btn ghost" id="revealNum">Say it, then tap to hear it</button>`}
+    </div>
+    <div class="row" style="gap:8px">
+      <button class="btn ghost" id="prevNum" ${sp.i?"":"disabled"}>Back</button>
+      <button class="btn grow" id="nextNum">${last?"Finish":"Next"}</button>
+    </div>
+    <button class="btn quiet wide" id="autoNum" style="margin-top:10px">Run the whole stage hands-free</button>`;
+  $("#backNum").onclick = ()=>{ special.mode = null; paintNum(); };
+  if($("#revealNum")) $("#revealNum").onclick = ()=>{ sp.shown = true; paintNum(); speak(it.it); };
+  $("#prevNum").onclick = ()=>{ sp.i = Math.max(0, sp.i-1); sp.shown = false; paintNum(); };
+  $("#nextNum").onclick = ()=>{
+    if(last){ S.numDone = S.numDone || {}; S.numDone[st.id] = 1; addXp(3); save(); special.mode = null; paintNum(); toast("Stage done"); }
+    else { sp.i++; sp.shown = false; paintNum(); }
+  };
+  $("#autoNum").onclick = ()=> startRepeatRun(items.map(x=>({it:x.it, en:String(x.n)})), st.t,
+    {back: ()=>{ special = {type:"num", stage:st.id, mode:null}; go("drills"); }});
+}
+
+/* hear it, tap the digits */
+function paintNumPick(st){
+  const items = numItems(st), sp = special;
+  if(sp.i >= items.length) return paintNumDone(st);
+  const it = items[sp.i];
+  const others = shuffle(items.filter(x=>x.n !== it.n)).slice(0,3);
+  const opts = shuffle([it].concat(others.length ? others : numItems(NUMSTAGES[9]).slice(0,3)));
+  view.innerHTML = `
+    ${numHeader(st, `${sp.i+1} of ${items.length} · ${sp.right} right`)}
+    <div class="bar"><i style="width:${sp.i/items.length*100}%"></i></div>
+    <div class="card" style="text-align:center">
+      <button class="btn quiet wide" id="playIt">▶ Play it again</button>
+    </div>
+    <div class="grid2">${opts.map(o=>`<button class="match" data-num="${o.n}" style="font-size:22px;font-weight:700">${o.n}</button>`).join("")}</div>`;
+  $("#backNum").onclick = ()=>{ special.mode = null; paintNum(); };
+  speak(it.it);
+  $("#playIt").onclick = ()=> speak(it.it);
+  view.querySelectorAll("[data-num]").forEach(b=> b.onclick = ()=>{
+    const ok = +b.dataset.num === it.n;
+    view.querySelectorAll("[data-num]").forEach(x=>{
+      x.disabled = true;
+      if(+x.dataset.num === it.n) x.classList.add("correct");
+      else if(x === b) x.classList.add("wrong");
+    });
+    ok ? sp.right++ : sp.wrong++;
+    const fb = document.createElement("div");
+    fb.className = "fb " + (ok?"ok":"no");
+    fb.innerHTML = `<b>${it.n}</b> = ${gloss(it.it)}`;
+    view.appendChild(fb);
+    const nx = document.createElement("button");
+    nx.className = "btn wide"; nx.style.marginTop = "6px";
+    nx.textContent = sp.i+1 >= items.length ? "See the score" : "Next";
+    nx.onclick = ()=>{ sp.i++; paintNum(); };
+    view.appendChild(nx);
+    scrollSafe(nx);
+  });
+}
+
+/* see the digits, write the Italian */
+function paintNumType(st){
+  const items = numItems(st), sp = special;
+  if(sp.i >= items.length) return paintNumDone(st);
+  const it = items[sp.i];
+  view.innerHTML = `
+    ${numHeader(st, `${sp.i+1} of ${items.length} · ${sp.right} right`)}
+    <div class="bar"><i style="width:${sp.i/items.length*100}%"></i></div>
+    <div class="card" style="text-align:center">
+      <div style="font-family:var(--serif);font-size:58px;font-weight:700;line-height:1.1">${it.n}</div>
+      <input class="answer" id="numAns" autocapitalize="off" autocomplete="off" spellcheck="false"
+        placeholder="write it in Italian" style="margin-top:12px">
+      <button class="btn wide" id="checkNum" style="margin-top:10px">Check</button>
+      <p class="small" style="margin:8px 0 0">Accents don't matter — ventitre is fine.</p>
+    </div>`;
+  $("#backNum").onclick = ()=>{ special.mode = null; paintNum(); };
+  const inp = $("#numAns"); inp.focus();
+  const check = ()=>{
+    const ok = norm(inp.value) === norm(it.it);
+    ok ? sp.right++ : sp.wrong++;
+    inp.disabled = true; $("#checkNum").disabled = true;
+    const fb = document.createElement("div");
+    fb.className = "fb " + (ok?"ok":"no");
+    fb.innerHTML = ok ? `<b>${gloss(it.it)}</b> — right.`
+      : `It's <b>${gloss(it.it)}</b>. You wrote “${esc(inp.value||"—")}”.`;
+    view.appendChild(fb);
+    const nx = document.createElement("button");
+    nx.className = "btn wide"; nx.style.marginTop = "6px";
+    nx.textContent = sp.i+1 >= items.length ? "See the score" : "Next";
+    nx.onclick = ()=>{ sp.i++; paintNum(); };
+    view.appendChild(nx);
+    speak(it.it);
+    scrollSafe(nx);
+  };
+  $("#checkNum").onclick = check;
+  inp.onkeydown = e => { if(e.key === "Enter") check(); };
+}
+function paintNumDone(st){
+  const sp = special, total = sp.right + sp.wrong;
+  S.numDone = S.numDone || {};
+  if(sp.right >= total * 0.8){ S.numDone[st.id] = 1; save(); }
+  view.innerHTML = `
+    <h1 style="margin-top:24px">${sp.right} / ${total}</h1>
+    <p class="lede">${sp.right === total ? "Every one." : "The ones you missed will come round again."}</p>
+    <button class="btn wide" id="againNum">Same stage again</button>
+    <button class="btn ghost wide" id="nextStage" style="margin-top:8px">Back to the stages</button>`;
+  addXp(2);
+  $("#againNum").onclick = ()=>{ sp.i = 0; sp.right = 0; sp.wrong = 0; paintNum(); };
+  $("#nextStage").onclick = ()=>{ special.stage = null; special.mode = null; paintNumList(); };
 }
 
 /* ---------- keep the app up to date, and working offline ---------- */

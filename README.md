@@ -11,7 +11,7 @@ A single-page web app: phrases, verb conjugation, flashcards, matching, and role
 **Numbering changed at build 13.** Versions are now a plain count of downloads — 13, then 14, then 15 — instead of the old three-part numbers. The build formerly called 3.7.0 is listed in the app's changelog as *12 (was 3.7.0)*; everything before it keeps its original label.
 
 
-This build is **25**. The file is named `index-v25-conversations.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits at the right of the blue bar at the top of every screen — `v25 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
+This build is **26**. The file is named `index-v26-numbers.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits at the right of the blue bar at the top of every screen — `v26 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
 
 ## How updating works
 
@@ -19,8 +19,8 @@ This build is **25**. The file is named `index-v25-conversations.html` — **ren
 
 When you upload a new build, change two numbers so phones know something moved:
 
-1. In `index.html`, near the top of the script: `const BUILD = "25";` — and add a line to the `CHANGES` list describing what you did.
-2. In `sw.js`, line 5: `const BUILD = "25";`
+1. In `index.html`, near the top of the script: `const BUILD = "26";` — and add a line to the `CHANGES` list describing what you did.
+2. In `sw.js`, line 5: `const BUILD = "26";`
 
 Keep them the same. If you forget, the app still updates (HTML is network-first), but the icons and manifest may stay on the old cached copies.
 
@@ -131,6 +131,18 @@ tu    sei   = you are
 Verbs with two meanings show an example for each: `prendo` gives both *Io prendo il treno delle otto — I take the eight o'clock train* and *Io prendo un caffè al banco — I have a coffee at the counter*, and the label reads `= I take / have`. Eighteen verbs carry a second sense this way.
 
 Verbs that don't work in every person — costare, durare, servire, interessare, colpire — show examples only where a real sentence exists (*Quanto costa il caffè? · Mi colpiscono i colori*).
+
+## Numbers & counting
+
+**Practice → Numbers & counting** has twelve stages that get harder in a deliberate order:
+
+Zero to ten · Eleven to twenty · The tens · **The traps: 4, 14, 40, 44, 400** · Counting by twos · by fives · by tens · Tens and fives alternating · Tens and doubles (10, 11, 20, 22, 30, 33) · Mixed jumps with no pattern · Hundreds · Big ones (1200, 2026, 4750, 10000)
+
+Each stage runs three ways: **Say them out loud** (the number appears, you say it, then tap to hear it), **Listen and pick** (hear the Italian, tap the right digits), and **Write it out** (see the digits, type the Italian — accents optional). There's also a hands-free option that reads the whole stage with your repeat settings.
+
+An accordion at the top gives the seven rules — why *ventuno* and *ventotto* lose a letter, why *ventitré* takes an accent, why *cento* never takes *un*, why *mille* becomes *mila* — with 0 to 20 laid out and spoken.
+
+A thirteenth set, **Numbers in a sentence**, puts them where you'll meet them: *Sono quarantasei euro in tutto · Il treno parte dal binario sette · Camera trentaquattro, secondo piano · Prendiamo il treno delle sedici e venti.*
 
 ## Conversations
 
