@@ -938,6 +938,19 @@ const PAIRS = [
  items:[["___ è il nostro primo viaggio in Italia.","Questo","Quello","Here and now."],
         ["Vorrei ___ formaggio là in fondo.","quel","questo","Over there in the case."],
         ["___ birra qui è artigianale?","Questa","Quella","The one in front of you, feminine."]]},
+{t:"tu vs Lei vs voi",rule:"tu = one person you know. Lei = one person you don't, and it borrows the lui/lei form of the verb. voi = any group, and any business.",
+ items:[["Scusi, ___ parlare più lentamente? (to a stranger)","può","puoi","Lei takes the lui/lei form — può."],
+        ["Marco, ___ venire con noi stasera? (to a friend)","puoi","può","tu takes the -i ending — puoi."],
+        ["Ragazzi, ___ pagare con la carta. (a waiter to a table)","potete","può","A whole table is voi — potete."],
+        ["Scusi, ___ birra artigianale? (to a shop)","avete","ha","A business is always voi, even with one assistant standing there."],
+        ["___, signora, come sta?","Scusi","Scusa","Formal scusi goes with the formal verb."],
+        ["Anna, ___ di dove sei?","tu","Lei","With a friend it's tu all the way through."]]},
+{t:"vada vs vai — giving directions",rule:"Directions to a stranger use the polite command, which is the lui/lei form: vada, giri, prenda, attraversi. To a friend: vai, gira, prendi, attraversa.",
+ items:[["Scusi? ___ sempre dritto fino al ponte.","Vada","Vai","To a stranger, the polite vada."],
+        ["Marco, ___ dritto e poi gira a destra.","vai","vada","To a friend it's vai."],
+        ["___ la seconda a destra, signora.","Prenda","Prendi","Polite command from prendere."],
+        ["Anna, ___ il ponte e sei arrivata.","attraversa","attraversi","tu form of attraversare."],
+        ["___ le indicazioni per Marostica, signore.","Segua","Segui","Polite command from seguire."]]},
 {t:"piccante vs saporito",rule:"piccante = chilli hot. saporito = full of flavour, well seasoned (and sometimes a bit salty).",
  items:[["Ci piace il cibo molto ___, con peperoncino.","piccante","saporito","Chilli heat."],
         ["Questo pecorino è molto ___.","saporito","piccante","Strong tasty flavour, not chilli."],
@@ -1515,7 +1528,50 @@ const FUNC = [
 ["tuoi","your (m pl)"],["tue","your (f pl)"],["nostri","our (m pl)"],["nostre","our (f pl)"],
 ["c'è","there is"],["ci","us / to us / there"],["sazi","full up (m pl)"],["sazie","full up (f pl)"],
 ["qualcos'","something","Qualcos'altro = something else."],["mare","sea","Frutti di mare = seafood."],
-["camera","room (hotel)"],["stanotte","tonight / last night"],["stanza","room"],["albergo","hotel"],["prenotazione","booking"],
+["camera","room (hotel)"],
+["contrà","contrada, a hamlet or lane","Contrà Soarda, the winery above Bassano."],
+["alessandro","Alessandro (a name)"],["lieto","pleased","Molto lieto = pleased to meet you."],
+["realtà","reality","In realtà = actually."],["cresciuti","grew up","Siamo cresciuti insieme."],
+["crescere","to grow / to grow up"],["dagli","from the (m pl)","Vengo dagli Stati Uniti."],
+["quattordici","fourteen"],["sardegna","Sardinia"],["sicilia","Sicily"],
+["birrifici","breweries"],["quarti","quarters","Tre quarti d'ora = three quarters of an hour."],
+["quarto","quarter"],["segno","I note down / sign","Me lo segno = I'll note that down."],
+["segnare","to note down"],["segniamo","we'll note down"],["andremo","we will go"],
+["faremo","we will do"],["diciotto","eighteen"],["signora","madam / Mrs"],["signore","sir / gentleman"],
+["signori","ladies and gentlemen"],["cugina","cousin (f)"],["verde","green"],["ah","ah"],
+["applicazione","app"],["impegni","you put the effort in / commitments"],["impegnarsi","to put effort in"],
+["dimmelo","tell me","di' + me + lo."],["pure","go ahead / by all means","Dimmelo pure = just tell me."],
+["ovviamente","obviously"],["castello","castle"],["scacchi","chess","La piazza degli scacchi a Marostica."],
+["michele","Michele","San Michele, the hills above Bassano."],["iniziamo","let's start"],
+["iniziare","to start"],["coltivata","grown / cultivated"],["coltivare","to grow (crops)"],
+["pinot","Pinot"],["nero","black","Pinot nero = Pinot Noir."],["tipo","type / kind"],
+["ventidue","twenty-two"],["conviene","it's better / it's worth it","Conviene prenotare."],
+["convenire","to be worth it"],["bellissimo","wonderful"],["guerrilla","Guerrilla, CRAK's IPA"],
+["pizza","pizza"],["sabato","Saturday"],["piacerebbe","we'd like","Ci piacerebbe = we'd like that."],
+["tanto","a lot / so much"],["avevi","you had","Avevi ragione = you were right."],
+["avevo","I had","Te l'avevo detto = I told you so."],["ce","us / there","Ce lo segniamo."],
+["cinquecento","five hundred"],["statale","the main road"],["ragione","reason","Avere ragione = to be right."],
+["cresciuto","grown up"],["lieta","pleased (f)"],
+["metri","metres"],["chilometri","kilometres"],["chilometro","kilometre"],
+["miglia","miles","Italy measures in kilometres — you'll rarely need this."],
+["incrocio","junction / crossroads"],["semaforo","traffic lights"],["rotonda","roundabout"],
+["uscita","exit"],["angolo","corner","Dietro l'angolo = round the corner."],
+["attraversi","cross (polite command)","From attraversare."],["attraversare","to cross"],
+["attraversa","cross (to a friend)"],["vada","go (polite command)","From andare. Vada dritto = go straight on."],
+["vai","go (to a friend)"],["prenda","take (polite command)","From prendere. Prenda la seconda a destra."],
+["segua","follow (polite command)","From seguire. Segua le indicazioni."],
+["indicazioni","directions / signs"],["bicicletta","bicycle"],["bici","bike","In bici = by bike."],
+["parcheggiare","to park"],["parcheggio","car park / parking"],["sbagliato","wrong / mistaken"],
+["sbagliare","to make a mistake","Non si può sbagliare = you can't miss it."],
+["marciapiede","pavement"],["salita","uphill stretch"],["discesa","downhill stretch"],
+["fiume","river"],["viale","avenue"],["vicolo","alley"],["indietro","back / backwards"],
+["avanti","forward / ahead"],["parte","part / side","Da che parte? = which way?"],
+["marostica","Marostica, a walled town near Bassano"],["asolo","Asolo, a hill town nearby"],
+["vicenza","Vicenza"],["padova","Padua"],["bassano","Bassano del Grappa"],
+["alpini","the Alpine soldiers","Il Ponte degli Alpini is Bassano's covered wooden bridge."],
+["nardini","Nardini, the grappa distillery on the bridge"],["campodarsego","Campodarsego, near Padua"],
+["crak","CRAK, a craft brewery at Campodarsego"],["soarda","Contrà Soarda, a winery in the hills above Bassano"],
+["vespaiolo","Vespaiolo, the local white grape"],["stanotte","tonight / last night"],["stanza","room"],["albergo","hotel"],["prenotazione","booking"],
 ["reception","reception"],["ascensore","lift"],["parcheggio","car park"],["matrimoniale","double (bed)"],
 ["doppia","twin / double (room)"],["singoli","single (m pl)"],["singola","single (f)"],
 ["asciugamani","towels"],["asciugamano","towel"],["cuscino","pillow"],["coperta","blanket"],
@@ -1700,6 +1756,38 @@ const QUICK = [
  ["Dov'è il ritiro bagagli?","Where's baggage reclaim?"],
  ["Il mio bagaglio non è arrivato.","My luggage hasn't arrived."],
  ["Dove sono i taxi? E il treno per il centro?","Where are the taxis? And the train to the centre?"]
+]},
+{id:"q_strada", t:"Directions, both ways", it:"Indicazioni stradali", b:"Asking the way, and understanding the answer you get back.",
+ p:[
+ ["Scusi, come si arriva al Ponte degli Alpini?","Excuse me, how do I get to the Ponte degli Alpini?"],
+ ["Sto cercando questo indirizzo.","I'm looking for this address."],
+ ["È lontano da qui?","Is it far from here?"],
+ ["Quanto ci vuole a piedi?","How long does it take on foot?"],
+ ["Si può andare a piedi?","Can you walk there?"],
+ ["Meglio a piedi, in bici o in macchina?","Better on foot, by bike or by car?"],
+ ["Può mostrarmelo sulla mappa?","Could you show me on the map?"],
+ ["Vada sempre dritto.","Go straight on."],
+ ["Giri a destra al semaforo.","Turn right at the lights."],
+ ["Giri a sinistra all'incrocio.","Turn left at the junction."],
+ ["Prenda la seconda a destra.","Take the second on the right."],
+ ["Attraversi il ponte e poi giri a sinistra.","Cross the bridge and then turn left."],
+ ["Alla rotonda prenda la terza uscita.","At the roundabout take the third exit."],
+ ["Segua le indicazioni per Marostica.","Follow the signs for Marostica."],
+ ["È dietro l'angolo.","It's round the corner."],
+ ["È in fondo alla strada, sulla destra.","It's at the end of the street, on the right."],
+ ["È di fronte alla chiesa.","It's opposite the church."],
+ ["È a circa cinquecento metri.","It's about five hundred metres."],
+ ["Sono due chilometri, più o meno.","It's two kilometres, more or less."],
+ ["Dieci minuti a piedi, quindici in bici.","Ten minutes on foot, fifteen by bike."],
+ ["In macchina sono quaranta minuti.","By car it's forty minutes."],
+ ["Non si può sbagliare.","You can't miss it."],
+ ["Ho sbagliato strada?","Have I gone the wrong way?"],
+ ["Siamo sulla strada giusta per Asolo?","Are we on the right road for Asolo?"],
+ ["Mi sono perso, mi può aiutare?","I'm lost, can you help me?"],
+ ["Dove posso parcheggiare?","Where can I park?"],
+ ["C'è un parcheggio qui vicino?","Is there a car park nearby?"],
+ ["Da che parte è il centro?","Which way is the centre?"],
+ ["Grazie mille, molto gentile.","Thanks very much, that's very kind."]
 ]},
 {id:"q_bus", t:"Bus & coach", it:"Autobus e pullman", b:"Which one, where to get on, when to get off.",
  p:[
@@ -1931,6 +2019,194 @@ QUICK.push(
  ["C'è una farmacia aperta di notte?","Is there a pharmacy open at night?"]
 ]}
 );
+
+/* ============================================================
+   DATA: conversations, filled in from your own sheet
+   Set around Bassano del Grappa. {slots} are replaced at run time.
+   ============================================================ */
+const CONV = [
+{id:"c_nozze", t:"Meeting a guest at the wedding", where:"Bassano del Grappa",
+ b:"The conversation you'll have four times in one evening.",
+ l:[
+ ["them","Ciao! Piacere, io sono Alessandro. E tu?","Hi! Nice to meet you, I'm Alessandro. And you?"],
+ ["you","Piacere, mi chiamo {nome}. Molto lieto.","Nice to meet you, my name is {nome}. Pleased to meet you."],
+ ["them","Sei amico dello sposo o della sposa?","Are you a friend of the groom or the bride?"],
+ ["you","In realtà sono {parentela}. E tu, come li conosci?","Actually I'm {parentela_en}. And you, how do you know them?"],
+ ["them","Siamo cresciuti insieme, abitiamo tutti e due qui vicino.","We grew up together, we both live near here."],
+ ["them","Da dove arrivi?","Where have you come from?"],
+ ["you","Vengo da {citta}, {paese}. E tu sei di Bassano?","I come from {citta}, {paese_en}. And are you from Bassano?"],
+ ["them","No, sono di Vicenza. Sono venuto in macchina ieri.","No, I'm from Vicenza. I drove up yesterday."],
+ ["them","Quanto vi fermate?","How long are you all staying?"],
+ ["you","Restiamo fino {partenza}, poi andiamo {dopo}.","We're staying until {partenza_en}, then we're going {dopo_en}."],
+ ["them","Bello! È la prima volta in Italia?","Lovely! Is it your first time in Italy?"],
+ ["you","Ci siamo già stati, ma tanti anni fa e solo per pochi giorni.","We've been before, but years ago and only for a few days."],
+ ["them","E che cosa volete fare da queste parti?","And what do you want to do around here?"],
+ ["you","Vogliamo mangiare bene e vedere la zona. Soprattutto le cantine e i birrifici. Hai qualche consiglio?","We want to eat well and see the area. Especially the wineries and breweries. Do you have any tips?"],
+ ["them","Allora: il CRAK a Campodarsego per la birra, tre quarti d'ora verso Padova. E qui sopra c'è Contrà Soarda per il vino.","Right: CRAK at Campodarsego for beer, three quarters of an hour towards Padua. And up the hill there's Contrà Soarda for wine."],
+ ["you","Perfetto, me lo segno. Che vino bevi tu di solito?","Perfect, I'll note that down. What wine do you usually drink?"],
+ ["them","Bianchi soprattutto, qui si fa il Vespaiolo. E tu?","Whites mostly, they make Vespaiolo here. And you?"],
+ ["you","A me piace {vino}. Ma se posso scegliere, preferisco {birra}.","I like {vino_en}. But given the choice, I prefer {birra_en}."],
+ ["them","Allora devi proprio andare al CRAK.","Then you really do have to go to CRAK."],
+ ["you","Ci andremo. Grazie del consiglio, è stato un piacere.","We will. Thanks for the tip, it's been a pleasure."],
+ ["them","Piacere mio. Ci vediamo dopo!","My pleasure. See you later!"]
+]},
+{id:"c_parenti", t:"Who's who at the table", where:"the reception",
+ b:"Explaining who you're with, and who everyone else is.",
+ l:[
+ ["them","Voi siete tutti insieme?","Are you all here together?"],
+ ["you","Sì, siamo in {gruppo}. È arrivata quasi tutta la famiglia.","Yes, there are {gruppo_en} of us. Nearly the whole family came."],
+ ["them","Che bello! E tu con chi sei venuto?","How lovely! And who did you come with?"],
+ ["you","{conchi}","{conchi_en}"],
+ ["them","E quella signora là, chi è?","And that lady over there, who is she?"],
+ ["you","È mia cugina. Sua figlia è quella con il vestito verde.","She's my cousin. Her daughter is the one in the green dress."],
+ ["them","Ah, avete fatto un bel viaggio per essere qui.","Ah, you've come a long way to be here."],
+ ["you","Sì, ma ne vale la pena. Non capita tutti i giorni.","Yes, but it's worth it. It doesn't happen every day."],
+ ["them","Parli bene italiano, complimenti.","You speak Italian well, well done."],
+ ["you","Grazie, ma parlo poco. Sto imparando con un'applicazione.","Thanks, but I speak very little. I'm learning with an app."],
+ ["them","Si sente che ti impegni. Se non capisci, dimmelo pure.","You can tell you're putting the work in. If you don't understand, just say."],
+ ["you","Grazie. Scusa, puoi ripetere più lentamente?","Thanks. Sorry, could you say that again more slowly?"]
+]},
+{id:"c_consigli", t:"Asking a local what to do", where:"a bar in the centre",
+ b:"Getting real recommendations, and the directions to go with them.",
+ l:[
+ ["you","Scusi, posso chiederle un consiglio?","Excuse me, could I ask you for a tip?"],
+ ["them","Certo, mi dica.","Of course, go ahead."],
+ ["you","Siamo qui per qualche giorno. Che cosa non dobbiamo perderci?","We're here for a few days. What shouldn't we miss?"],
+ ["them","Il Ponte degli Alpini, ovviamente. E poi Marostica, con il castello e la piazza degli scacchi.","The Ponte degli Alpini, obviously. Then Marostica, with the castle and the chess square."],
+ ["you","Quanto ci vuole per andare a Marostica?","How long does it take to get to Marostica?"],
+ ["them","Venti minuti in macchina. In bici un'ora, ma è una bella strada.","Twenty minutes by car. An hour by bike, but it's a lovely road."],
+ ["you","E per una cantina qui vicino?","And for a winery near here?"],
+ ["them","Contrà Soarda, sulle colline di San Michele. Fanno anche da mangiare.","Contrà Soarda, in the San Michele hills. They do food as well."],
+ ["you","Bisogna prenotare?","Do you have to book?"],
+ ["them","Sì, meglio chiamare prima.","Yes, better to ring ahead."],
+ ["you","E dove si beve una buona birra artigianale?","And where do you drink good craft beer?"],
+ ["them","Al CRAK, a Campodarsego, verso Padova. Fanno una IPA molto conosciuta.","At CRAK, in Campodarsego, towards Padua. They make a very well-known IPA."],
+ ["you","Come ci si arriva?","How do you get there?"],
+ ["them","Prenda la statale per Padova, poi segua le indicazioni per Campodarsego. Quaranta minuti circa.","Take the main road to Padua, then follow the signs for Campodarsego. About forty minutes."],
+ ["you","Grazie mille, molto gentile. Buona giornata!","Thank you very much, that's very kind. Have a good day!"]
+]},
+{id:"c_cantina", t:"At the winery", where:"Contrà Soarda, in the hills",
+ b:"A tasting, from booking to buying.",
+ l:[
+ ["them","Buongiorno, avete prenotato?","Morning, do you have a booking?"],
+ ["you","Sì, a nome {nome}, per due persone.","Yes, under {nome}, for two people."],
+ ["them","Perfetto. Volete fare la degustazione con i salumi e i formaggi?","Perfect. Would you like the tasting with the cured meats and cheeses?"],
+ ["you","Volentieri. Che vini assaggiamo?","Gladly. Which wines are we tasting?"],
+ ["them","Iniziamo con il Vespaiolo, il bianco della zona. Poi due rossi.","We'll start with the Vespaiolo, the local white. Then two reds."],
+ ["you","Di che uve è fatto questo?","Which grapes is this made from?"],
+ ["them","Vespaiola in purezza, coltivata qui sotto.","Pure Vespaiola, grown just below here."],
+ ["you","Sento frutta e un po' di mandorla. Molto buono.","I get fruit and a little almond. Very good."],
+ ["them","Questo rosso invece è un Pinot Nero. Più leggero.","This red is a Pinot Nero. Lighter."],
+ ["you","Questo è proprio il mio tipo di vino. Quanto costa la bottiglia?","This is exactly my kind of wine. How much is a bottle?"],
+ ["them","Ventidue euro. Se ne prende sei, le facciamo uno sconto.","Twenty-two euros. If you take six, we'll give you a discount."],
+ ["you","Allora ne prendiamo sei. Potete spedire negli Stati Uniti?","We'll take six then. Can you ship to the United States?"],
+ ["them","Sì, ma conviene portarle in valigia, se può.","Yes, but it's better to take them in your suitcase, if you can."],
+ ["you","Va bene. Complimenti, è stato bellissimo.","All right. Congratulations, it's been wonderful."]
+]},
+{id:"c_birrificio", t:"At the taproom", where:"CRAK, Campodarsego",
+ b:"Ordering, tasting, and talking about beer styles.",
+ l:[
+ ["them","Ciao! Che ti do?","Hi! What can I get you?"],
+ ["you","Ciao. Che cosa avete alla spina oggi?","Hi. What have you got on tap today?"],
+ ["them","Abbiamo la Guerrilla, la nostra IPA, poi una pils, una sour e una stout.","We've got Guerrilla, our IPA, then a pils, a sour and a stout."],
+ ["you","Posso assaggiare la sour prima di scegliere?","Can I taste the sour before I choose?"],
+ ["them","Certo, te la faccio provare.","Sure, I'll let you try it."],
+ ["you","Buona, ma prendo la IPA. Quanti gradi ha?","Nice, but I'll take the IPA. What's the alcohol content?"],
+ ["them","Sei e mezzo. Media o piccola?","Six and a half. Half litre or small?"],
+ ["you","Media, grazie. E qualcosa da mangiare?","Half litre, thanks. And something to eat?"],
+ ["them","Facciamo la pizza della casa, va forte.","We do our house pizza, it goes down well."],
+ ["you","Perfetto, una per due. Fate anche visite al birrificio?","Perfect, one between two. Do you also do brewery tours?"],
+ ["them","Sì, su prenotazione, il sabato.","Yes, by booking, on Saturdays."],
+ ["you","Ci piacerebbe. Con che malti fate la IPA?","We'd like that. Which malts do you use for the IPA?"],
+ ["them","Malto chiaro e tanto luppolo americano.","Pale malt and a lot of American hops."],
+ ["you","Si sente. Un'altra, per favore. Cin cin!","You can tell. Another one, please. Cheers!"]
+]},
+{id:"c_seconda", t:"Bumping into them again", where:"the next morning",
+ b:"The follow-up: what you did, what you thought, what's next.",
+ l:[
+ ["them","Buongiorno! Come è andata ieri sera?","Morning! How was last night?"],
+ ["you","Benissimo, grazie. Abbiamo ballato fino a tardi.","Wonderful, thanks. We danced until late."],
+ ["them","Siete andati poi al birrificio?","Did you make it to the brewery in the end?"],
+ ["you","Sì, ci siamo andati oggi pomeriggio. Avevi ragione, ottima birra.","Yes, we went this afternoon. You were right, excellent beer."],
+ ["them","Te l'avevo detto. E la cantina?","Told you so. And the winery?"],
+ ["you","Ci andiamo domani mattina. Abbiamo prenotato per le undici.","We're going tomorrow morning. We booked for eleven."],
+ ["them","Bene. Poi che fate?","Good. What are you doing after that?"],
+ ["you","{piani}","{piani_en}"],
+ ["them","Se avete tempo, andate ad Asolo. È bellissima.","If you have time, go to Asolo. It's beautiful."],
+ ["you","Ce lo segniamo. Grazie di tutto, davvero.","We'll note it down. Thanks for everything, really."],
+ ["them","Di niente. Buon viaggio e tornate a trovarci!","Not at all. Have a good trip and come back and see us!"],
+ ["you","Lo faremo. A presto!","We will. See you soon!"]
+]}
+];
+
+/* the slots, filled from the sheet — with sensible stand-ins if it's empty */
+const INVERSA = {nipote_m:["lo zio","la zia","the groom's uncle","the groom's aunt"],
+  nipote_f:["lo zio","la zia","the bride's uncle","the bride's aunt"],
+  figlio:["il padre","la madre","the groom's father","the groom's mother"],
+  figlia:["il padre","la madre","the bride's father","the bride's mother"],
+  fratello:["il fratello","la sorella","the groom's brother","the groom's sister"],
+  sorella:["il fratello","la sorella","the bride's brother","the bride's sister"],
+  cugino:["il cugino","la cugina","the groom's cousin","the groom's cousin"],
+  cugina:["il cugino","la cugina","the bride's cousin","the bride's cousin"],
+  amico:["un amico","un'amica","a friend of the groom","a friend of the groom"],
+  amica:["un amico","un'amica","a friend of the bride","a friend of the bride"],
+  nonno:["il nipote","la nipote","the groom's grandchild","the groom's grandchild"],
+  zio:["il nipote","la nipote","the groom's nephew","the groom's niece"],
+  zia:["il nipote","la nipote","the bride's nephew","the bride's niece"]};
+function convSlots(){
+  const p = S.profile || {};
+  const f = p.gen === "f";
+  const naz = NAZ.find(n=>n[0]===p.paese);
+  const par = dateIt(p.partenza);
+  const inv = INVERSA[p.occasione_chi];
+  const femCode = /a$|_f$/.test(p.occasione_chi||"");
+  const sposo = femCode ? "della sposa" : "dello sposo";
+  const sposoEn = femCode ? "bride" : "groom";
+  const con = (p.congiunti||[]).filter(x=>x.name).slice(0,3);
+  const tier = (st, want) => Object.keys(st||{}).filter(k=>st[k]===want);
+  const drinkOf = (want) => {
+    const codes = tier(p.bev_x,"love").concat(tier(p.bev_x,"like"));
+    const row = BEVANDE_X.find(b=>codes.includes(b[0]) && want.test(b[0]));
+    return row;
+  };
+  const vino = drinkOf(/rosso|bianco|chianti|barolo|brunello|pinot|vermentino|verdicchio|riesling|cabernet|zinfandel|nerodavola|montepulciano|prosecco|rosato|vino/) ;
+  const birra = drinkOf(/birra|ipa|stout|lager|paleale|artigianale|acide|scura/);
+  const piani = (p.piani||[]).map(c=>PIANI.find(x=>x[0]===c)).filter(Boolean).slice(0,2);
+  return {
+    nome: p.nome || "David",
+    citta: p.citta || "San Diego",
+    paese: naz ? naz[3] : "dagli Stati Uniti",
+    paese_en: naz ? naz[4] : "the United States",
+    parentela: inv ? (f ? inv[1] : inv[0]) + " " + sposo : (f ? "un'amica " : "un amico ") + sposo,
+    parentela_en: inv ? (f ? inv[3] : inv[2]) : "a friend of the " + sposoEn,
+    partenza: par ? "a" + (par.it.startsWith("il primo") ? "l primo" : "l " + par.it.slice(3)) : "al quattordici",
+    partenza_en: par ? par.en : "the fourteenth",
+    dopo: p.dopo ? "in " + p.dopo : "in Sardegna",
+    dopo_en: p.dopo ? "to " + p.dopo : "to Sardinia",
+    gruppo: p.gruppo ? numIt(p.gruppo) : "diciotto",
+    gruppo_en: p.gruppo || "eighteen",
+    conchi: con.length
+      ? "Sono qui con " + joinIt(con.map(x=>{
+          const c = chainRel(x); return (c.itSpec ? (f ? c.itSpec[2] : c.itSpec[1]) : c.it) + " " + x.name; })) + "."
+      : "Sono qui con mia moglie e con il resto della famiglia.",
+    conchi_en: con.length
+      ? "I'm here with " + joinEn(con.map(x=>chainRel(x).en + " " + x.name)) + "."
+      : "I'm here with my wife and the rest of the family.",
+    vino: vino ? vino[1] : "il vino rosso",
+    vino_en: vino ? vino[3] : "red wine",
+    birra: birra ? birra[1] : "la birra artigianale",
+    birra_en: birra ? birra[3] : "craft beer",
+    piani: piani.length ? "Vogliamo " + joinIt(piani.map(x=>x[1])) + "." : "Vogliamo girare un po' e mangiare bene.",
+    piani_en: piani.length ? "We want to spend our time " + joinEn(piani.map(x=>x[2])) + "." : "We want to look around and eat well."
+  };
+}
+function fillConv(text, slots){
+  return String(text).replace(/\{(\w+)\}/g, (m,k)=> slots[k] !== undefined ? slots[k] : m);
+}
+function convLines(c){
+  const sl = convSlots();
+  return c.l.map(l => [l[0], fillConv(l[1], sl), fillConv(l[2], sl)]);
+}
 
 /* ============================================================
    DATA: story lessons
@@ -2327,7 +2603,7 @@ STORIES.push(
 /* ============================================================
    ENGINE
    ============================================================ */
-const BUILD = "24";
+const BUILD = "25";
 const BUILT = "2026-08-31";
 const VERSTAMP = (function(){
   const [y,m,d] = BUILT.split("-");
@@ -2335,6 +2611,7 @@ const VERSTAMP = (function(){
 })();
 let UPD = {state:"unknown", at:0};
 const CHANGES = [
+  ["25","2026-08-31","Six conversations set around Bassano del Grappa, with your own name, family, dates and drink preferences filled in from your sheet — the wedding introduction, who's who at the table, asking a local, the winery, the taproom, and bumping into them again. Each can be read, answered line by line, or run hands-free with the repeat drill. Plus a Directions page covering the answers as well as the questions, the road vocabulary to go with it, and two new drills: tu vs Lei vs voi, and vada vs vai."],
   ["24","2026-08-31","Every verb example now shows who is speaking to whom. The third row is labelled lui / lei / Lei and carries a second example of the polite you; the voi row is marked as plural only, for groups and businesses. Eight core verbs have hand-written examples in each register. New grammar page on the four ways to say you, a drill on tu vs Lei vs voi, and clearer notes in the word pop-ups."],
   ["23","2026-08-31","Fixed the missing pause: reading a list once through now leaves you a gap after every line, not only between repeats, and there's a gap after the spoken English too. All four pause lengths are longer. Stop now takes you back where you started — the verb card, the story, the page you came from — instead of dumping you on Practice."],
   ["22","2026-08-31","Saved is four bars you open and close — My sheet, Your phrases, Word list, Notes — so a quick note doesn't mean scrolling past everything else. My sheet shows which steps are filled in and opens straight to any of them. Backup and restore now carry your progress and settings too, and say so. Every pop-up has an ✕ at the top as well as the button at the bottom."],
@@ -2543,7 +2820,7 @@ function renderHome(){
       <div class="grid2">
         ${[["flash","Flashcards"],["quiz","Quick quiz"],["listen","Listen &amp; choose"],["match","Matching"],
            ["conj","Conjugation"],["which","Which word?"],["cloze","Fill the gap"],["qa","Answer them"],
-           ["build","Sentence builder"],["dialog","Role-play"],["story","Stories"]]
+           ["build","Sentence builder"],["dialog","Role-play"],["story","Stories"],["conv","Conversations"]]
           .map(([k,n])=>`<button class="match" data-drill="${k}">${n}</button>`).join("")}
       </div>
       <button class="btn quiet wide" id="allPractice" style="margin-top:10px">Open the Practice tab</button>
@@ -2751,6 +3028,7 @@ const DRILLS = [
  ["qa","Answer them","They ask, you answer. Choose the reply that actually works."],
  ["build","Sentence builder","Words in the wrong order. Put them back."],
  ["dialog","Role-play","Whole conversations. Your lines stay hidden until you've tried them out loud."],
+ ["conv","Conversations","Six conversations around Bassano, written with your own name, family and tastes in them."],
  ["story","Stories","A restaurant story told seven ways. Listen, read, translate, then fill the gaps."],
  ["repeat","Repeat after me","It says a phrase, waits while you say it back, then says it again. Hands free."]
 ];
@@ -2838,6 +3116,7 @@ function startDrill(type, deck){
   if(type==="match") return startMatch(deckSel);
   if(type==="dialog") return startDialog();
   if(type==="story")  return startStory();
+  if(type==="conv")   return startConv();
   if(type==="repeat") return startRepeatRun(studyOrder(pool(deckSel), 20), "Repeat after me");
   let steps = [], title = "";
   switch(type){
@@ -3104,6 +3383,7 @@ let special = null;
 TABS.drills = function(){ if(special && !sess) return paintSpecial(); return renderDrills(); };
 function paintSpecial(){
   if(special.type === "repeat") return paintRepeat();
+  if(special.type === "conv") return special.pick ? paintConv() : paintConvList();
   if(special.type === "match") return paintMatch();
   if(special.type === "story") return special.pick ? paintStory() : paintStoryList();
   return paintDialogList();
@@ -3955,6 +4235,7 @@ const EXAMPLES = (function(){
   QA.forEach(q => { add(q[0], q[1]); add(q[2], q[3]); });
   DIALOGHI.forEach(d => d.l.forEach(l => add(l[1], l[2])));
   STORIES.forEach(st => st.l.forEach(l => add(l[0], l[1])));
+  CONV.forEach(c => c.l.forEach(l => { if(!/\{/.test(l[1])) add(l[1], l[2]); }));
   return idx;
 })();
 
@@ -4141,6 +4422,61 @@ const EX_EXTRA = {
 "ordinerà":["Ordinerà un altro dolce.","He'll order another dessert."],
 "qualcos'altro":["Desidera qualcos'altro?","Would you like anything else?"],
 "cinquant'":["Ho cinquant'anni.","I'm fifty."],
+"che cosa":["Che cosa ci consiglia?","What do you recommend?"],
+"che cos'è":["Che cos'è questo formaggio?","What is this cheese?"],
+"cos'è":["Cos'è il vin santo?","What is vin santo?"],
+"chi è":["Chi è quella signora?","Who is that lady?"],
+"dove sono":["Dove sono le toilette?","Where are the toilets?"],
+"come si dice":["Come si dice 'spoon' in italiano?","How do you say 'spoon' in Italian?"],
+"come si chiama":["Come si chiama questo vino?","What's this wine called?"],
+"che cosa vuol dire":["Che cosa vuol dire 'contrà'?","What does 'contrà' mean?"],
+"vuol dire":["Vuol dire 'lane' in dialetto.","It means 'lane' in dialect."],
+"a che ora":["A che ora chiudete?","What time do you close?"],
+"che ore sono":["Scusi, che ore sono?","Excuse me, what time is it?"],
+"quanto costa":["Quanto costa la bottiglia?","How much is the bottle?"],
+"quanto costano":["Quanto costano i biglietti?","How much are the tickets?"],
+"quanti anni":["Quanti anni ha questo vino?","How old is this wine?"],
+"da quanto tempo":["Da quanto tempo vive qui?","How long have you lived here?"],
+"quanto tempo":["Quanto tempo ci vuole?","How long does it take?"],
+"dove si trova":["Dove si trova il birrificio?","Where is the brewery?"],
+"ci sono":["Ci sono posti liberi?","Are there any seats free?"],
+"come mai":["Come mai sei qui?","How come you're here?"],
+"perché no":["Perché no? Andiamo!","Why not? Let's go!"],
+"che cosa c'è":["Che cosa c'è in questo piatto?","What's in this dish?"],
+"di chi è":["Di chi è questa borsa?","Whose bag is this?"],
+"quale preferisce":["Quale preferisce, rosso o bianco?","Which do you prefer, red or white?"],
+"lieto":["Molto lieto di conoscerla.","Very pleased to meet you."],
+"lieta":["Molto lieta di conoscerla.","Very pleased to meet you."],
+"realtà":["In realtà sono lo zio dello sposo.","Actually I'm the groom's uncle."],
+"crescere":["I bambini crescono in fretta.","Children grow up fast."],
+"cresciuto":["Sono cresciuto in California.","I grew up in California."],
+"dagli":["Vengo dagli Stati Uniti.","I come from the United States."],
+"quattordici":["Ripartiamo il quattordici.","We leave on the fourteenth."],
+"sardegna":["Dopo andiamo in Sardegna.","After this we're going to Sardinia."],
+"quarto":["Un quarto d'ora a piedi.","A quarter of an hour on foot."],
+"segnare":["Me lo segno subito.","I'll note it down right away."],
+"diciotto":["Siamo in diciotto.","There are eighteen of us."],
+"signore":["Buongiorno, signore.","Good morning, sir."],
+"signori":["Signori, il tavolo è pronto.","Ladies and gentlemen, your table is ready."],
+"impegnarsi":["Si impegna molto con l'italiano.","He's really working at his Italian."],
+"coltivare":["Coltivano l'uva qui sotto.","They grow the grapes just below here."],
+"convenire":["Conviene prenotare prima.","It's better to book in advance."],
+"chilometro":["Manca un chilometro.","There's a kilometre to go."],
+"miglia":["In Italia non si usano le miglia.","Italy doesn't use miles."],
+"attraversare":["Deve attraversare il ponte.","You have to cross the bridge."],
+"attraversa":["Attraversa la piazza e sei arrivato.","Cross the square and you're there."],
+"vai":["Vai sempre dritto, poi gira a destra.","Go straight on, then turn right."],
+"bicicletta":["Andiamo in bicicletta?","Shall we go by bike?"],
+"marciapiede":["Cammina sul marciapiede.","Walk on the pavement."],
+"salita":["È tutta salita fino alla cantina.","It's uphill all the way to the winery."],
+"discesa":["Al ritorno è tutta discesa.","On the way back it's all downhill."],
+"fiume":["Il ponte attraversa il fiume Brenta.","The bridge crosses the river Brenta."],
+"viale":["Il museo è in fondo al viale.","The museum is at the end of the avenue."],
+"vicolo":["L'osteria è in un vicolo dietro la piazza.","The osteria is in an alley behind the square."],
+"indietro":["Siamo andati troppo avanti, torniamo indietro.","We've gone too far, let's go back."],
+"avanti":["Avanti, è aperto!","Come in, it's open!"],
+"bassano":["Il matrimonio è a Bassano del Grappa.","The wedding is in Bassano del Grappa."],
+"nardini":["La Nardini è sul ponte.","Nardini is on the bridge."],
 "stanza":["La stanza è al secondo piano.","The room is on the second floor."],
 "singola":["Vorrei una camera singola.","I'd like a single room."],
 "asciugamano":["Posso avere un asciugamano pulito?","Could I have a clean towel?"],
@@ -6100,7 +6436,7 @@ const HOWTO = [
 ["Today","Your shortcuts, today's lesson, and a phrase to learn."],
 ["Phrases","320 phrases by topic, plus 18 situation pages — restaurant, hotel, train, doctor."],
 ["Words","The dictionary, both directions. Search in English or Italian, or paste a whole phrase."],
-["Practice","Eleven drills, ten role-play conversations and seven story lessons."],
+["Practice","Thirteen drills, six conversations set where you're going, and seven story lessons."],
 ["Plan","A 14-day route through it all, plus the only grammar you need."],
 ["Saved","Four bars you open and close: My sheet, Your phrases, Word list, Notes — plus backup and restore."]
 ];
@@ -6109,6 +6445,7 @@ const HOWTO_TIPS = [
 ["▶ says it out loud","♪ Voice & speed, in the blue title card on Today, changes the speaker and slows it down."],
 ["Repeat after me","The gold ↻ Repeat button beside it. Set 3×, 5× or 10× and every ▶ waits for you to say it back."],
 ["A verb, out loud","Open any verb and press Run through this verb out loud — the whole conjugation, read to you, with gaps."],
+["Conversations","Practice → Conversations puts your own name, family and tastes into six scripts set around Bassano."],
 ["★ keeps a phrase","Saved phrases become their own practice deck."],
 ["Practise one word","At the bottom of any word pop-up: 10, 20, 30 or 50 questions on that word alone."],
 ["It works offline","Once you've opened it with signal, it keeps working without any."]
@@ -6471,6 +6808,59 @@ function openVerbRun(inf, back){
   draw();
   document.body.appendChild(sheet);
   sheet.onclick = e => { if(e.target === sheet) sheet.remove(); };
+}
+
+
+/* ---------- the conversation screens ---------- */
+function startConv(){ special = {type:"conv", pick:null, mode:"practise", shown:{}}; sess = null; go("drills"); }
+function paintConvList(){
+  view.innerHTML = `
+    <div class="row" style="align-items:center;margin:14px 0 8px">
+      <div class="grow"><div style="font-weight:700">Conversations</div>
+        <div class="small">Set in Bassano del Grappa, filled in with your own answers.</div></div>
+      <button class="btn quiet" id="exitConv">Stop</button>
+    </div>
+    <p class="hint">Their line comes first. Say yours out loud, then tap to check. ${S.profileDone ? "Your name, family, dates and tastes are already in here." : "Fill in the sheet under Saved and these use your own details."}</p>
+    ${CONV.map(c=>`<div class="card tight"><div class="row" style="align-items:center">
+      <div class="grow"><div style="font-weight:700">${esc(c.t)}</div>
+        <div class="small">${esc(c.where)} · ${esc(c.b)}</div></div>
+      <button class="btn quiet" data-conv="${c.id}">Open</button>
+    </div></div>`).join("")}`;
+  $("#exitConv").onclick = ()=>{ special = null; renderDrills(); };
+  view.querySelectorAll("[data-conv]").forEach(b=> b.onclick = ()=>{
+    special.pick = b.dataset.conv; special.shown = {}; special.mode = "practise"; paintConv();
+  });
+}
+function paintConv(){
+  const c = CONV.find(x=>x.id===special.pick);
+  const lines = convLines(c);
+  const m = special.mode;
+  view.innerHTML = `
+    <div class="row" style="align-items:center;margin:14px 0 4px">
+      <div class="grow"><div style="font-weight:700">${esc(c.t)}</div><div class="small">${esc(c.where)}</div></div>
+      <button class="btn quiet" id="backConv">Back</button>
+    </div>
+    <div class="chips">
+      ${[["practise","Answer & check"],["read","Read it all"]].map(([k,n])=>
+        `<button class="chip" data-cmode="${k}" aria-pressed="${m===k}">${n}</button>`).join("")}
+      <button class="chip" id="repeatConv">↻ Repeat after me</button>
+    </div>
+    <div id="convBody">${lines.map((l,i)=>{
+      const you = l[0]==="you", hide = you && m === "practise" && !special.shown[i];
+      if(hide) return `<div class="line you"><div class="who">YOU</div>
+        <button class="bubble" data-rev="${i}" style="text-align:left"><span class="small">${esc(l[2])}</span><br>
+        <b style="color:var(--blu)">Say it, then tap to check</b></button></div>`;
+      return `<div class="line ${you?"you":""}"><div class="who">${you?"YOU":"THEM"}</div>
+        <div class="bubble"><div class="row"><button class="speak" data-say="${esc(l[1])}">▶</button>
+        <div class="grow"><div class="it">${gloss(l[1])}</div><div class="en">${esc(l[2])}</div></div></div></div></div>`;
+    }).join("")}</div>
+    <button class="btn wide" id="playConv" style="margin-top:12px">Play the whole conversation</button>`;
+  $("#backConv").onclick = ()=>{ special.pick = null; paintConvList(); };
+  view.querySelectorAll("[data-cmode]").forEach(b=> b.onclick = ()=>{ special.mode = b.dataset.cmode; paintConv(); });
+  view.querySelectorAll("[data-rev]").forEach(b=> b.onclick = ()=>{ special.shown[+b.dataset.rev]=1; addXp(1); paintConv(); });
+  $("#playConv").onclick = ()=> speakLines(lines.map(l=>l[1]));
+  $("#repeatConv").onclick = ()=> startRepeatRun(lines.map(l=>({it:l[1], en:l[2]})), c.t,
+    {back: ()=>{ special = {type:"conv", pick:c.id, mode:"practise", shown:{}}; go("drills"); }});
 }
 
 /* ---------- keep the app up to date, and working offline ---------- */

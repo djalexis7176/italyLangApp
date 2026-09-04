@@ -11,7 +11,7 @@ A single-page web app: phrases, verb conjugation, flashcards, matching, and role
 **Numbering changed at build 13.** Versions are now a plain count of downloads — 13, then 14, then 15 — instead of the old three-part numbers. The build formerly called 3.7.0 is listed in the app's changelog as *12 (was 3.7.0)*; everything before it keeps its original label.
 
 
-This build is **24**. The file is named `index-v24-who-youre-speaking-to.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits at the right of the blue bar at the top of every screen — `v24 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
+This build is **25**. The file is named `index-v25-conversations.html` — **rename it to `index.html` before or after uploading**, because GitHub Pages serves `index.html` as the front page. The version sits at the right of the blue bar at the top of every screen — `v25 · 8.31.26`. Once the app has checked GitHub it adds **✓ latest** in green; if a newer build is waiting it turns gold and says **update ready**; with no signal it says **offline**. Tap the stamp any time to check. The Plan page repeats it in full under *This app*, with the publish date and a list of what changed in each build.
 
 ## How updating works
 
@@ -19,8 +19,8 @@ This build is **24**. The file is named `index-v24-who-youre-speaking-to.html` �
 
 When you upload a new build, change two numbers so phones know something moved:
 
-1. In `index.html`, near the top of the script: `const BUILD = "24";` — and add a line to the `CHANGES` list describing what you did.
-2. In `sw.js`, line 5: `const BUILD = "24";`
+1. In `index.html`, near the top of the script: `const BUILD = "25";` — and add a line to the `CHANGES` list describing what you did.
+2. In `sw.js`, line 5: `const BUILD = "25";`
 
 Keep them the same. If you forget, the app still updates (HTML is network-first), but the icons and manifest may stay on the old cached copies.
 
@@ -131,6 +131,20 @@ tu    sei   = you are
 Verbs with two meanings show an example for each: `prendo` gives both *Io prendo il treno delle otto — I take the eight o'clock train* and *Io prendo un caffè al banco — I have a coffee at the counter*, and the label reads `= I take / have`. Eighteen verbs carry a second sense this way.
 
 Verbs that don't work in every person — costare, durare, servire, interessare, colpire — show examples only where a real sentence exists (*Quanto costa il caffè? · Mi colpiscono i colori*).
+
+## Conversations
+
+**Practice → Conversations** holds six scripts set around Bassano del Grappa, with your own details written into them from the sheet: your name, where you're from, how you're related to the couple, who you're travelling with, your departure date, where you go next, and which wine and beer you said you liked.
+
+Meeting a guest at the wedding · Who's who at the table · Asking a local what to do · At the winery · At the taproom · Bumping into them again.
+
+Three ways through each: **Answer & check** hides your lines until you've tried them, **Read it all** shows everything, and **↻ Repeat after me** runs the whole script hands-free with the pause settings.
+
+The places are real — CRAK at Campodarsego and its Guerrilla IPA, Contrà Soarda in the San Michele hills and its Vespaiolo, Marostica's chess square, the Ponte degli Alpini. Distances are given as rough drive times rather than opening hours, which change.
+
+## Directions
+
+**Phrases → Quick reference → Directions, both ways** covers the answer as well as the question: *Vada sempre dritto · Giri a destra al semaforo · Prenda la seconda a destra · Alla rotonda prenda la terza uscita · Segua le indicazioni per Marostica · È a circa cinquecento metri · In macchina sono quaranta minuti · Non si può sbagliare.* Thirty phrases, with the road vocabulary added to the dictionary and a **vada vs vai** drill on formal and informal commands.
 
 ## Story lessons
 
