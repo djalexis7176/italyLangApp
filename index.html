@@ -2690,7 +2690,7 @@ STORIES.push(
 /* ============================================================
    ENGINE
    ============================================================ */
-const BUILD = "26";
+const BUILD = "27";
 const BUILT = "2026-08-31";
 const VERSTAMP = (function(){
   const [y,m,d] = BUILT.split("-");
@@ -2698,6 +2698,7 @@ const VERSTAMP = (function(){
 })();
 let UPD = {state:"unknown", at:0};
 const CHANGES = [
+  ["27","2026-08-31","Build your own range of numbers: pick a start and an end, count in ones, twos, fives, tens or anything you type, going up, down or shuffled. Then say them, listen and pick, write them out, have them read to you hands-free, or hear each one inside a real sentence. In Listen and pick the wrong answers are now near misses rather than obvious ones."],
   ["26","2026-08-31","Numbers and counting: twelve stages from zero to ten up through counting by twos, fives and tens, the 4/14/40/44/400 traps, mixed jumps and big numbers. Each stage can be said out loud, listened to and tapped, or written out. Plus the seven rules behind Italian numbers and sixteen numbers in real sentences."],
   ["25","2026-08-31","Six conversations set around Bassano del Grappa, with your own name, family, dates and drink preferences filled in from your sheet — the wedding introduction, who's who at the table, asking a local, the winery, the taproom, and bumping into them again. Each can be read, answered line by line, or run hands-free with the repeat drill. Plus a Directions page covering the answers as well as the questions, the road vocabulary to go with it, and two new drills: tu vs Lei vs voi, and vada vs vai."],
   ["24","2026-08-31","Every verb example now shows who is speaking to whom. The third row is labelled lui / lei / Lei and carries a second example of the polite you; the voi row is marked as plural only, for groups and businesses. Eight core verbs have hand-written examples in each register. New grammar page on the four ways to say you, a drill on tu vs Lei vs voi, and clearer notes in the word pop-ups."],
@@ -2731,7 +2732,7 @@ const store = (()=>{
   try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); return localStorage; }
   catch(e){ const m={}; return {getItem:k=>(k in m?m[k]:null), setItem:(k,v)=>{m[k]=String(v)}, removeItem:k=>{delete m[k]}}; }
 })();
-const DEF = {xp:0, streak:0, last:"", start:"", box:{}, star:{}, seen:{}, numDone:{}, day:1, rate:0.9, voice:"", repeat:0, gap:1.5, list:{}, notes:[], draft:"", profile:{}, profileEdits:{}, profileReg:"lei", profileDone:false, sheetOpen:false};
+const DEF = {xp:0, streak:0, last:"", start:"", box:{}, star:{}, seen:{}, numDone:{}, numRange:{from:1,to:100,step:1,order:"up"}, day:1, rate:0.9, voice:"", repeat:0, gap:1.5, list:{}, notes:[], draft:"", profile:{}, profileEdits:{}, profileReg:"lei", profileDone:false, sheetOpen:false};
 let S = Object.assign({}, DEF, JSON.parse(store.getItem("andiamo")||"{}"));
 const save = () => store.setItem("andiamo", JSON.stringify(S));
 function today(){ return new Date().toISOString().slice(0,10); }
@@ -6538,7 +6539,7 @@ const HOWTO_TIPS = [
 ["Repeat after me","The gold ↻ Repeat button beside it. Set 3×, 5× or 10× and every ▶ waits for you to say it back."],
 ["A verb, out loud","Open any verb and press Run through this verb out loud — the whole conjugation, read to you, with gaps."],
 ["Conversations","Practice → Conversations puts your own name, family and tastes into six scripts set around Bassano."],
-["Numbers","Practice → Numbers & counting: twelve stages, three ways to drill each one."],
+["Numbers","Practice → Numbers & counting: twelve stages plus any range you build — 1 to 100, up, down or shuffled."],
 ["★ keeps a phrase","Saved phrases become their own practice deck."],
 ["Practise one word","At the bottom of any word pop-up: 10, 20, 30 or 50 questions on that word alone."],
 ["It works offline","Once you've opened it with signal, it keeps working without any."]
@@ -6982,6 +6983,10 @@ function paintNumList(){
         </div>
       </div>
     </details>
+    <button class="rowbtn accent" id="ownRange" style="margin-bottom:14px">
+      <span>Build your own range<span class="sub">${(S.numRange&&S.numRange.from!==undefined)
+        ? esc(S.numRange.from + " to " + S.numRange.to + (S.numRange.step>1 ? " in " + S.numRange.step + "s" : "") + (S.numRange.order==="down"?", down":S.numRange.order==="mix"?", shuffled":""))
+        : "1 to 100, or any stretch you like"}</span></span><span class="go">›</span></button>
     ${NUMSTAGES.map(st=>`<div class="card tight"><div class="row" style="align-items:center">
       <div class="grow"><div style="font-weight:700">${esc(st.t)} ${done[st.id]?'<span class="pill green" style="font-size:10px">done</span>':""}</div>
         <div class="small">${esc(st.b)}</div>
@@ -6994,6 +6999,7 @@ function paintNumList(){
       <button class="btn quiet" id="numSent">Open</button>
     </div></div>`;
   $("#exitNum").onclick = ()=>{ special = null; renderDrills(); };
+  $("#ownRange").onclick = ()=>{ special.stage = "range"; special.mode = null; paintNum(); };
   $("#numSent").onclick = ()=> startRepeatRun(NUMSENT.map(x=>({it:x[0], en:x[1]})), "Numbers in a sentence",
     {back: ()=>{ special = {type:"num", stage:null}; go("drills"); }});
   view.querySelectorAll("[data-stage]").forEach(b=> b.onclick = ()=>{
@@ -7002,7 +7008,8 @@ function paintNumList(){
 }
 
 function paintNum(){
-  const st = NUMSTAGES.find(x=>x.id===special.stage);
+  if(special.stage === "range" && !special.mode) return paintNumRange();
+  const st = special.stage === "range" ? rangeStage() : NUMSTAGES.find(x=>x.id===special.stage);
   if(!special.mode) return paintNumModes(st);
   if(special.mode === "say")  return paintNumSay(st);
   if(special.mode === "pick") return paintNumPick(st);
@@ -7068,7 +7075,9 @@ function paintNumPick(st){
   const items = numItems(st), sp = special;
   if(sp.i >= items.length) return paintNumDone(st);
   const it = items[sp.i];
-  const others = shuffle(items.filter(x=>x.n !== it.n)).slice(0,3);
+  let others = items.filter(x=>x.n !== it.n)
+    .sort((a,b)=> Math.abs(a.n-it.n) - Math.abs(b.n-it.n)).slice(0, 8);
+  others = shuffle(others).slice(0,3);
   const opts = shuffle([it].concat(others.length ? others : numItems(NUMSTAGES[9]).slice(0,3)));
   view.innerHTML = `
     ${numHeader(st, `${sp.i+1} of ${items.length} · ${sp.right} right`)}
@@ -7150,6 +7159,99 @@ function paintNumDone(st){
   addXp(2);
   $("#againNum").onclick = ()=>{ sp.i = 0; sp.right = 0; sp.wrong = 0; paintNum(); };
   $("#nextStage").onclick = ()=>{ special.stage = null; special.mode = null; paintNumList(); };
+}
+
+
+/* ---------- build your own range of numbers ---------- */
+function rangeItems(){
+  const r = S.numRange || {from:1, to:100, step:1, order:"up"};
+  const from = Math.min(r.from, r.to), to = Math.max(r.from, r.to);
+  const step = Math.max(1, r.step || 1);
+  let out = [];
+  for(let n = from; n <= to && out.length < 300; n += step) out.push(n);
+  if(r.order === "down") out.reverse();
+  if(r.order === "mix") out = shuffle(out);
+  return out;
+}
+function rangeStage(){
+  const r = S.numRange || {from:1, to:100, step:1, order:"up"};
+  const ns = rangeItems();
+  return {id:"range", t:`${r.from} to ${r.to}`,
+    b:`${ns.length} numbers, ${r.step>1?"in "+r.step+"s, ":""}${r.order==="down"?"counting down":r.order==="mix"?"shuffled":"in order"}`,
+    n:ns};
+}
+/* a number, dropped into something you'd actually say */
+const NUMFRAMES = [
+ [n=>`Sono ${numToIt(n)} euro.`, n=>`That's ${n} euros.`],
+ [n=>`Camera ${numToIt(n)}, per favore.`, n=>`Room ${n}, please.`],
+ [n=>`Ho ${numToIt(n)} anni.`, n=>`I'm ${n}.`],
+ [n=>`Siamo in ${numToIt(n)}.`, n=>`There are ${n} of us.`],
+ [n=>`Un tavolo per ${numToIt(n)}.`, n=>`A table for ${n}.`],
+ [n=>`Il binario è il ${numToIt(n)}.`, n=>`It's platform ${n}.`],
+ [n=>`Ci vogliono ${numToIt(n)} minuti.`, n=>`It takes ${n} minutes.`],
+ [n=>`Sono ${numToIt(n)} chilometri.`, n=>`It's ${n} kilometres.`],
+ [n=>`Ne prendo ${numToIt(n)}.`, n=>`I'll take ${n} of them.`],
+ [n=>`Costa ${numToIt(n)} euro al chilo.`, n=>`It's ${n} euros a kilo.`]
+];
+function numSentenceItems(ns){
+  return ns.map((n,i)=>{
+    const f = NUMFRAMES[(i + n) % NUMFRAMES.length];
+    return {it:f[0](n), en:f[1](n)};
+  });
+}
+function paintNumRange(){
+  const r = S.numRange = Object.assign({from:1, to:100, step:1, order:"up"}, S.numRange||{});
+  const ns = rangeItems();
+  const preview = ns.slice(0,5).map(numToIt).join(", ") + (ns.length>5 ? " …" : "");
+  const mins = Math.round(ns.length * (2.2 + 2.2 * (S.gap||1.8)) / 60);
+  view.innerHTML = `
+    <div class="row" style="align-items:center;margin:14px 0 6px">
+      <div class="grow"><div style="font-weight:700">Your own range</div>
+        <div class="small">Any numbers you like, in any order.</div></div>
+      <button class="btn quiet" id="backNum">Back</button>
+    </div>
+    <div class="card">
+      <div class="row" style="gap:8px;align-items:center">
+        <div class="grow"><div class="small">From</div>
+          <input class="answer" id="rFrom" inputmode="numeric" value="${r.from}"></div>
+        <div class="grow"><div class="small">To</div>
+          <input class="answer" id="rTo" inputmode="numeric" value="${r.to}"></div>
+      </div>
+      <div class="small" style="margin-top:10px">Counting in</div>
+      <div class="chips">
+        ${[1,2,5,10,25,100].map(v=>`<button class="chip" data-step="${v}" aria-pressed="${r.step===v}">${v===1?"ones":v+"s"}</button>`).join("")}
+        <input class="answer" id="rStep" inputmode="numeric" style="width:74px;padding:7px 9px" placeholder="other" value="${[1,2,5,10,25,100].includes(r.step)?"":r.step}">
+      </div>
+      <div class="small" style="margin-top:8px">Order</div>
+      <div class="chips">
+        ${[["up","Counting up"],["down","Counting down"],["mix","Shuffled"]].map(([k,l])=>
+          `<button class="chip" data-order="${k}" aria-pressed="${r.order===k}">${l}</button>`).join("")}
+      </div>
+      <div class="note" style="margin-top:12px">
+        <b>${ns.length} number${ns.length===1?"":"s"}</b>${ns.length>=300?" (capped — raise the step)":""}<br>
+        <span class="it">${esc(preview)}</span>
+        <div class="small" style="margin-top:4px">Read aloud with your current pause, about ${mins<1?"a minute":mins+" minute"+(mins===1?"":"s")}.</div>
+      </div>
+    </div>
+    <button class="rowbtn" id="rSay"><span>Say them out loud<span class="sub">The number appears, you say it, then you hear it</span></span><span class="go">›</span></button>
+    <button class="rowbtn" id="rPick"><span>Listen and pick<span class="sub">Hear it, tap the right number — near misses as decoys</span></span><span class="go">›</span></button>
+    <button class="rowbtn" id="rType"><span>Write it out<span class="sub">See the number, type the Italian</span></span><span class="go">›</span></button>
+    <button class="rowbtn accent" id="rRead"><span>Just read them to me<span class="sub">Hands free, with a gap after each one</span></span><span class="go">▶</span></button>
+    <button class="rowbtn" id="rSent"><span>In a sentence<span class="sub">Each one inside something you'd really say</span></span><span class="go">›</span></button>`;
+  const save2 = ()=>{ save(); paintNumRange(); };
+  $("#backNum").onclick = ()=>{ special.stage = null; paintNumList(); };
+  $("#rFrom").onchange = e => { r.from = Math.max(0, Math.min(999999, +e.target.value||0)); save2(); };
+  $("#rTo").onchange   = e => { r.to   = Math.max(0, Math.min(999999, +e.target.value||0)); save2(); };
+  $("#rStep").onchange = e => { const v = +e.target.value; if(v>0) { r.step = v; save2(); } };
+  view.querySelectorAll("[data-step]").forEach(b=> b.onclick = ()=>{ r.step = +b.dataset.step; save2(); });
+  view.querySelectorAll("[data-order]").forEach(b=> b.onclick = ()=>{ r.order = b.dataset.order; save2(); });
+  const st = ()=> rangeStage();
+  const back = ()=>{ special = {type:"num", stage:"range", mode:null}; go("drills"); };
+  $("#rSay").onclick  = ()=>{ special.stage = "range"; special.mode = "say";  special.i=0; special.right=0; special.wrong=0; special.shown=false; paintNum(); };
+  $("#rPick").onclick = ()=>{ special.stage = "range"; special.mode = "pick"; special.i=0; special.right=0; special.wrong=0; paintNum(); };
+  $("#rType").onclick = ()=>{ special.stage = "range"; special.mode = "type"; special.i=0; special.right=0; special.wrong=0; paintNum(); };
+  $("#rRead").onclick = ()=> startRepeatRun(st().n.map(n=>({it:numToIt(n), en:String(n)})), st().t, {back});
+  $("#rSent").onclick = ()=> startRepeatRun(numSentenceItems(st().n), st().t + " in sentences", {back});
 }
 
 /* ---------- keep the app up to date, and working offline ---------- */
